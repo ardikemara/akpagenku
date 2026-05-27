@@ -452,16 +452,36 @@
       <div class="form-group">
         <label class="form-label">Email <span class="req">*</span></label>
         <input type="email" class="form-input" name="email" placeholder="nama@email.com" required>
-        <div class="form-help">Pakai email yang sering Anda cek. Link verifikasi dikirim ke sini.</div>
+        <div class="form-help">Pakai email yang sering Anda cek. Notifikasi & approval dikirim ke sini.</div>
       </div>
 
       <div class="form-group">
-        <label class="form-label">Nomor WhatsApp <span class="req">*</span></label>
+        <label class="form-label">Username untuk URL Mini-site <span class="req">*</span></label>
         <div class="input-wrapper">
-          <span class="input-prefix">+62</span>
-          <input type="tel" class="form-input with-prefix" name="whatsapp" placeholder="812 3456 7890" required>
+          <span class="input-prefix">akpagenku.com/</span>
+          <input type="text" class="form-input with-prefix" name="username" placeholder="cristine" pattern="[a-z0-9]+" minlength="3" maxlength="30" required>
         </div>
-        <div class="form-help">Notifikasi lead masuk dikirim via WhatsApp.</div>
+        <div class="form-help">Huruf kecil & angka saja, tanpa spasi. Contoh: cristine, budiagen, anaprudential</div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Nomor WhatsApp <span class="req">*</span></label>
+          <div class="input-wrapper">
+            <span class="input-prefix">+62</span>
+            <input type="tel" class="form-input with-prefix" name="whatsapp" placeholder="812 3456 7890" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Kota</label>
+          <input type="text" class="form-input" name="kota" placeholder="Jakarta">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Perusahaan Asuransi</label>
+        <input type="text" class="form-input" name="perusahaan" placeholder="Prudential Indonesia">
+        <div class="form-help">Opsional. Hanya untuk verifikasi data agen.</div>
       </div>
 
       <div class="form-group">
@@ -502,7 +522,7 @@
         </label>
       </div>
 
-      <button type="submit" class="btn btn-primary">Lanjut ke Pembayaran →</button>
+      <button type="submit" class="btn btn-primary" id="submitBtn">Daftar Sekarang →</button>
 
       <div class="login-link">
         Sudah punya akun? <a href="#">Masuk di sini</a>
@@ -553,30 +573,133 @@
 
 </div>
 
+<!-- Supabase JS Library -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-function handleSubmit(event) {
-  event.preventDefault();
+// ===== SUPABASE CONFIG =====
+const SUPABASE_URL = 'https://bfydtsfekvueqzvuschp.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_3Xec3HYKViIiuX99hHxHqg_Ih8ABX_T';
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+async function handleSubmit(event) {
+  event.preventDefault();
   const form = event.target;
+  const btn = document.getElementById('submitBtn');
+
+  // Validate password match
   const password = form.password.value;
   const passwordConfirm = form.password_confirm.value;
-
   if (password !== passwordConfirm) {
     alert('Password dan konfirmasi password tidak cocok.');
     return;
   }
 
-  // Simpan data sementara di sessionStorage untuk halaman bayar
-  const data = {
-    nama: form.nama.value,
-    email: form.email.value,
-    whatsapp: form.whatsapp.value,
-    paket: form.paket.value
-  };
-  sessionStorage.setItem('daftar_data', JSON.stringify(data));
+  // Validate username format (lowercase + numbers only)
+  const username = form.username.value.toLowerCase().trim();
+  if (!/^[a-z0-9]+$/.test(username)) {
+    alert('Username hanya boleh huruf kecil dan angka, tanpa spasi atau simbol.');
+    return;
+  }
 
-  // Redirect ke halaman pembayaran
-  window.location.href = '/bayar.html';
+  // Disable button + loading state
+  btn.disabled = true;
+  btn.textContent = 'Memproses...';
+
+  try {
+    // Check if email already exists
+    const { data: existingEmail } = await supabase
+      .from('users')
+      .select('id')
+      .eq('email', form.email.value.toLowerCase().trim())
+      .maybeSingle();
+
+    if (existingEmail) {
+      alert('Email sudah terdaftar. Silakan pakai email lain atau hubungi admin via WhatsApp.');
+      btn.disabled = false;
+      btn.textContent = 'Daftar Sekarang →';
+      return;
+    }
+
+    // Check if username already exists
+    const { data: existingUsername } = await supabase
+      .from('users')
+      .select('id')
+      .eq('username', username)
+      .maybeSingle();
+
+    if (existingUsername) {
+      alert('Username "' + username + '" sudah dipakai. Silakan pilih username lain.');
+      btn.disabled = false;
+      btn.textContent = 'Daftar Sekarang →';
+      return;
+    }
+
+    // Insert new user to Supabase
+    const { data, error } = await supabase
+      .from('users')
+      .insert({
+        email: form.email.value.toLowerCase().trim(),
+        password_hash: password, // Phase 1 plain text - dev nanti upgrade ke proper hash
+        nama_lengkap: form.nama.value.trim(),
+        nama_panggilan: form.nama.value.trim().split(' ')[0],
+        whatsapp: form.whatsapp.value.replace(/\D/g, ''),
+        username: username,
+        kota: form.kota.value.trim() || null,
+        perusahaan: form.perusahaan.value.trim() || null,
+        paket: form.paket.value,
+        subscription_status: 'pending_approval'
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Supabase error:', error);
+      alert('Terjadi kesalahan: ' + error.message + '\n\nSilakan coba lagi atau hubungi admin via WhatsApp.');
+      btn.disabled = false;
+      btn.textContent = 'Daftar Sekarang →';
+      return;
+    }
+
+    // Save data for confirmation page
+    sessionStorage.setItem('daftar_success', JSON.stringify({
+      nama: data.nama_lengkap,
+      email: data.email,
+      whatsapp: '+62 ' + data.whatsapp,
+      username: data.username,
+      paket: data.paket,
+      id: data.id
+    }));
+
+    // Trigger send welcome email via Edge Function (non-blocking)
+    fetch(`${SUPABASE_URL}/functions/v1/send-welcome-email`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: data.email,
+        nama_lengkap: data.nama_lengkap,
+        username: data.username,
+        whatsapp: data.whatsapp,
+        paket: data.paket,
+        kota: data.kota,
+        perusahaan: data.perusahaan
+      })
+    }).catch(err => {
+      // Email gagal kirim gak boleh blocking signup flow
+      console.error('Email send error (non-blocking):', err);
+    });
+
+    // Redirect ke halaman menunggu approval
+    window.location.href = '/menunggu-approval.html';
+
+  } catch (err) {
+    console.error('Error:', err);
+    alert('Terjadi kesalahan koneksi. Pastikan internet stabil & coba lagi.');
+    btn.disabled = false;
+    btn.textContent = 'Daftar Sekarang →';
+  }
 }
 </script>
 
