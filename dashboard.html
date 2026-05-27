@@ -667,15 +667,6 @@
 </head>
 <body class="is-solo">
 
-<!-- ===== DEMO TOGGLE BAR ===== -->
-<div class="demo-bar">
-  <span class="label"><i data-lucide="clapperboard"></i> Demo Mode — Tampilkan dashboard:</span>
-  <div class="demo-toggle">
-    <button class="active" onclick="setMode('solo', this)">Paket Solo</button>
-    <button onclick="setMode('team', this)">Paket Team (Christine)</button>
-  </div>
-</div>
-
 <div class="layout">
 
   <!-- ===== SIDEBAR ===== -->
@@ -719,12 +710,12 @@
     </div>
 
     <div class="user-card">
-      <div class="user-avatar">C</div>
+      <div class="user-avatar" id="userAvatar">?</div>
       <div class="user-info">
-        <div class="user-name">Cristine L.</div>
-        <div class="user-plan" id="userPlan">Paket Solo</div>
+        <div class="user-name" id="userName">Loading...</div>
+        <div class="user-plan" id="userPlan">-</div>
       </div>
-      <span class="user-menu"><i data-lucide="more-vertical"></i></span>
+      <span class="user-menu" id="userMenuBtn" style="cursor:pointer;"><i data-lucide="more-vertical"></i></span>
     </div>
   </aside>
 
@@ -734,16 +725,16 @@
     <!-- HEADER -->
     <div class="page-header">
       <div class="greeting">
-        <h1>Selamat datang, Cristine <i data-lucide="hand"></i></h1>
+        <h1>Selamat datang, <span id="greetingName">...</span> <i data-lucide="hand"></i></h1>
         <p>Ini ringkasan performa Anda bulan ini.</p>
       </div>
-      <a href="/cristine.html" target="_blank" class="site-link-box" style="text-decoration: none;">
+      <a href="#" id="miniSiteLinkBox" target="_blank" class="site-link-box" style="text-decoration: none;">
         <div class="label-icon"><i data-lucide="globe"></i></div>
         <div class="info">
           <div class="label-text">Mini-site Anda · Klik untuk lihat</div>
-          <div class="url">akpagenku.com/cristine</div>
+          <div class="url" id="miniSiteUrl">akpagenku.com/...</div>
         </div>
-        <button class="copy-btn" onclick="event.preventDefault(); copyMinisiteLink(this);"><i data-lucide="copy"></i> Salin</button>
+        <button class="copy-btn" id="copyMiniSiteBtn"><i data-lucide="copy"></i> Salin</button>
       </a>
     </div>
 
@@ -752,36 +743,36 @@
       <div class="stat-card">
         <div class="stat-head">
           <div class="stat-icon blue"><i data-lucide="inbox"></i></div>
-          <span class="stat-trend up"><i data-lucide="trending-up"></i> 24%</span>
+          <span class="stat-trend up" id="statTrend1" style="display:none;"><i data-lucide="trending-up"></i> <span></span></span>
         </div>
-        <div class="stat-value">47</div>
+        <div class="stat-value" id="statLeadBaru">0</div>
         <div class="stat-label">Lead baru bulan ini</div>
       </div>
 
       <div class="stat-card">
         <div class="stat-head">
           <div class="stat-icon orange"><i data-lucide="flame"></i></div>
-          <span class="stat-trend up"><i data-lucide="trending-up"></i> 12%</span>
+          <span class="stat-trend up" id="statTrend2" style="display:none;"><i data-lucide="trending-up"></i> <span></span></span>
         </div>
-        <div class="stat-value">23</div>
+        <div class="stat-value" id="statProspekAktif">0</div>
         <div class="stat-label">Prospek aktif</div>
       </div>
 
       <div class="stat-card">
         <div class="stat-head">
           <div class="stat-icon green"><i data-lucide="check-circle-2"></i></div>
-          <span class="stat-trend up"><i data-lucide="trending-up"></i> +3</span>
+          <span class="stat-trend up" id="statTrend3" style="display:none;"><i data-lucide="trending-up"></i> <span></span></span>
         </div>
-        <div class="stat-value">8</div>
+        <div class="stat-value" id="statClosing">0</div>
         <div class="stat-label">Closing bulan ini</div>
       </div>
 
       <div class="stat-card">
         <div class="stat-head">
           <div class="stat-icon purple"><i data-lucide="bar-chart-3"></i></div>
-          <span class="stat-trend up"><i data-lucide="trending-up"></i> 2.1%</span>
+          <span class="stat-trend up" id="statTrend4" style="display:none;"><i data-lucide="trending-up"></i> <span></span></span>
         </div>
-        <div class="stat-value">17%</div>
+        <div class="stat-value" id="statConversion">0%</div>
         <div class="stat-label">Conversion rate</div>
       </div>
     </div>
@@ -917,40 +908,40 @@
           <div class="card-title">Funnel Prospek Anda</div>
           <a href="#" class="card-link">Detail <i data-lucide="arrow-right"></i></a>
         </div>
-        <div class="funnel-stages">
+        <div class="funnel-stages" id="funnelStages">
           <div class="funnel-stage">
             <div class="stage-bar">
-              <div class="stage-bar-fill prospek" style="width: 100%;"></div>
+              <div class="stage-bar-fill prospek" id="funnelBarNew" style="width: 0%;"></div>
               <div class="stage-content">
                 <span class="stage-name">Prospek Baru</span>
-                <span class="stage-count">47</span>
+                <span class="stage-count" id="funnelCountNew">0</span>
               </div>
             </div>
           </div>
           <div class="funnel-stage">
             <div class="stage-bar">
-              <div class="stage-bar-fill engaged" style="width: 65%;"></div>
+              <div class="stage-bar-fill engaged" id="funnelBarEngaged" style="width: 0%;"></div>
               <div class="stage-content">
                 <span class="stage-name">Engaged (Dihubungi)</span>
-                <span class="stage-count">23</span>
+                <span class="stage-count" id="funnelCountEngaged">0</span>
               </div>
             </div>
           </div>
           <div class="funnel-stage">
             <div class="stage-bar">
-              <div class="stage-bar-fill closing" style="width: 38%;"></div>
+              <div class="stage-bar-fill closing" id="funnelBarClosing" style="width: 0%;"></div>
               <div class="stage-content">
                 <span class="stage-name">Closing</span>
-                <span class="stage-count">12</span>
+                <span class="stage-count" id="funnelCountClosing">0</span>
               </div>
             </div>
           </div>
           <div class="funnel-stage">
             <div class="stage-bar">
-              <div class="stage-bar-fill closed" style="width: 17%;"></div>
+              <div class="stage-bar-fill closed" id="funnelBarClosed" style="width: 0%;"></div>
               <div class="stage-content">
                 <span class="stage-name">Closed (Deal)</span>
-                <span class="stage-count">8</span>
+                <span class="stage-count" id="funnelCountClosed">0</span>
               </div>
             </div>
           </div>
@@ -963,7 +954,7 @@
           <div class="card-title">Lead Terbaru</div>
           <a href="#" class="card-link">Semua <i data-lucide="arrow-right"></i></a>
         </div>
-        <div class="lead-list">
+        <div class="lead-list" id="leadList">
           <div class="lead-row">
             <div class="lead-avatar">RW</div>
             <div class="lead-info">
@@ -1011,38 +1002,288 @@
   </main>
 </div>
 
+
+<!-- Supabase JS Library -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-function setMode(mode, btn) {
-  document.body.className = 'is-' + mode;
-  document.querySelectorAll('.demo-toggle button').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('userPlan').textContent = mode === 'team' ? 'Paket Team (Leader)' : 'Paket Solo';
-}
+(function() {
+  'use strict';
 
-function copyMinisiteLink(btn) {
-  const link = window.location.origin + '/cristine.html';
-  navigator.clipboard.writeText(link).then(() => {
-    const original = btn.innerHTML;
-    btn.innerHTML = '<i data-lucide="check"></i> Tersalin!';
-    btn.style.color = 'var(--green)';
-    btn.style.borderColor = 'var(--green)';
+  const SUPABASE_URL = 'https://bfydtsfekvueqzvuschp.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_3Xec3HYKViIiuX99hHxHqg_Ih8ABX_T';
+
+  let supabase = null;
+  let session = null;
+
+  function init() {
+    console.log('[AKP Dashboard] Init started');
+
+    // 1. CHECK SESSION
+    try {
+      const sessionRaw = sessionStorage.getItem('akp_session');
+      if (!sessionRaw) {
+        console.warn('[AKP Dashboard] No session, redirecting to login');
+        window.location.href = '/login.html';
+        return;
+      }
+      session = JSON.parse(sessionRaw);
+    } catch (e) {
+      console.error('[AKP Dashboard] Session parse error:', e);
+      window.location.href = '/login.html';
+      return;
+    }
+
+    // 2. INIT SUPABASE
+    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // 3. RENDER USER INFO
+    renderUserInfo();
+
+    // 4. LOAD DATA
+    loadDashboardData();
+
+    // 5. SETUP HANDLERS
+    setupHandlers();
+
+    // 6. LUCIDE ICONS
     if (typeof lucide !== 'undefined') lucide.createIcons();
-    setTimeout(() => {
-      btn.innerHTML = original;
-      btn.style.color = '';
-      btn.style.borderColor = '';
-      if (typeof lucide !== 'undefined') lucide.createIcons();
-    }, 1800);
-  }).catch(() => {
-    alert('Link: ' + link);
-  });
-}
 
-window.addEventListener('DOMContentLoaded', () => {
-  if (typeof lucide !== 'undefined') {
-    lucide.createIcons();
+    console.log('[AKP Dashboard] Init complete');
   }
-});
+
+  function renderUserInfo() {
+    const name = session.nama_panggilan || session.nama_lengkap.split(' ')[0];
+    const fullName = session.nama_lengkap;
+    const lastNameInitial = fullName.split(' ').length > 1 ? fullName.split(' ').slice(-1)[0][0] + '.' : '';
+    const sidebarName = lastNameInitial ? name + ' ' + lastNameInitial : name;
+    const firstInitial = name[0].toUpperCase();
+
+    // Sidebar user card
+    const userNameEl = document.getElementById('userName');
+    if (userNameEl) userNameEl.textContent = sidebarName;
+
+    const userAvatarEl = document.getElementById('userAvatar');
+    if (userAvatarEl) userAvatarEl.textContent = firstInitial;
+
+    const userPlanEl = document.getElementById('userPlan');
+    if (userPlanEl) {
+      const paketLabel = session.paket === 'team'
+        ? (session.is_team_leader ? 'Paket Team (Leader)' : 'Paket Team')
+        : 'Paket Solo';
+      userPlanEl.textContent = paketLabel;
+    }
+
+    // Greeting
+    const greetingNameEl = document.getElementById('greetingName');
+    if (greetingNameEl) greetingNameEl.textContent = name;
+
+    // Mini-site URL
+    const miniSiteUrl = 'akpagenku.com/' + session.username;
+    const miniSiteUrlEl = document.getElementById('miniSiteUrl');
+    if (miniSiteUrlEl) miniSiteUrlEl.textContent = miniSiteUrl;
+
+    const miniSiteLinkBox = document.getElementById('miniSiteLinkBox');
+    if (miniSiteLinkBox) miniSiteLinkBox.href = '/' + session.username + '.html';
+  }
+
+  async function loadDashboardData() {
+    try {
+      // Load all leads owned by current user
+      const { data: leads, error } = await supabase
+        .from('leads')
+        .select('*')
+        .eq('owner_id', session.id)
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('[AKP Dashboard] Load leads error:', error);
+        showEmptyState();
+        return;
+      }
+
+      const leadList = leads || [];
+      console.log('[AKP Dashboard] Loaded', leadList.length, 'leads');
+
+      renderStats(leadList);
+      renderFunnel(leadList);
+      renderLeadTerbaru(leadList);
+    } catch (err) {
+      console.error('[AKP Dashboard] Unexpected error:', err);
+      showEmptyState();
+    }
+  }
+
+  function renderStats(leads) {
+    // This month's data
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+    const thisMonthLeads = leads.filter(l => new Date(l.created_at) >= startOfMonth);
+    const allLeads = leads;
+
+    // Stat 1: Lead baru bulan ini
+    document.getElementById('statLeadBaru').textContent = thisMonthLeads.length;
+
+    // Stat 2: Prospek aktif (stage = new OR engaged)
+    const aktif = allLeads.filter(l => ['new', 'engaged'].includes(l.stage)).length;
+    document.getElementById('statProspekAktif').textContent = aktif;
+
+    // Stat 3: Closing bulan ini (stage = closed in this month)
+    const closingMonth = thisMonthLeads.filter(l => l.stage === 'closed').length;
+    document.getElementById('statClosing').textContent = closingMonth;
+
+    // Stat 4: Conversion rate (closed / total leads)
+    const totalClosed = allLeads.filter(l => l.stage === 'closed').length;
+    const convRate = allLeads.length > 0 ? Math.round((totalClosed / allLeads.length) * 100) : 0;
+    document.getElementById('statConversion').textContent = convRate + '%';
+  }
+
+  function renderFunnel(leads) {
+    const counts = {
+      new: leads.filter(l => l.stage === 'new').length,
+      engaged: leads.filter(l => l.stage === 'engaged').length,
+      closing: leads.filter(l => l.stage === 'closing').length,
+      closed: leads.filter(l => l.stage === 'closed').length
+    };
+
+    const max = Math.max(counts.new, counts.engaged, counts.closing, counts.closed, 1);
+
+    document.getElementById('funnelCountNew').textContent = counts.new;
+    document.getElementById('funnelCountEngaged').textContent = counts.engaged;
+    document.getElementById('funnelCountClosing').textContent = counts.closing;
+    document.getElementById('funnelCountClosed').textContent = counts.closed;
+
+    document.getElementById('funnelBarNew').style.width = (counts.new / max * 100) + '%';
+    document.getElementById('funnelBarEngaged').style.width = (counts.engaged / max * 100) + '%';
+    document.getElementById('funnelBarClosing').style.width = (counts.closing / max * 100) + '%';
+    document.getElementById('funnelBarClosed').style.width = (counts.closed / max * 100) + '%';
+  }
+
+  function renderLeadTerbaru(leads) {
+    const container = document.getElementById('leadList');
+    if (!container) return;
+
+    if (leads.length === 0) {
+      container.innerHTML = '<div style="padding:32px 16px; text-align:center; color:var(--gray-500); font-size:13px;">Belum ada lead. Bagikan link mini-site Anda untuk mulai dapat prospek!</div>';
+      return;
+    }
+
+    // Show max 5 most recent
+    const recent = leads.slice(0, 5);
+
+    const sourceLabel = {
+      'skor': 'Kuis Skor',
+      'darurat': 'Kalkulator',
+      'pendidikan': 'Kalkulator Pendidikan',
+      'pensiun': 'Kalkulator Pensiun',
+      'kesehatan': 'Quiz Kesehatan'
+    };
+
+    const html = recent.map(lead => {
+      const initials = getInitials(lead.nama);
+      const sourceTxt = sourceLabel[lead.source_magnet] || lead.source_magnet || 'Direct';
+      const timeAgo = formatTimeAgo(new Date(lead.created_at));
+      const isBaru = lead.stage === 'new';
+
+      return `
+        <div class="lead-row">
+          <div class="lead-avatar">${escapeHtml(initials)}</div>
+          <div class="lead-info">
+            <div class="lead-name">${escapeHtml(lead.nama)}</div>
+            <div class="lead-meta">${escapeHtml(sourceTxt)} · ${timeAgo}</div>
+          </div>
+          ${isBaru ? '<span class="lead-badge">Baru</span>' : ''}
+        </div>
+      `;
+    }).join('');
+
+    container.innerHTML = html;
+  }
+
+  function showEmptyState() {
+    document.getElementById('statLeadBaru').textContent = '0';
+    document.getElementById('statProspekAktif').textContent = '0';
+    document.getElementById('statClosing').textContent = '0';
+    document.getElementById('statConversion').textContent = '0%';
+  }
+
+  function setupHandlers() {
+    // Copy mini-site link
+    const copyBtn = document.getElementById('copyMiniSiteBtn');
+    if (copyBtn) {
+      copyBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const link = window.location.origin + '/' + session.username + '.html';
+        navigator.clipboard.writeText(link).then(() => {
+          const original = copyBtn.innerHTML;
+          copyBtn.innerHTML = '<i data-lucide="check"></i> Tersalin!';
+          copyBtn.style.color = 'var(--green)';
+          copyBtn.style.borderColor = 'var(--green)';
+          if (typeof lucide !== 'undefined') lucide.createIcons();
+          setTimeout(() => {
+            copyBtn.innerHTML = original;
+            copyBtn.style.color = '';
+            copyBtn.style.borderColor = '';
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+          }, 1800);
+        }).catch(() => {
+          alert('Link: ' + link);
+        });
+      });
+    }
+
+    // User menu - logout option
+    const userMenuBtn = document.getElementById('userMenuBtn');
+    if (userMenuBtn) {
+      userMenuBtn.addEventListener('click', function() {
+        if (confirm('Logout dari akun?')) {
+          sessionStorage.removeItem('akp_session');
+          window.location.href = '/login.html';
+        }
+      });
+    }
+  }
+
+  // ===== UTILS =====
+  function getInitials(name) {
+    if (!name) return '?';
+    const parts = name.trim().split(/\s+/);
+    if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  }
+
+  function escapeHtml(text) {
+    if (text == null) return '';
+    return String(text)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  function formatTimeAgo(date) {
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMin = Math.floor(diffMs / 60000);
+    const diffHr = Math.floor(diffMs / 3600000);
+    const diffDay = Math.floor(diffMs / 86400000);
+
+    if (diffMin < 1) return 'Baru saja';
+    if (diffMin < 60) return diffMin + ' menit lalu';
+    if (diffHr < 24) return diffHr + ' jam lalu';
+    if (diffDay < 7) return diffDay + ' hari lalu';
+    return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+  }
+
+  // ===== INIT =====
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
 </script>
 
 </body>

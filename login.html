@@ -377,7 +377,7 @@
         <p class="form-sub">Gunakan email & password yang dikirim ke email Anda.</p>
       </div>
 
-      <form onsubmit="handleLogin(event)">
+      <form id="loginForm">
 
         <div class="form-group">
           <label class="form-label">Email</label>
@@ -388,7 +388,7 @@
           <label class="form-label">Password</label>
           <div class="password-wrapper">
             <input type="password" class="form-input" name="password" id="loginPassword" placeholder="Masukkan password" required>
-            <button type="button" class="password-toggle" onclick="togglePassword()">👁</button>
+            <button type="button" class="password-toggle" id="togglePasswordBtn">👁</button>
           </div>
         </div>
 
@@ -412,28 +412,189 @@
 
 </div>
 
+
+<!-- Supabase JS Library -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-// Auto-fill email kalau ada data dari sessionStorage
-const data = JSON.parse(sessionStorage.getItem('daftar_data') || '{}');
-if (data.email) {
-  document.getElementById('loginEmail').value = data.email;
-}
+(function() {
+  'use strict';
 
-function togglePassword() {
-  const input = document.getElementById('loginPassword');
-  input.type = input.type === 'password' ? 'text' : 'password';
-}
+  const SUPABASE_URL = 'https://bfydtsfekvueqzvuschp.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_3Xec3HYKViIiuX99hHxHqg_Ih8ABX_T';
+  let supabase = null;
 
-function handleLogin(event) {
-  event.preventDefault();
-  // Demo: langsung redirect ke dashboard
-  window.location.href = '/dashboard.html';
-}
+  function init() {
+    console.log('[AKP Login] Init OK');
+    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// Export to window for onclick/onsubmit handlers
-window.togglePassword = togglePassword;
-window.handleLogin = handleLogin;
-console.log('[AKP Login] Handlers exported to window');
+    // Auto-fill email kalau ada data dari sessionStorage (dari signup)
+    try {
+      const data = JSON.parse(sessionStorage.getItem('daftar_success') || '{}');
+      if (data.email) {
+        const emailInput = document.getElementById('loginEmail');
+        if (emailInput) emailInput.value = data.email;
+      }
+    } catch (e) {}
+
+    // Toggle password visibility
+    const toggleBtn = document.getElementById('togglePasswordBtn');
+    if (toggleBtn) {
+      toggleBtn.addEventListener('click', function() {
+        const input = document.getElementById('loginPassword');
+        input.type = input.type === 'password' ? 'text' : 'password';
+      });
+    }
+
+    // Handle login
+    const form = document.getElementById('loginForm');
+    const submitBtn = form.querySelector('button[type="submit"]');
+
+    if (!form) {
+      console.error('[AKP Login] Form not found');
+      return;
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+      const password = document.getElementById('loginPassword').value;
+
+      if (!email || !password) {
+        showError('Email dan password wajib diisi.');
+        return;
+      }
+
+      hideError();
+      submitBtn.disabled = true;
+      const originalText = submitBtn.textContent;
+      submitBtn.textContent = 'Memproses...';
+
+      try {
+        // Query user by email
+        const { data: user, error } = await supabase
+          .from('users')
+          .select('id, email, password_hash, nama_lengkap, nama_panggilan, username, whatsapp, paket, subscription_status, masa_aktif_sampai, kota, perusahaan, avatar_url, is_team_leader, team_leader_id')
+          .eq('email', email)
+          .maybeSingle();
+
+        if (error) {
+          console.error('[AKP Login] Query error:', error);
+          showError('Terjadi kesalahan sistem. Coba lagi.');
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalText;
+          return;
+        }
+
+        if (!user) {
+          showError('Email tidak terdaftar.');
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalText;
+          return;
+        }
+
+        // Check password (Phase 1: plain text comparison)
+        if (user.password_hash !== password) {
+          showError('Password salah.');
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalText;
+          return;
+        }
+
+        // Check subscription status
+        if (user.subscription_status === 'pending_approval') {
+          showError('Akun Anda belum diaktivasi. Cek email atau hubungi admin via WhatsApp.');
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalText;
+          return;
+        }
+
+        if (user.subscription_status === 'rejected') {
+          showError('Akun Anda ditolak. Hubungi admin untuk info lebih lanjut.');
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalText;
+          return;
+        }
+
+        if (user.subscription_status === 'expired') {
+          showError('Masa berlangganan Anda sudah habis. Hubungi admin untuk perpanjangan.');
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalText;
+          return;
+        }
+
+        if (user.subscription_status !== 'active') {
+          showError('Status akun tidak valid (' + user.subscription_status + '). Hubungi admin.');
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalText;
+          return;
+        }
+
+        // SUCCESS! Save session
+        const session = {
+          id: user.id,
+          email: user.email,
+          nama_lengkap: user.nama_lengkap,
+          nama_panggilan: user.nama_panggilan || user.nama_lengkap.split(' ')[0],
+          username: user.username,
+          whatsapp: user.whatsapp,
+          paket: user.paket,
+          kota: user.kota,
+          perusahaan: user.perusahaan,
+          avatar_url: user.avatar_url,
+          is_team_leader: user.is_team_leader,
+          team_leader_id: user.team_leader_id,
+          masa_aktif_sampai: user.masa_aktif_sampai,
+          logged_in_at: new Date().toISOString()
+        };
+
+        sessionStorage.setItem('akp_session', JSON.stringify(session));
+        console.log('[AKP Login] Login success, redirecting...');
+
+        // Redirect
+        window.location.href = '/dashboard.html';
+
+      } catch (err) {
+        console.error('[AKP Login] Unexpected error:', err);
+        showError('Terjadi kesalahan koneksi. Coba lagi.');
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+      }
+    }
+
+    form.addEventListener('submit', handleLogin);
+    if (submitBtn) submitBtn.addEventListener('click', handleLogin);
+
+    console.log('[AKP Login] Handlers attached');
+  }
+
+  function showError(msg) {
+    let errEl = document.getElementById('loginError');
+    if (!errEl) {
+      // Create error element
+      errEl = document.createElement('div');
+      errEl.id = 'loginError';
+      errEl.style.cssText = 'background:#fee2e2;border:1px solid #fca5a5;color:#991b1b;padding:12px 16px;border-radius:8px;font-size:13px;margin-bottom:16px;text-align:center;';
+      const form = document.getElementById('loginForm');
+      form.insertBefore(errEl, form.firstChild);
+    }
+    errEl.textContent = msg;
+    errEl.style.display = 'block';
+  }
+
+  function hideError() {
+    const errEl = document.getElementById('loginError');
+    if (errEl) errEl.style.display = 'none';
+  }
+
+  // Init on load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
 </script>
 
 </body>
