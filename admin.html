@@ -850,6 +850,9 @@
 </div>
 
 <script>
+(function() {
+  'use strict';
+  console.log('[AKP Admin] Script execution started');
 // ===== CONFIG =====
 const SUPABASE_URL = 'https://bfydtsfekvueqzvuschp.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_3Xec3HYKViIiuX99hHxHqg_Ih8ABX_T';
@@ -1430,6 +1433,8 @@ window.restoreAgent = restoreAgent;
 window.closeModal = closeModal;
 
 console.log('[AKP Admin] All functions exported to window');
+
+})();  // End IIFE
 </script>
 
 </body>
