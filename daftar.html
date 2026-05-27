@@ -146,8 +146,11 @@
     border-color: var(--gold);
     box-shadow: 0 0 0 3px rgba(201, 169, 97, 0.15);
   }
-  .form-input.with-prefix {
+  .form-input.with-prefix-short {
     padding-left: 56px;
+  }
+  .form-input.with-prefix-long {
+    padding-left: 132px;
   }
   .input-wrapper {
     position: relative;
@@ -459,7 +462,7 @@
         <label class="form-label">Username untuk URL Mini-site <span class="req">*</span></label>
         <div class="input-wrapper">
           <span class="input-prefix">akpagenku.com/</span>
-          <input type="text" class="form-input with-prefix" name="username" placeholder="cristine" pattern="[a-z0-9]+" minlength="3" maxlength="30" required>
+          <input type="text" class="form-input with-prefix-long" name="username" placeholder="cristine" pattern="[a-z0-9]+" minlength="3" maxlength="30" required>
         </div>
         <div class="form-help">Huruf kecil & angka saja, tanpa spasi. Contoh: cristine, budiagen, anaprudential</div>
       </div>
@@ -469,7 +472,7 @@
           <label class="form-label">Nomor WhatsApp <span class="req">*</span></label>
           <div class="input-wrapper">
             <span class="input-prefix">+62</span>
-            <input type="tel" class="form-input with-prefix" name="whatsapp" placeholder="812 3456 7890" required>
+            <input type="tel" class="form-input with-prefix-short" name="whatsapp" placeholder="812 3456 7890" required>
           </div>
         </div>
         <div class="form-group">
