@@ -1,0 +1,1419 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard | AKPAgenku</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root {
+    --navy: #0f2647;
+    --navy-light: #1e3a5f;
+    --navy-dark: #081a33;
+    --gold: #c9a961;
+    --gold-light: #d9bd7f;
+    --gold-dark: #a88a45;
+    --cream: #faf8f3;
+    --gray-50: #fafafa;
+    --gray-100: #f5f5f5;
+    --gray-200: #e5e5e5;
+    --gray-300: #d4d4d4;
+    --gray-400: #a3a3a3;
+    --gray-500: #737373;
+    --gray-700: #404040;
+    --gray-900: #171717;
+    --white: #ffffff;
+    --green: #059669;
+    --green-light: #d1fae5;
+    --amber: #d97706;
+    --amber-light: #fef3c7;
+    --red: #dc2626;
+    --red-light: #fee2e2;
+    --blue: #2563eb;
+    --blue-light: #dbeafe;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    color: var(--gray-900);
+    background: var(--gray-50);
+    min-height: 100vh;
+  }
+  a { color: inherit; text-decoration: none; }
+  [data-lucide] { stroke-width: 2; flex-shrink: 0; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+
+  /* ===== LOGIN GATE ===== */
+  .login-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--navy-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 24px;
+  }
+  .login-box {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 48px;
+    max-width: 420px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.4);
+  }
+  .login-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 4px;
+  }
+  .login-logo .accent { color: var(--gold); }
+  .login-sub {
+    font-size: 12px;
+    color: var(--gray-500);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+  }
+  .login-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    color: var(--navy);
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  .login-text {
+    font-size: 14px;
+    color: var(--gray-700);
+    margin-bottom: 28px;
+  }
+  .login-input {
+    width: 100%;
+    padding: 14px 18px;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 10px;
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s;
+    margin-bottom: 12px;
+  }
+  .login-input:focus { border-color: var(--gold); }
+  .login-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--navy);
+    color: var(--gold);
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    letter-spacing: 0.5px;
+    transition: all 0.2s;
+  }
+  .login-btn:hover { background: var(--navy-dark); }
+  .login-error {
+    color: var(--red);
+    font-size: 13px;
+    margin-top: 12px;
+    display: none;
+  }
+  .login-error.show { display: block; }
+
+  /* ===== NAVBAR ===== */
+  .navbar {
+    background: var(--navy);
+    color: var(--white);
+    padding: 14px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 3px solid var(--gold);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+  }
+  .nav-logo .accent { color: var(--gold); }
+  .nav-tag {
+    font-size: 10px;
+    background: var(--gold);
+    color: var(--navy);
+    padding: 3px 8px;
+    border-radius: 4px;
+    letter-spacing: 1px;
+    font-weight: 700;
+    margin-left: 10px;
+    text-transform: uppercase;
+  }
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+  }
+  .nav-refresh {
+    background: rgba(201,169,97,0.15);
+    color: var(--gold);
+    border: 1px solid rgba(201,169,97,0.3);
+    padding: 7px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+  }
+  .nav-refresh:hover { background: rgba(201,169,97,0.25); }
+  .nav-refresh [data-lucide] { width: 14px; height: 14px; }
+  .nav-logout {
+    background: transparent;
+    color: rgba(255,255,255,0.5);
+    border: none;
+    cursor: pointer;
+    font-size: 12px;
+    font-family: inherit;
+    transition: color 0.2s;
+  }
+  .nav-logout:hover { color: var(--white); }
+
+  /* ===== STATS BAR ===== */
+  .stats-bar {
+    background: var(--white);
+    border-bottom: 1px solid var(--gray-200);
+    padding: 24px 32px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 24px;
+  }
+  .stat {
+    border-left: 3px solid var(--gold);
+    padding-left: 14px;
+  }
+  .stat-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--gray-500);
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1;
+  }
+  .stat-sub {
+    font-size: 11px;
+    color: var(--gray-500);
+    margin-top: 4px;
+  }
+  .stat-value.amber { color: var(--amber); }
+  .stat-value.green { color: var(--green); }
+  .stat-value.red { color: var(--red); }
+
+  /* ===== MAIN ===== */
+  .container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 24px 32px;
+  }
+
+  /* ===== TOOLBAR ===== */
+  .toolbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .search-box {
+    position: relative;
+    flex: 1;
+    max-width: 380px;
+  }
+  .search-box [data-lucide] {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--gray-400);
+    width: 16px;
+    height: 16px;
+  }
+  .search-input {
+    width: 100%;
+    padding: 11px 14px 11px 40px;
+    border: 1px solid var(--gray-200);
+    border-radius: 8px;
+    font-size: 13px;
+    font-family: inherit;
+    background: var(--white);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .search-input:focus { border-color: var(--gold); }
+
+  .tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--gray-100);
+    padding: 4px;
+    border-radius: 8px;
+  }
+  .tab {
+    padding: 7px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--gray-700);
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.2s;
+    border: none;
+    background: transparent;
+    font-family: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .tab:hover { color: var(--navy); }
+  .tab.active {
+    background: var(--white);
+    color: var(--navy);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  .tab-count {
+    background: var(--gray-200);
+    color: var(--gray-700);
+    padding: 1px 7px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 700;
+  }
+  .tab.active .tab-count {
+    background: var(--gold);
+    color: var(--navy);
+  }
+
+  /* ===== AGENT CARD ===== */
+  .agent-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .agent-card {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: 12px;
+    padding: 20px 24px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 24px;
+    align-items: center;
+    transition: all 0.2s;
+  }
+  .agent-card:hover {
+    border-color: var(--gold);
+    box-shadow: 0 4px 20px rgba(15,38,71,0.06);
+  }
+  .agent-card.pending {
+    border-left: 4px solid var(--amber);
+  }
+  .agent-card.active {
+    border-left: 4px solid var(--green);
+  }
+  .agent-card.expired {
+    border-left: 4px solid var(--red);
+  }
+  .agent-card.rejected {
+    border-left: 4px solid var(--gray-400);
+    opacity: 0.7;
+  }
+  .agent-card.expiring {
+    border-left: 4px solid var(--amber);
+    background: linear-gradient(to right, rgba(217,119,6,0.03), var(--white) 80%);
+  }
+
+  .agent-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 24px;
+    align-items: center;
+  }
+  .agent-primary {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .agent-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--navy);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+  .badge-pending { background: var(--amber-light); color: var(--amber); }
+  .badge-active { background: var(--green-light); color: var(--green); }
+  .badge-expired { background: var(--red-light); color: var(--red); }
+  .badge-rejected { background: var(--gray-200); color: var(--gray-500); }
+  .badge-team { background: var(--blue-light); color: var(--blue); }
+  .badge-h5 { background: var(--amber); color: var(--white); }
+
+  .agent-username {
+    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--gold-dark);
+  }
+  .agent-meta {
+    font-size: 11px;
+    color: var(--gray-500);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .agent-meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .agent-meta [data-lucide] {
+    width: 11px;
+    height: 11px;
+    color: var(--gray-400);
+  }
+
+  .agent-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 12px;
+  }
+  .detail-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--gray-700);
+  }
+  .detail-item [data-lucide] {
+    width: 12px;
+    height: 12px;
+    color: var(--gray-400);
+  }
+  .detail-item strong {
+    color: var(--navy);
+    font-weight: 600;
+  }
+
+  .agent-status {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 11px;
+    color: var(--gray-500);
+  }
+  .status-line {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .status-line [data-lucide] {
+    width: 12px;
+    height: 12px;
+  }
+  .status-active-until {
+    color: var(--navy);
+    font-weight: 600;
+    font-size: 12px;
+  }
+  .h5-warning {
+    color: var(--amber);
+    font-weight: 700;
+    font-size: 11px;
+  }
+
+  /* ===== ACTIONS ===== */
+  .agent-actions {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .btn-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 8px 12px;
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid var(--gray-200);
+    background: var(--white);
+    color: var(--gray-700);
+    font-family: inherit;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .btn-action:hover {
+    border-color: var(--navy);
+    color: var(--navy);
+  }
+  .btn-action [data-lucide] {
+    width: 13px;
+    height: 13px;
+  }
+  .btn-action.approve {
+    background: var(--green);
+    color: var(--white);
+    border-color: var(--green);
+  }
+  .btn-action.approve:hover {
+    background: #047857;
+    border-color: #047857;
+    color: var(--white);
+  }
+  .btn-action.wa {
+    background: #25d366;
+    color: var(--white);
+    border-color: #25d366;
+  }
+  .btn-action.wa:hover {
+    background: #1ebe5b;
+    border-color: #1ebe5b;
+    color: var(--white);
+  }
+  .btn-action.reject {
+    color: var(--red);
+    border-color: var(--red-light);
+  }
+  .btn-action.reject:hover {
+    background: var(--red-light);
+    color: var(--red);
+  }
+
+  /* ===== EMPTY STATE ===== */
+  .empty-state {
+    background: var(--white);
+    border: 1px dashed var(--gray-300);
+    border-radius: 12px;
+    padding: 60px 24px;
+    text-align: center;
+    color: var(--gray-500);
+  }
+  .empty-state [data-lucide] {
+    width: 40px;
+    height: 40px;
+    color: var(--gray-300);
+    margin-bottom: 12px;
+  }
+  .empty-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--gray-700);
+    margin-bottom: 4px;
+  }
+  .empty-sub {
+    font-size: 13px;
+  }
+
+  /* ===== LOADING ===== */
+  .loading {
+    text-align: center;
+    padding: 60px;
+    color: var(--gray-500);
+    font-size: 13px;
+  }
+  .loading::before {
+    content: '';
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--gray-300);
+    border-top-color: var(--gold);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-right: 10px;
+    vertical-align: middle;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ===== MODAL ===== */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(8, 26, 51, 0.6);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+    padding: 24px;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal {
+    background: var(--white);
+    border-radius: 16px;
+    max-width: 480px;
+    width: 100%;
+    overflow: hidden;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.3);
+  }
+  .modal-header {
+    padding: 24px 28px;
+    border-bottom: 1px solid var(--gray-200);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .modal-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    color: var(--navy);
+    font-weight: 600;
+  }
+  .modal-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--gray-400);
+    padding: 4px;
+  }
+  .modal-body {
+    padding: 24px 28px;
+  }
+  .modal-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px dashed var(--gray-200);
+    font-size: 13px;
+  }
+  .modal-row:last-child { border-bottom: none; }
+  .modal-row .label { color: var(--gray-500); }
+  .modal-row .val { color: var(--navy); font-weight: 600; }
+  .modal-footer {
+    padding: 18px 28px;
+    background: var(--gray-50);
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+  .btn-modal {
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    border: 1px solid var(--gray-200);
+    background: var(--white);
+    color: var(--gray-700);
+  }
+  .btn-modal.primary {
+    background: var(--green);
+    color: var(--white);
+    border-color: var(--green);
+  }
+  .btn-modal.danger {
+    background: var(--red);
+    color: var(--white);
+    border-color: var(--red);
+  }
+
+  /* ===== TOAST ===== */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--navy);
+    color: var(--white);
+    padding: 14px 22px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 500;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transform: translateY(120px);
+    transition: transform 0.3s ease;
+    border-left: 4px solid var(--gold);
+  }
+  .toast.show { transform: translateY(0); }
+  .toast [data-lucide] { color: var(--gold); }
+  .toast.success { border-left-color: var(--green); }
+  .toast.success [data-lucide] { color: var(--green); }
+  .toast.error { border-left-color: var(--red); }
+  .toast.error [data-lucide] { color: var(--red); }
+
+  @media (max-width: 1100px) {
+    .stats-bar { grid-template-columns: repeat(3, 1fr); }
+    .agent-info { grid-template-columns: 1fr; gap: 14px; }
+    .agent-card { grid-template-columns: 1fr; }
+    .agent-actions { width: 100%; flex-wrap: wrap; }
+  }
+  @media (max-width: 600px) {
+    .stats-bar { grid-template-columns: repeat(2, 1fr); padding: 16px; gap: 14px; }
+    .container { padding: 16px; }
+    .toolbar { flex-direction: column; align-items: stretch; }
+    .search-box { max-width: none; }
+    .navbar { padding: 12px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOGIN GATE -->
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-box">
+    <div class="login-logo">AKP<span class="accent">Agenku</span></div>
+    <div class="login-sub">Admin Console</div>
+    <h2 class="login-title">Restricted Access</h2>
+    <p class="login-text">Enter admin password to continue.</p>
+    <input type="password" class="login-input" id="adminPassword" placeholder="Admin password" autofocus>
+    <button class="login-btn" onclick="checkLogin()">Sign In</button>
+    <div class="login-error" id="loginError">Incorrect password. Try again.</div>
+  </div>
+</div>
+
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar" style="display:none;" id="mainNav">
+  <div>
+    <span class="nav-logo">AKP<span class="accent">Agenku</span></span>
+    <span class="nav-tag">Admin</span>
+  </div>
+  <div class="nav-right">
+    <button class="nav-refresh" onclick="loadAgents()">
+      <i data-lucide="refresh-cw"></i>
+      Refresh
+    </button>
+    <button class="nav-logout" onclick="logout()">Sign Out</button>
+  </div>
+</nav>
+
+<!-- ===== STATS ===== -->
+<div class="stats-bar" id="statsBar" style="display:none;">
+  <div class="stat">
+    <div class="stat-label">Total Agen</div>
+    <div class="stat-value" id="statTotal">-</div>
+    <div class="stat-sub">All time</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">Pending Approval</div>
+    <div class="stat-value amber" id="statPending">-</div>
+    <div class="stat-sub">Belum dibayar</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">Active</div>
+    <div class="stat-value green" id="statActive">-</div>
+    <div class="stat-sub">Membayar aktif</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">MRR</div>
+    <div class="stat-value" id="statMRR">-</div>
+    <div class="stat-sub">Monthly recurring</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">H-5 Expiring</div>
+    <div class="stat-value red" id="statExpiring">-</div>
+    <div class="stat-sub">Perlu reminder</div>
+  </div>
+</div>
+
+<!-- ===== MAIN ===== -->
+<div class="container" id="mainContainer" style="display:none;">
+  <div class="toolbar">
+    <div class="search-box">
+      <i data-lucide="search"></i>
+      <input type="text" class="search-input" id="searchInput" placeholder="Cari nama, email, atau username..." oninput="renderAgents()">
+    </div>
+    <div class="tabs">
+      <button class="tab active" data-filter="pending" onclick="setFilter('pending', event)">
+        Pending <span class="tab-count" id="countPending">0</span>
+      </button>
+      <button class="tab" data-filter="active" onclick="setFilter('active', event)">
+        Active <span class="tab-count" id="countActive">0</span>
+      </button>
+      <button class="tab" data-filter="expired" onclick="setFilter('expired', event)">
+        Expired <span class="tab-count" id="countExpired">0</span>
+      </button>
+      <button class="tab" data-filter="rejected" onclick="setFilter('rejected', event)">
+        Rejected <span class="tab-count" id="countRejected">0</span>
+      </button>
+      <button class="tab" data-filter="all" onclick="setFilter('all', event)">
+        All <span class="tab-count" id="countAll">0</span>
+      </button>
+    </div>
+  </div>
+
+  <div id="agentList">
+    <div class="loading">Loading agents...</div>
+  </div>
+</div>
+
+<!-- ===== APPROVE MODAL ===== -->
+<div class="modal-overlay" id="approveModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Approve & Activate Agent</div>
+      <button class="modal-close" onclick="closeModal('approveModal')"><i data-lucide="x"></i></button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size: 13px; color: var(--gray-700); margin-bottom: 16px;">Activating account akan:</p>
+      <div class="modal-row">
+        <span class="label">Nama Agen</span>
+        <span class="val" id="modalAgentName">-</span>
+      </div>
+      <div class="modal-row">
+        <span class="label">Email</span>
+        <span class="val" id="modalAgentEmail">-</span>
+      </div>
+      <div class="modal-row">
+        <span class="label">Paket</span>
+        <span class="val" id="modalAgentPaket">-</span>
+      </div>
+      <div class="modal-row">
+        <span class="label">Set status</span>
+        <span class="val" style="color: var(--green)">active</span>
+      </div>
+      <div class="modal-row">
+        <span class="label">Masa aktif sampai</span>
+        <span class="val" id="modalUntilDate">-</span>
+      </div>
+      <div class="modal-row">
+        <span class="label">Log payment</span>
+        <span class="val">Rp 600.000 (BNI transfer)</span>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-modal" onclick="closeModal('approveModal')">Cancel</button>
+      <button class="btn-modal primary" onclick="confirmApprove()">
+        <i data-lucide="check" style="width:14px;height:14px;display:inline;vertical-align:middle;margin-right:4px;"></i>
+        Approve & Send Welcome
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== REJECT MODAL ===== -->
+<div class="modal-overlay" id="rejectModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Reject Application</div>
+      <button class="modal-close" onclick="closeModal('rejectModal')"><i data-lucide="x"></i></button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size: 13px; color: var(--gray-700);">Yakin reject signup ini? Status akan jadi <strong>rejected</strong>. Akun tidak dihapus, masih bisa di-restore nanti.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-modal" onclick="closeModal('rejectModal')">Cancel</button>
+      <button class="btn-modal danger" onclick="confirmReject()">Reject</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TOAST ===== -->
+<div class="toast" id="toast">
+  <i data-lucide="info"></i>
+  <span id="toastText">Message</span>
+</div>
+
+<script>
+// ===== CONFIG =====
+const SUPABASE_URL = 'https://bfydtsfekvueqzvuschp.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_3Xec3HYKViIiuX99hHxHqg_Ih8ABX_T';
+const ADMIN_PASSWORD = 'akpagenku2026'; // GANTI INI sebelum deploy!
+
+let supabase = null;
+let allAgents = [];
+let currentFilter = 'pending';
+let selectedAgentId = null;
+
+// ===== LOGIN =====
+function checkLogin() {
+  const pwd = document.getElementById('adminPassword').value;
+  if (pwd === ADMIN_PASSWORD) {
+    sessionStorage.setItem('admin_authenticated', 'true');
+    initApp();
+  } else {
+    document.getElementById('loginError').classList.add('show');
+    document.getElementById('adminPassword').value = '';
+  }
+}
+
+document.getElementById('adminPassword').addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') checkLogin();
+});
+
+function logout() {
+  sessionStorage.removeItem('admin_authenticated');
+  location.reload();
+}
+
+// ===== INIT =====
+function initApp() {
+  document.getElementById('loginOverlay').style.display = 'none';
+  document.getElementById('mainNav').style.display = 'flex';
+  document.getElementById('statsBar').style.display = 'grid';
+  document.getElementById('mainContainer').style.display = 'block';
+  supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  loadAgents();
+}
+
+// Check if previously logged in
+if (sessionStorage.getItem('admin_authenticated') === 'true') {
+  window.addEventListener('DOMContentLoaded', initApp);
+}
+
+// ===== LOAD DATA =====
+async function loadAgents() {
+  document.getElementById('agentList').innerHTML = '<div class="loading">Loading agents...</div>';
+  try {
+    const { data, error } = await supabase
+      .from('users')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    allAgents = data || [];
+    updateStats();
+    renderAgents();
+    showToast('Data refreshed', 'success');
+  } catch (err) {
+    console.error('Load error:', err);
+    showToast('Error loading data: ' + err.message, 'error');
+    document.getElementById('agentList').innerHTML = '<div class="empty-state"><i data-lucide="alert-circle"></i><div class="empty-title">Failed to load</div><div class="empty-sub">Check Supabase connection</div></div>';
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }
+}
+
+// ===== STATS =====
+function updateStats() {
+  const total = allAgents.length;
+  const pending = allAgents.filter(a => a.subscription_status === 'pending_approval' || a.subscription_status === 'pending_payment').length;
+  const active = allAgents.filter(a => a.subscription_status === 'active').length;
+  const rejected = allAgents.filter(a => a.subscription_status === 'rejected').length;
+  const expired = allAgents.filter(a => a.subscription_status === 'expired').length;
+
+  // MRR calculation
+  const mrr = allAgents
+    .filter(a => a.subscription_status === 'active')
+    .reduce((sum, a) => sum + (a.paket === 'team' ? 400000 : 600000), 0);
+
+  // H-5 expiring
+  const now = new Date();
+  const fiveDaysLater = new Date(now.getTime() + 5 * 24 * 60 * 60 * 1000);
+  const expiring = allAgents.filter(a => {
+    if (a.subscription_status !== 'active' || !a.masa_aktif_sampai) return false;
+    const until = new Date(a.masa_aktif_sampai);
+    return until > now && until <= fiveDaysLater;
+  }).length;
+
+  document.getElementById('statTotal').textContent = total;
+  document.getElementById('statPending').textContent = pending;
+  document.getElementById('statActive').textContent = active;
+  document.getElementById('statMRR').textContent = 'Rp ' + (mrr / 1000000).toFixed(1) + 'jt';
+  document.getElementById('statExpiring').textContent = expiring;
+
+  // Tab counts
+  document.getElementById('countPending').textContent = pending;
+  document.getElementById('countActive').textContent = active;
+  document.getElementById('countExpired').textContent = expired;
+  document.getElementById('countRejected').textContent = rejected;
+  document.getElementById('countAll').textContent = total;
+}
+
+// ===== FILTER =====
+function setFilter(filter, event) {
+  currentFilter = filter;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  renderAgents();
+}
+
+// ===== RENDER =====
+function renderAgents() {
+  const search = document.getElementById('searchInput').value.toLowerCase().trim();
+  const now = new Date();
+  const fiveDaysLater = new Date(now.getTime() + 5 * 24 * 60 * 60 * 1000);
+
+  let filtered = allAgents.filter(a => {
+    // Filter by tab
+    if (currentFilter === 'pending') {
+      if (a.subscription_status !== 'pending_approval' && a.subscription_status !== 'pending_payment') return false;
+    } else if (currentFilter === 'active') {
+      if (a.subscription_status !== 'active') return false;
+    } else if (currentFilter === 'expired') {
+      if (a.subscription_status !== 'expired') return false;
+    } else if (currentFilter === 'rejected') {
+      if (a.subscription_status !== 'rejected') return false;
+    }
+    // Search
+    if (search) {
+      const match = (a.nama_lengkap || '').toLowerCase().includes(search) ||
+                    (a.email || '').toLowerCase().includes(search) ||
+                    (a.username || '').toLowerCase().includes(search);
+      if (!match) return false;
+    }
+    return true;
+  });
+
+  const list = document.getElementById('agentList');
+  if (filtered.length === 0) {
+    list.innerHTML = `
+      <div class="empty-state">
+        <i data-lucide="inbox"></i>
+        <div class="empty-title">No agents found</div>
+        <div class="empty-sub">${search ? 'Try different search keywords' : 'No agents in this category yet'}</div>
+      </div>
+    `;
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+    return;
+  }
+
+  list.innerHTML = filtered.map(a => {
+    const isExpiring = a.subscription_status === 'active' && a.masa_aktif_sampai && new Date(a.masa_aktif_sampai) <= fiveDaysLater && new Date(a.masa_aktif_sampai) > now;
+    const cardClass = isExpiring ? 'expiring' : (
+      a.subscription_status === 'active' ? 'active' :
+      (a.subscription_status === 'pending_approval' || a.subscription_status === 'pending_payment') ? 'pending' :
+      a.subscription_status === 'expired' ? 'expired' :
+      a.subscription_status === 'rejected' ? 'rejected' : ''
+    );
+    const createdAt = a.created_at ? timeAgo(new Date(a.created_at)) : '-';
+    const untilDate = a.masa_aktif_sampai ? formatDate(new Date(a.masa_aktif_sampai)) : '-';
+    const daysLeft = a.masa_aktif_sampai ? Math.ceil((new Date(a.masa_aktif_sampai) - now) / (1000*60*60*24)) : null;
+
+    const statusBadge = (
+      a.subscription_status === 'active' ? '<span class="badge badge-active">Active</span>' :
+      a.subscription_status === 'pending_approval' ? '<span class="badge badge-pending">Pending</span>' :
+      a.subscription_status === 'pending_payment' ? '<span class="badge badge-pending">Awaiting Payment</span>' :
+      a.subscription_status === 'expired' ? '<span class="badge badge-expired">Expired</span>' :
+      a.subscription_status === 'rejected' ? '<span class="badge badge-rejected">Rejected</span>' : ''
+    );
+
+    const paketBadge = a.paket === 'team' ? '<span class="badge badge-team">Team</span>' : '';
+    const h5Badge = isExpiring ? `<span class="badge badge-h5">H-${daysLeft}</span>` : '';
+
+    const waMessage = encodeURIComponent(generateWAMessage(a));
+    const waNumber = (a.whatsapp || '').replace(/^0/, '62');
+
+    let actions = '';
+    if (a.subscription_status === 'pending_approval' || a.subscription_status === 'pending_payment') {
+      actions = `
+        <button class="btn-action approve" onclick="openApproveModal('${a.id}')">
+          <i data-lucide="check"></i> Approve
+        </button>
+        <a href="https://wa.me/${waNumber}?text=${waMessage}" target="_blank" class="btn-action wa">
+          <i data-lucide="message-circle"></i> WhatsApp
+        </a>
+        <button class="btn-action reject" onclick="openRejectModal('${a.id}')">
+          <i data-lucide="x"></i> Reject
+        </button>
+      `;
+    } else if (a.subscription_status === 'active') {
+      actions = `
+        <a href="https://wa.me/${waNumber}?text=${waMessage}" target="_blank" class="btn-action wa">
+          <i data-lucide="message-circle"></i> ${isExpiring ? 'Send Reminder' : 'WhatsApp'}
+        </a>
+        <button class="btn-action" onclick="extendActive('${a.id}')">
+          <i data-lucide="calendar-plus"></i> Extend
+        </button>
+      `;
+    } else if (a.subscription_status === 'expired') {
+      actions = `
+        <button class="btn-action approve" onclick="openApproveModal('${a.id}')">
+          <i data-lucide="refresh-cw"></i> Reactivate
+        </button>
+        <a href="https://wa.me/${waNumber}?text=${waMessage}" target="_blank" class="btn-action wa">
+          <i data-lucide="message-circle"></i> WhatsApp
+        </a>
+      `;
+    } else if (a.subscription_status === 'rejected') {
+      actions = `
+        <button class="btn-action" onclick="restoreAgent('${a.id}')">
+          <i data-lucide="undo"></i> Restore
+        </button>
+      `;
+    }
+
+    return `
+      <div class="agent-card ${cardClass}">
+        <div class="agent-info">
+          <div class="agent-primary">
+            <div class="agent-name">
+              ${escapeHtml(a.nama_lengkap)}
+              ${statusBadge}
+              ${paketBadge}
+              ${h5Badge}
+            </div>
+            <div class="agent-username">akpagenku.com/${escapeHtml(a.username)}</div>
+            <div class="agent-meta">
+              <span><i data-lucide="clock"></i>${createdAt}</span>
+              ${a.kota ? `<span><i data-lucide="map-pin"></i>${escapeHtml(a.kota)}</span>` : ''}
+              ${a.perusahaan ? `<span><i data-lucide="briefcase"></i>${escapeHtml(a.perusahaan)}</span>` : ''}
+            </div>
+          </div>
+          <div class="agent-detail">
+            <div class="detail-item">
+              <i data-lucide="mail"></i>
+              <span>${escapeHtml(a.email)}</span>
+            </div>
+            <div class="detail-item">
+              <i data-lucide="phone"></i>
+              <span>+62 ${escapeHtml(a.whatsapp || '-')}</span>
+            </div>
+          </div>
+          <div class="agent-status">
+            ${a.subscription_status === 'active' ? `
+              <div class="status-line">
+                <i data-lucide="calendar-check"></i>
+                <span class="status-active-until">Aktif sampai ${untilDate}</span>
+              </div>
+              ${isExpiring ? `<div class="h5-warning">⚠️ Expired dalam ${daysLeft} hari</div>` : ''}
+            ` : a.subscription_status === 'expired' ? `
+              <div class="status-line" style="color: var(--red)">
+                <i data-lucide="calendar-x"></i>
+                <span>Expired ${untilDate}</span>
+              </div>
+            ` : `
+              <div class="status-line">
+                <i data-lucide="hourglass"></i>
+                <span>Menunggu verifikasi</span>
+              </div>
+            `}
+          </div>
+        </div>
+        <div class="agent-actions">
+          ${actions}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+
+// ===== APPROVE =====
+function openApproveModal(agentId) {
+  selectedAgentId = agentId;
+  const agent = allAgents.find(a => a.id === agentId);
+  if (!agent) return;
+
+  const untilDate = new Date();
+  untilDate.setDate(untilDate.getDate() + 30);
+
+  document.getElementById('modalAgentName').textContent = agent.nama_lengkap;
+  document.getElementById('modalAgentEmail').textContent = agent.email;
+  document.getElementById('modalAgentPaket').textContent = agent.paket === 'team' ? 'Team (Rp 400.000)' : 'Solo (Rp 600.000)';
+  document.getElementById('modalUntilDate').textContent = formatDate(untilDate);
+
+  document.getElementById('approveModal').classList.add('show');
+}
+
+async function confirmApprove() {
+  if (!selectedAgentId) return;
+  const agent = allAgents.find(a => a.id === selectedAgentId);
+  if (!agent) return;
+
+  const untilDate = new Date();
+  untilDate.setDate(untilDate.getDate() + 30);
+  const now = new Date();
+  const amount = agent.paket === 'team' ? 400000 : 600000;
+
+  try {
+    // 1. Update user status
+    const { error: userError } = await supabase
+      .from('users')
+      .update({
+        subscription_status: 'active',
+        masa_aktif_sampai: untilDate.toISOString(),
+        approved_at: now.toISOString()
+      })
+      .eq('id', selectedAgentId);
+
+    if (userError) throw userError;
+
+    // 2. Insert payment log
+    const periodStart = now.toISOString().slice(0, 10);
+    const periodEnd = untilDate.toISOString().slice(0, 10);
+    const { error: paymentError } = await supabase
+      .from('payment_logs')
+      .insert({
+        user_id: selectedAgentId,
+        amount: amount,
+        method: 'transfer_bni',
+        periode_start: periodStart,
+        periode_end: periodEnd,
+        verified_at: now.toISOString(),
+        notes: 'Approved via admin dashboard'
+      });
+
+    if (paymentError) console.warn('Payment log error:', paymentError);
+
+    closeModal('approveModal');
+    showToast(`${agent.nama_lengkap} approved & activated`, 'success');
+
+    // 3. Auto-open WhatsApp with welcome message
+    const waMessage = encodeURIComponent(generateWelcomeMessage(agent));
+    const waNumber = (agent.whatsapp || '').replace(/^0/, '62');
+    setTimeout(() => {
+      window.open(`https://wa.me/${waNumber}?text=${waMessage}`, '_blank');
+    }, 500);
+
+    // Refresh data
+    await loadAgents();
+  } catch (err) {
+    console.error('Approve error:', err);
+    showToast('Approve failed: ' + err.message, 'error');
+  }
+}
+
+// ===== REJECT =====
+function openRejectModal(agentId) {
+  selectedAgentId = agentId;
+  document.getElementById('rejectModal').classList.add('show');
+}
+
+async function confirmReject() {
+  if (!selectedAgentId) return;
+  try {
+    const { error } = await supabase
+      .from('users')
+      .update({ subscription_status: 'rejected' })
+      .eq('id', selectedAgentId);
+    if (error) throw error;
+    closeModal('rejectModal');
+    showToast('Agent rejected', 'success');
+    await loadAgents();
+  } catch (err) {
+    showToast('Reject failed: ' + err.message, 'error');
+  }
+}
+
+// ===== EXTEND =====
+async function extendActive(agentId) {
+  const agent = allAgents.find(a => a.id === agentId);
+  if (!agent) return;
+  if (!confirm(`Extend masa aktif ${agent.nama_lengkap} +30 hari?`)) return;
+
+  const current = agent.masa_aktif_sampai ? new Date(agent.masa_aktif_sampai) : new Date();
+  if (current < new Date()) current.setTime(Date.now());
+  const newUntil = new Date(current.getTime() + 30 * 24 * 60 * 60 * 1000);
+  const amount = agent.paket === 'team' ? 400000 : 600000;
+
+  try {
+    const { error } = await supabase
+      .from('users')
+      .update({ masa_aktif_sampai: newUntil.toISOString() })
+      .eq('id', agentId);
+    if (error) throw error;
+
+    await supabase.from('payment_logs').insert({
+      user_id: agentId,
+      amount: amount,
+      method: 'transfer_bni',
+      periode_start: new Date().toISOString().slice(0, 10),
+      periode_end: newUntil.toISOString().slice(0, 10),
+      verified_at: new Date().toISOString(),
+      notes: 'Extended via admin dashboard'
+    });
+
+    showToast(`Extended until ${formatDate(newUntil)}`, 'success');
+    await loadAgents();
+  } catch (err) {
+    showToast('Extend failed: ' + err.message, 'error');
+  }
+}
+
+// ===== RESTORE =====
+async function restoreAgent(agentId) {
+  const agent = allAgents.find(a => a.id === agentId);
+  if (!agent) return;
+  if (!confirm(`Restore ${agent.nama_lengkap} ke status pending_approval?`)) return;
+  try {
+    const { error } = await supabase
+      .from('users')
+      .update({ subscription_status: 'pending_approval' })
+      .eq('id', agentId);
+    if (error) throw error;
+    showToast('Agent restored to pending', 'success');
+    await loadAgents();
+  } catch (err) {
+    showToast('Restore failed: ' + err.message, 'error');
+  }
+}
+
+// ===== MODAL =====
+function closeModal(id) {
+  document.getElementById(id).classList.remove('show');
+  selectedAgentId = null;
+}
+
+document.querySelectorAll('.modal-overlay').forEach(o => {
+  o.addEventListener('click', (e) => {
+    if (e.target === o) o.classList.remove('show');
+  });
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.modal-overlay.show').forEach(m => m.classList.remove('show'));
+  }
+});
+
+// ===== TOAST =====
+let toastTimer = null;
+function showToast(msg, type = 'info') {
+  const toast = document.getElementById('toast');
+  document.getElementById('toastText').textContent = msg;
+  toast.className = 'toast show ' + type;
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove('show'), 3500);
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+
+// ===== WA TEMPLATES =====
+function generateWAMessage(agent) {
+  if (agent.subscription_status === 'pending_approval' || agent.subscription_status === 'pending_payment') {
+    return `Halo ${agent.nama_panggilan || agent.nama_lengkap}, saya Ardi dari AKPAgenku 👋
+
+Terima kasih sudah daftar! Sebelum lanjut, saya verifikasi data:
+
+✓ Email: ${agent.email}
+✓ Username: ${agent.username}
+✓ Paket: ${agent.paket === 'team' ? 'Team' : 'Solo'}
+
+Untuk aktivasi, silakan transfer:
+💰 Nominal: Rp ${agent.paket === 'team' ? '400.000' : '600.000'}
+🏦 Bank: BNI
+🔢 No Rek: 0173196696
+👤 Atas Nama: Ardi Kemara Pradipta
+
+Kirim bukti transfer ke chat ini. Akun aktif dalam 1-2 jam setelah verifikasi.
+
+Terima kasih! 🙏`;
+  } else if (agent.subscription_status === 'active') {
+    const until = agent.masa_aktif_sampai ? new Date(agent.masa_aktif_sampai) : null;
+    const daysLeft = until ? Math.ceil((until - new Date()) / (1000*60*60*24)) : null;
+    if (daysLeft !== null && daysLeft <= 5) {
+      return `Halo ${agent.nama_panggilan || agent.nama_lengkap} 👋
+
+Reminder ya, masa aktif AKPAgenku Anda akan habis dalam ${daysLeft} hari (tanggal ${formatDate(until)}).
+
+Untuk perpanjang 1 bulan, transfer Rp ${agent.paket === 'team' ? '400.000' : '600.000'} ke:
+🏦 BNI 0173196696
+👤 a/n Ardi Kemara Pradipta
+
+Setelah transfer, kirim bukti ke chat ini.
+
+Performa lead bulan ini gimana? 🙏`;
+    }
+    return `Halo ${agent.nama_panggilan || agent.nama_lengkap}! 👋
+
+Mini-site Anda: akpagenku.com/${agent.username}
+Masa aktif: sampai ${formatDate(until)}
+
+Ada yang bisa dibantu?`;
+  } else if (agent.subscription_status === 'expired') {
+    return `Halo ${agent.nama_panggilan || agent.nama_lengkap},
+
+Masa aktif AKPAgenku Anda sudah berakhir.
+
+✅ Mini-site masih online 7 hari ke depan
+✅ Lead yang masuk masih tersimpan
+
+Untuk aktifkan kembali, transfer Rp ${agent.paket === 'team' ? '400.000' : '600.000'} ke:
+🏦 BNI 0173196696
+👤 a/n Ardi Kemara Pradipta
+
+Kalau ada kendala, chat saya langsung ya.`;
+  }
+  return `Halo ${agent.nama_panggilan || agent.nama_lengkap}, saya Ardi dari AKPAgenku.`;
+}
+
+function generateWelcomeMessage(agent) {
+  return `Selamat datang di AKPAgenku, ${agent.nama_panggilan || agent.nama_lengkap}! 🎉
+
+Transfer sudah diterima, akun Anda sudah AKTIF.
+
+🔑 Login: https://akpagenku.com/login.html
+📧 Email: ${agent.email}
+🌐 Mini-site Anda: akpagenku.com/${agent.username}
+
+📅 Masa aktif: 30 hari ke depan
+
+Langkah pertama yang saya rekomendasikan:
+
+1️⃣ Login & ganti password (Settings → Keamanan)
+2️⃣ Update profil lengkap (Settings → Profil)
+3️⃣ Customize mini-site Anda (Mini-site Editor)
+4️⃣ Test isi kuis di mini-site — lihat hasilnya di Lead & CRM
+
+Ada pertanyaan? Balas chat ini langsung.
+
+Selamat berkarya, semoga banyak lead masuk! 🚀`;
+}
+
+// ===== HELPERS =====
+function escapeHtml(text) {
+  if (!text) return '';
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+function timeAgo(date) {
+  const seconds = Math.floor((new Date() - date) / 1000);
+  if (seconds < 60) return seconds + ' detik lalu';
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return minutes + ' menit lalu';
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return hours + ' jam lalu';
+  const days = Math.floor(hours / 24);
+  if (days < 7) return days + ' hari lalu';
+  return formatDate(date);
+}
+
+function formatDate(date) {
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+  return date.getDate() + ' ' + months[date.getMonth()] + ' ' + date.getFullYear();
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+});
+</script>
+
+</body>
+</html>
