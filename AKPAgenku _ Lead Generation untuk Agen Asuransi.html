@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<!-- saved from url=(0042)file:///Users/AKP83/Downloads/index_1.html -->
+<html lang="id"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AKPAgenku | Lead Generation untuk Agen Asuransi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+<link href="./AKPAgenku _ Lead Generation untuk Agen Asuransi_files/css2" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0f2647;
+    --navy-light: #1e3a5f;
+    --navy-dark: #081a33;
+    --gold: #c9a961;
+    --gold-light: #d9bd7f;
+    --gold-dark: #a88a45;
+    --cream: #faf8f3;
+    --gray-50: #fafafa;
+    --gray-100: #f5f5f5;
+    --gray-200: #e5e5e5;
+    --gray-500: #737373;
+    --gray-700: #404040;
+    --gray-900: #171717;
+    --white: #ffffff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    color: var(--gray-900);
+    line-height: 1.6;
+    background: var(--white);
+  }
+
+  .container { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+  a { color: inherit; text-decoration: none; }
+
+  /* ===== NAVBAR ===== */
+  .navbar {
+    position: sticky; top: 0;
+    background: rgba(255,255,255,0.96);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--gray-200);
+    z-index: 100;
+  }
+  .nav-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 0;
+  }
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--navy);
+    letter-spacing: -0.3px;
+  }
+  .logo .accent { color: var(--gold); }
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    align-items: center;
+    font-size: 15px;
+  }
+  .nav-links a {
+    color: var(--gray-700);
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--navy); }
+  .nav-cta {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+  .btn-ghost { background: transparent; color: var(--navy); }
+  .btn-ghost:hover { background: var(--gray-100); }
+  .btn-primary {
+    background: var(--navy);
+    color: var(--white);
+  }
+  .btn-primary:hover {
+    background: var(--navy-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(15, 38, 71, 0.25);
+  }
+  .btn-outline {
+    background: transparent;
+    color: var(--navy);
+    border: 1.5px solid var(--navy);
+  }
+  .btn-outline:hover {
+    background: var(--navy);
+    color: var(--white);
+  }
+  .btn-lg {
+    padding: 14px 28px;
+    font-size: 15px;
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    position: relative;
+    padding: 80px 0 100px;
+    background: linear-gradient(180deg, var(--cream) 0%, var(--white) 100%);
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -100px;
+    right: -100px;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(201, 169, 97, 0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-inner {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 60px;
+    align-items: center;
+    position: relative;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(201, 169, 97, 0.12);
+    color: var(--gold-dark);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    margin-bottom: 24px;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 56px;
+    line-height: 1.1;
+    font-weight: 600;
+    color: var(--navy);
+    letter-spacing: -1px;
+    margin-bottom: 24px;
+  }
+  .hero h1 .gold {
+    color: var(--gold);
+    font-style: italic;
+  }
+  .hero-sub {
+    font-size: 18px;
+    color: var(--gray-700);
+    margin-bottom: 36px;
+    line-height: 1.7;
+  }
+  .hero-ctas {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+  }
+  .hero-trust {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 14px;
+    color: var(--gray-500);
+  }
+  .hero-trust .dot {
+    color: var(--gold);
+    font-size: 8px;
+  }
+
+  /* Hero Visual */
+  .hero-visual {
+    position: relative;
+    aspect-ratio: 4/5;
+    border-radius: 16px;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+    box-shadow: 0 30px 60px -20px rgba(15, 38, 71, 0.4);
+    padding: 36px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    color: var(--white);
+  }
+  .mock-browser {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+  }
+  .mock-url {
+    font-size: 11px;
+    font-family: 'SF Mono', monospace;
+    color: rgba(255,255,255,0.6);
+    padding: 6px 10px;
+    background: rgba(0,0,0,0.2);
+    border-radius: 6px;
+  }
+  .mock-content {
+    flex: 1;
+    background: var(--white);
+    border-radius: 6px;
+    padding: 16px;
+    color: var(--gray-900);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .mock-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+  }
+  .mock-h {
+    font-family: 'Playfair Display', serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--navy);
+    line-height: 1.3;
+  }
+  .mock-text {
+    height: 6px;
+    background: var(--gray-200);
+    border-radius: 3px;
+    width: 80%;
+  }
+  .mock-text.short { width: 60%; }
+  .mock-btn-small {
+    align-self: flex-start;
+    background: var(--navy);
+    color: var(--white);
+    font-size: 9px;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-weight: 600;
+    margin-top: 4px;
+  }
+  .floating-card {
+    position: absolute;
+    background: var(--white);
+    color: var(--gray-900);
+    padding: 12px 16px;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .floating-card .icon {
+    width: 32px;
+    height: 32px;
+    background: rgba(201, 169, 97, 0.15);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+  }
+  .floating-card .text {
+    font-weight: 600;
+    color: var(--navy);
+    font-size: 12px;
+  }
+  .floating-card .sub {
+    color: var(--gray-500);
+    font-size: 10px;
+    font-weight: 500;
+  }
+  .float-top { top: 60px; right: -20px; }
+  .float-bottom { bottom: 60px; left: -30px; }
+
+  /* ===== SECTION COMMON ===== */
+  .section { padding: 100px 0; }
+  .section-cream { background: var(--cream); }
+  .section-navy {
+    background: var(--navy);
+    color: var(--white);
+  }
+  .section-head { text-align: center; margin-bottom: 64px; }
+  .eyebrow {
+    color: var(--gold);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: block;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 42px;
+    font-weight: 600;
+    color: var(--navy);
+    line-height: 1.15;
+    margin-bottom: 18px;
+    letter-spacing: -0.5px;
+  }
+  .section-navy .section-title { color: var(--white); }
+  .section-sub {
+    font-size: 17px;
+    color: var(--gray-700);
+    max-width: 640px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+  .section-navy .section-sub { color: rgba(255,255,255,0.75); }
+
+  /* ===== PAIN POINTS ===== */
+  .pain-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+  }
+  .pain-card {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: 14px;
+    padding: 36px 32px;
+    transition: all 0.3s;
+  }
+  .pain-card:hover {
+    border-color: var(--gold);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px -10px rgba(15, 38, 71, 0.15);
+  }
+  .pain-card .icon {
+    width: 52px;
+    height: 52px;
+    background: linear-gradient(135deg, var(--cream) 0%, rgba(201,169,97,0.15) 100%);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  .pain-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 12px;
+    line-height: 1.3;
+  }
+  .pain-card p {
+    color: var(--gray-700);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* ===== FEATURES ===== */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+  .feature-card {
+    background: var(--white);
+    border-radius: 14px;
+    padding: 36px;
+    border: 1px solid var(--gray-200);
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+    transition: all 0.3s;
+  }
+  .feature-card:hover {
+    border-color: var(--navy);
+    box-shadow: 0 12px 28px -10px rgba(15, 38, 71, 0.15);
+  }
+  .feature-num {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    background: var(--navy);
+    color: var(--gold);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 600;
+  }
+  .feature-content h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    color: var(--navy);
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  .feature-content p {
+    color: var(--gray-700);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* ===== CARA KERJA ===== */
+  .step-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    position: relative;
+  }
+  .step-card {
+    text-align: center;
+    position: relative;
+  }
+  .step-num {
+    width: 64px;
+    height: 64px;
+    background: rgba(201, 169, 97, 0.15);
+    border: 2px solid var(--gold);
+    color: var(--gold);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0 auto 20px;
+  }
+  .step-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    color: var(--white);
+    margin-bottom: 12px;
+    font-weight: 600;
+  }
+  .step-card p {
+    color: rgba(255,255,255,0.7);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* ===== COMPARISON ===== */
+  .compare-table {
+    background: var(--white);
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid var(--gray-200);
+    box-shadow: 0 4px 14px rgba(15, 38, 71, 0.06);
+  }
+  .compare-row {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr;
+    align-items: center;
+  }
+  .compare-row.head {
+    background: var(--navy);
+    color: var(--white);
+  }
+  .compare-row.head .col {
+    padding: 22px 28px;
+    font-weight: 600;
+    font-size: 15px;
+  }
+  .compare-row.head .col-gold {
+    background: var(--gold);
+    color: var(--navy);
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+  }
+  .compare-row .col {
+    padding: 20px 28px;
+    font-size: 15px;
+    color: var(--gray-700);
+    border-top: 1px solid var(--gray-200);
+  }
+  .compare-row:nth-child(2) .col { border-top: none; }
+  .compare-row .col-feature {
+    font-weight: 600;
+    color: var(--navy);
+    background: var(--gray-50);
+  }
+  .compare-row .col-them { color: var(--gray-500); }
+  .compare-row .col-us {
+    color: var(--navy);
+    font-weight: 600;
+    background: rgba(201, 169, 97, 0.05);
+  }
+  .compare-row .col-us::before {
+    content: "✓ ";
+    color: var(--gold);
+    font-weight: 700;
+  }
+
+  /* ===== PRICING ===== */
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 28px;
+    max-width: 880px;
+    margin: 0 auto;
+  }
+  .price-card {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: 16px;
+    padding: 40px 36px;
+    position: relative;
+    transition: all 0.3s;
+  }
+  .price-card.featured {
+    border: 2px solid var(--gold);
+    box-shadow: 0 20px 40px -10px rgba(201, 169, 97, 0.25);
+  }
+  .price-badge {
+    position: absolute;
+    top: -12px;
+    right: 28px;
+    background: var(--gold);
+    color: var(--navy);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .price-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    color: var(--navy);
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  .price-card .subtitle {
+    color: var(--gray-500);
+    font-size: 14px;
+    margin-bottom: 24px;
+  }
+  .price-amount {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-bottom: 28px;
+  }
+  .price-amount .currency {
+    font-size: 18px;
+    color: var(--gray-700);
+    font-weight: 500;
+  }
+  .price-amount .number {
+    font-family: 'Playfair Display', serif;
+    font-size: 48px;
+    font-weight: 600;
+    color: var(--navy);
+    letter-spacing: -1px;
+  }
+  .price-amount .period {
+    color: var(--gray-500);
+    font-size: 15px;
+  }
+  .price-features {
+    list-style: none;
+    margin-bottom: 32px;
+  }
+  .price-features li {
+    padding: 10px 0;
+    color: var(--gray-700);
+    font-size: 14px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .price-features li::before {
+    content: "✓";
+    color: var(--gold);
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .price-card .btn { width: 100%; justify-content: center; }
+
+  /* ===== CTA FINAL ===== */
+  .cta-final {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+    color: var(--white);
+    padding: 100px 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-final::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 30% 50%, rgba(201, 169, 97, 0.15) 0%, transparent 50%);
+  }
+  .cta-final h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 48px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    line-height: 1.15;
+    letter-spacing: -0.5px;
+    position: relative;
+  }
+  .cta-final h2 .gold-italic {
+    color: var(--gold);
+    font-style: italic;
+  }
+  .cta-final p {
+    font-size: 18px;
+    color: rgba(255,255,255,0.8);
+    max-width: 600px;
+    margin: 0 auto 36px;
+    line-height: 1.7;
+    position: relative;
+  }
+  .cta-final-btns {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+    position: relative;
+  }
+  .btn-gold {
+    background: var(--gold);
+    color: var(--navy);
+  }
+  .btn-gold:hover {
+    background: var(--gold-light);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(201, 169, 97, 0.4);
+  }
+  .btn-ghost-white {
+    background: transparent;
+    color: var(--white);
+    border: 1.5px solid rgba(255,255,255,0.3);
+  }
+  .btn-ghost-white:hover {
+    border-color: var(--white);
+    background: rgba(255,255,255,0.05);
+  }
+
+  /* ===== FOOTER ===== */
+  footer {
+    background: var(--navy-dark);
+    color: rgba(255,255,255,0.6);
+    padding: 60px 0 30px;
+  }
+  .footer-inner {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 40px;
+  }
+  .footer-brand .logo {
+    color: var(--white);
+    margin-bottom: 12px;
+    display: inline-block;
+  }
+  .footer-brand p {
+    font-size: 14px;
+    line-height: 1.7;
+    max-width: 320px;
+  }
+  .footer-col h4 {
+    color: var(--white);
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    letter-spacing: 0.3px;
+  }
+  .footer-col a {
+    display: block;
+    color: rgba(255,255,255,0.6);
+    font-size: 14px;
+    padding: 6px 0;
+    transition: color 0.2s;
+  }
+  .footer-col a:hover { color: var(--gold); }
+  .footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 24px;
+    text-align: center;
+    font-size: 13px;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 900px) {
+    .hero-inner { grid-template-columns: 1fr; gap: 40px; }
+    .hero h1 { font-size: 40px; }
+    .pain-grid { grid-template-columns: 1fr; }
+    .features-grid { grid-template-columns: 1fr; }
+    .step-grid { grid-template-columns: 1fr; }
+    .pricing-grid { grid-template-columns: 1fr; }
+    .compare-row { grid-template-columns: 1fr; }
+    .compare-row .col { padding: 16px 20px; }
+    .compare-row .col-feature { border-top: 2px solid var(--gold); }
+    .section-title { font-size: 32px; }
+    .cta-final h2 { font-size: 34px; }
+    .footer-inner { grid-template-columns: 1fr 1fr; }
+    .nav-links { display: none; }
+    .floating-card { display: none; }
+    .section { padding: 60px 0; }
+    .hero { padding: 50px 0 70px; }
+  }
+
+  @media (max-width: 540px) {
+    .footer-inner { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 32px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar">
+  <div class="container">
+    <div class="nav-inner">
+      <div class="logo">AKP<span class="accent">Agenku</span></div>
+      <div class="nav-links">
+        <a href="file:///Users/AKP83/Downloads/index_1.html#fitur">Fitur</a>
+        <a href="file:///Users/AKP83/Downloads/index_1.html#cara-kerja">Cara Kerja</a>
+        <a href="file:///Users/AKP83/Downloads/index_1.html#harga">Harga</a>
+        <a href="file:///Users/AKP83/Downloads/index_1.html#faq">FAQ</a>
+      </div>
+      <div class="nav-cta">
+        <a class="btn btn-ghost">Masuk</a>
+        <a class="btn btn-primary">Daftar</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-inner">
+      <div>
+        <span class="hero-badge">★ Khusus Agen Asuransi Indonesia</span>
+        <h1>Prospek Datang Sendiri.<br><span class="gold">Tanpa Hardsell.</span></h1>
+        <p class="hero-sub">
+          AKPAgenku adalah sistem lead generation <strong>Done-for-You</strong> khusus agen asuransi.
+          Mini-site, konten edukasi, dan lead magnet. Semuanya sudah disiapkan.
+          Anda fokus aja closing.
+        </p>
+        <div class="hero-ctas">
+          <a class="btn btn-primary btn-lg">Daftar Sekarang →</a>
+        </div>
+        <div class="hero-trust">
+          <span>✦ Tanpa kartu kredit</span>
+          <span class="dot">●</span>
+          <span>✦ Setup 30 menit</span>
+          <span class="dot">●</span>
+          <span>✦ Cancel kapan saja</span>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="mock-browser">
+          <div class="mock-url">akpagenku.com/christine</div>
+          <div class="mock-content">
+            <div class="mock-avatar"></div>
+            <div class="mock-h">Edukasi Asuransi untuk Keluarga Indonesia</div>
+            <div class="mock-text"></div>
+            <div class="mock-text short"></div>
+            <div class="mock-btn-small">Cek Skor Kesehatan Keuangan →</div>
+          </div>
+        </div>
+        <div class="floating-card float-top">
+          <div class="icon">📬</div>
+          <div>
+            <div class="text">3 lead baru</div>
+            <div class="sub">hari ini</div>
+          </div>
+        </div>
+        <div class="floating-card float-bottom">
+          <div class="icon">✓</div>
+          <div>
+            <div class="text">Closing #12</div>
+            <div class="sub">bulan ini</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PAIN POINTS ===== -->
+<section class="section section-cream">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Familiar?</span>
+      <h2 class="section-title">Tantangan yang Mungkin Anda Rasakan</h2>
+      <p class="section-sub">
+        Network keluarga sudah habis. Iklan asuransi sulit lolos di platform digital. Pesan langsung di WA sering tidak dibalas.
+      </p>
+    </div>
+
+    <div class="pain-grid">
+      <div class="pain-card">
+        <div class="icon">🎯</div>
+        <h3>Susah Dapat Lead Baru</h3>
+        <p>Network keluarga &amp; kenalan sudah habis. Cold call jarang dijawab. Iklan asuransi sulit lolos di platform digital. Dari mana lagi cari prospek?</p>
+      </div>
+      <div class="pain-card">
+        <div class="icon">📝</div>
+        <h3>Konten = Beban Tambahan</h3>
+        <p>Tahu harus posting edukasi, tapi tidak ada waktu menulis. Posting jualan, audiens berkurang. Posting jarang, akun jadi mati.</p>
+      </div>
+      <div class="pain-card">
+        <div class="icon">💬</div>
+        <h3>Lead Hilang Karena Lupa</h3>
+        <p>Chat numpuk di WA. Lupa follow-up. Prospek panas jadi dingin. Closing yang harusnya bisa, lewat begitu saja.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FITUR ===== -->
+<section class="section" id="fitur">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Yang Anda Dapat</span>
+      <h2 class="section-title">Semua yang Anda Butuhkan,<br>Sudah Disiapkan</h2>
+      <p class="section-sub">
+        Tidak perlu jadi marketer, content creator, atau ngerti coding.
+        Tinggal pilih, tinggal pakai.
+      </p>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-num">01</div>
+        <div class="feature-content">
+          <h3>Mini-site Profesional</h3>
+          <p>Landing page Anda di <strong>akpagenku.com/[nama-anda]</strong>. Tampilan profesional, mobile-friendly, langsung jadi 30 menit setelah daftar.</p>
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-num">02</div>
+        <div class="feature-content">
+          <h3>Library Konten Edukasi</h3>
+          <p>Puluhan artikel edukasi &amp; post sosmed siap pakai. Tinggal pilih, tinggal share. Bahasa simpel, tanpa jargon ribet.</p>
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-num">03</div>
+        <div class="feature-content">
+          <h3>Lead Magnet Otomatis</h3>
+          <p>Kuis Skor Kesehatan Keuangan &amp; kalkulator yang nangkap data prospek 24/7. Calon nasabah dapat insight, Anda dapat lead.</p>
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-num">04</div>
+        <div class="feature-content">
+          <h3>Dashboard Kelola Lead</h3>
+          <p>Semua prospek terdata rapi. Lihat funnel: prospek → engaged → closing → closed. Nggak ada yang kelewat.</p>
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-num">05</div>
+        <div class="feature-content">
+          <h3>Dashboard Team (Leader)</h3>
+          <p>Punya downline? Pantau performa team Anda dari 1 tempat. Tau siapa produktif, siapa perlu dibantu.</p>
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-num">06</div>
+        <div class="feature-content">
+          <h3>Edukasi-First Approach</h3>
+          <p>Posisi Anda berubah: dari "agen yang nawarin produk" menjadi <strong>edukator yang dipercaya</strong>. Closing jadi lebih mudah.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CARA KERJA ===== -->
+<section class="section section-navy" id="cara-kerja">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Simpel</span>
+      <h2 class="section-title">3 Langkah, Anda Siap Jalan</h2>
+      <p class="section-sub">
+        Dari daftar sampai prospek pertama masuk: kurang dari 1 hari.
+      </p>
+    </div>
+
+    <div class="step-grid">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <h3>Daftar &amp; Bayar</h3>
+        <p>Pilih paket Solo atau Team. Bayar, langsung dapat akses dashboard agen.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <h3>Setup Mini-site</h3>
+        <p>Pilih artikel, produk, dan lead magnet yang cocok dengan target Anda. Mini-site otomatis jadi.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <h3>Sebarkan, Terima Lead</h3>
+        <p>Share link mini-site ke WA, Instagram, Facebook. Lead masuk otomatis ke dashboard.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PEMBEDA ===== -->
+<section class="section section-cream">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Pembeda</span>
+      <h2 class="section-title">Bukan Sekadar Tools. Ini Sistem.</h2>
+      <p class="section-sub">
+        Wix, Carrd, Linktree cuma kasih tools. Kami kasih hasil jadi.
+      </p>
+    </div>
+
+    <div class="compare-table">
+      <div class="compare-row head">
+        <div class="col">Fitur</div>
+        <div class="col">Tools Lain</div>
+        <div class="col col-gold">AKPAgenku</div>
+      </div>
+      <div class="compare-row">
+        <div class="col col-feature">Pendekatan</div>
+        <div class="col col-them">Do-it-yourself</div>
+        <div class="col col-us">Done-for-You</div>
+      </div>
+      <div class="compare-row">
+        <div class="col col-feature">Khusus untuk</div>
+        <div class="col col-them">Generic, semua industri</div>
+        <div class="col col-us">Agen asuransi Indonesia</div>
+      </div>
+      <div class="compare-row">
+        <div class="col col-feature">Konten</div>
+        <div class="col col-them">Mikir sendiri</div>
+        <div class="col col-us">Library siap pakai</div>
+      </div>
+      <div class="compare-row">
+        <div class="col col-feature">Setup</div>
+        <div class="col col-them">Berhari-hari</div>
+        <div class="col col-us">30 menit</div>
+      </div>
+      <div class="compare-row">
+        <div class="col col-feature">CRM Lead</div>
+        <div class="col col-them">Tidak ada</div>
+        <div class="col col-us">Built-in, dashboard funnel</div>
+      </div>
+      <div class="compare-row">
+        <div class="col col-feature">Fitur Team</div>
+        <div class="col col-them">Tidak ada</div>
+        <div class="col col-us">Leader dashboard</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== HARGA ===== -->
+<section class="section" id="harga">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Investasi</span>
+      <h2 class="section-title">Harga yang Masuk Akal</h2>
+      <p class="section-sub">
+        Lebih murah dari budget iklan 3 hari. Tapi efeknya bisa ngubah cara kerja Anda selamanya.
+      </p>
+    </div>
+
+    <div class="pricing-grid">
+      <div class="price-card">
+        <h3>Solo</h3>
+        <p class="subtitle">Untuk agen individual</p>
+        <div class="price-amount">
+          <span class="currency">Rp</span>
+          <span class="number">600rb</span>
+          <span class="period">/ bulan</span>
+        </div>
+        <ul class="price-features">
+          <li>Mini-site profesional di akpagenku.com/[nama]</li>
+          <li>Akses penuh library konten edukasi</li>
+          <li>Semua lead magnet (kuis &amp; kalkulator)</li>
+          <li>Dashboard kelola lead</li>
+          <li>Email &amp; WhatsApp notifikasi lead</li>
+          <li>Update konten tiap bulan</li>
+        </ul>
+        <a class="btn btn-outline btn-lg">Mulai dengan Solo</a>
+      </div>
+
+      <div class="price-card featured">
+        <div class="price-badge">Best Value</div>
+        <h3>Team</h3>
+        <p class="subtitle">Untuk leader &amp; downline (min. 5 agen)</p>
+        <div class="price-amount">
+          <span class="currency">Rp</span>
+          <span class="number">400rb</span>
+          <span class="period">/ agen / bulan</span>
+        </div>
+        <ul class="price-features">
+          <li>Semua yang ada di paket Solo</li>
+          <li>Dashboard team: lihat performa downline</li>
+          <li>Funnel team: prospek, engaged, closing, closed</li>
+          <li>1 billing untuk seluruh team</li>
+          <li>Onboarding prioritas untuk leader</li>
+          <li>Hemat 33% per agen</li>
+        </ul>
+        <a class="btn btn-primary btn-lg">Daftar Team</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CTA FINAL ===== -->
+<section class="cta-final">
+  <div class="container">
+    <h2>Saatnya Prospek <span class="gold-italic">Datang ke Anda</span></h2>
+    <p>
+      Anda sudah cukup capek mengejar. Saatnya jadi edukator yang dipercaya
+      dan biarkan calon nasabah datang sendiri.
+    </p>
+    <div class="cta-final-btns">
+      <a class="btn btn-gold btn-lg">Daftar Sekarang</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="logo">AKP<span style="color:var(--gold)">Agenku</span></div>
+        <p>Sistem lead generation Done-for-You khusus agen asuransi Indonesia. Edukasi-first, hasil terbukti.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Produk</h4>
+        <a>Fitur</a>
+        <a>Harga</a>
+        <a>Demo</a>
+        <a>FAQ</a>
+      </div>
+      <div class="footer-col">
+        <h4>Perusahaan</h4>
+        <a>Tentang Kami</a>
+        <a>Blog</a>
+        <a>Kontak</a>
+        <a>Karir</a>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <a>Syarat &amp; Ketentuan</a>
+        <a>Kebijakan Privasi</a>
+        <a>Refund Policy</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      © 2026 AKPAgenku. Dibuat dengan ❤ untuk agen asuransi Indonesia.
+    </div>
+  </div>
+</footer>
+
+
+
+</body></html>
