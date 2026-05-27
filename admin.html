@@ -1184,10 +1184,31 @@ async function confirmApprove() {
 
     if (paymentError) console.warn('Payment log error:', paymentError);
 
-    closeModal('approveModal');
-    showToast(`${agent.nama_lengkap} approved & activated`, 'success');
+    // 3. Send approved email (non-blocking)
+    fetch(`${SUPABASE_URL}/functions/v1/send-approved-email`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: agent.email,
+        nama_lengkap: agent.nama_lengkap,
+        username: agent.username,
+        whatsapp: agent.whatsapp,
+        paket: agent.paket,
+        masa_aktif_sampai: untilDate.toISOString()
+      })
+    }).then(r => {
+      console.log('[AKP Admin] Approved email status:', r.status);
+    }).catch(err => {
+      console.error('[AKP Admin] Approved email error:', err);
+    });
 
-    // 3. Auto-open WhatsApp with welcome message
+    closeModal('approveModal');
+    showToast(`${agent.nama_lengkap} approved & email sent`, 'success');
+
+    // 4. Auto-open WhatsApp with welcome message
     const waMessage = encodeURIComponent(generateWelcomeMessage(agent));
     const waNumber = (agent.whatsapp || '').replace(/^0/, '62');
     setTimeout(() => {
