@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Konten Library | AKPAgenku</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  :root {
+    --navy: #0f2647;
+    --navy-light: #1e3a5f;
+    --navy-dark: #081a33;
+    --gold: #c9a961;
+    --gold-light: #d9bd7f;
+    --gold-dark: #a88a45;
+    --cream: #faf8f3;
+    --gray-50: #fafafa;
+    --gray-100: #f5f5f5;
+    --gray-200: #e5e5e5;
+    --gray-300: #d4d4d4;
+    --gray-500: #737373;
+    --gray-700: #404040;
+    --gray-900: #171717;
+    --white: #ffffff;
+    --green: #059669;
+    --blue: #2563eb;
+    --pink: #ec4899;
+    --purple: #7c3aed;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    color: var(--gray-900);
+    line-height: 1.5;
+    background: var(--gray-50);
+    min-height: 100vh;
+  }
+  a { color: inherit; text-decoration: none; }
+  [data-lucide] { stroke-width: 2; flex-shrink: 0; }
+
+  /* ===== LAYOUT ===== */
+  .layout {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    min-height: 100vh;
+  }
+
+  /* ===== SIDEBAR ===== */
+  .sidebar {
+    background: var(--navy);
+    color: var(--white);
+    padding: 24px 0;
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+  }
+  .sidebar-brand {
+    padding: 0 24px 24px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    margin-bottom: 16px;
+  }
+  .sidebar-brand .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--white);
+  }
+  .sidebar-brand .logo .accent { color: var(--gold); }
+  .sidebar-brand .sub {
+    font-size: 11px;
+    color: rgba(255,255,255,0.5);
+    margin-top: 4px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .nav-section { flex: 1; padding: 0 12px; }
+  .nav-label {
+    font-size: 10px;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 12px 16px 8px;
+    font-weight: 600;
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 16px;
+    color: rgba(255,255,255,0.75);
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    margin-bottom: 2px;
+  }
+  .nav-item:hover {
+    background: rgba(255,255,255,0.06);
+    color: var(--white);
+  }
+  .nav-item.active {
+    background: rgba(201, 169, 97, 0.15);
+    color: var(--gold);
+    border-left: 3px solid var(--gold);
+    padding-left: 13px;
+  }
+  .nav-item [data-lucide] { width: 18px; height: 18px; }
+
+  .user-card {
+    margin: 16px 12px;
+    padding: 14px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .user-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    color: var(--navy);
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+  .user-info { flex: 1; min-width: 0; }
+  .user-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--white);
+  }
+  .user-plan {
+    font-size: 11px;
+    color: var(--gold);
+    margin-top: 1px;
+  }
+
+  /* ===== MAIN ===== */
+  .main { padding: 32px 36px; overflow-x: hidden; }
+
+  /* ===== HEADER ===== */
+  .page-header {
+    margin-bottom: 28px;
+  }
+  .page-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 30px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 6px;
+    letter-spacing: -0.5px;
+  }
+  .page-sub {
+    color: var(--gray-700);
+    font-size: 14px;
+  }
+
+  /* ===== FILTER BAR ===== */
+  .filter-bar {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: 14px;
+    padding: 18px 22px;
+    margin-bottom: 28px;
+    display: flex;
+    gap: 24px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .filter-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .filter-label {
+    font-size: 12px;
+    color: var(--gray-500);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .filter-tabs {
+    display: inline-flex;
+    background: var(--gray-100);
+    border-radius: 8px;
+    padding: 3px;
+  }
+  .filter-tab {
+    background: transparent;
+    border: none;
+    color: var(--gray-700);
+    padding: 7px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .filter-tab [data-lucide] { width: 14px; height: 14px; }
+  .filter-tab:hover { color: var(--navy); }
+  .filter-tab.active {
+    background: var(--white);
+    color: var(--navy);
+    box-shadow: 0 2px 6px rgba(15, 38, 71, 0.08);
+  }
+
+  .filter-pill {
+    background: var(--white);
+    border: 1.5px solid var(--gray-200);
+    color: var(--gray-700);
+    padding: 7px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+  .filter-pill:hover { border-color: var(--gold); color: var(--navy); }
+  .filter-pill.active {
+    background: var(--navy);
+    color: var(--white);
+    border-color: var(--navy);
+  }
+  .search-box {
+    margin-left: auto;
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  .search-input {
+    background: var(--gray-50);
+    border: 1.5px solid var(--gray-200);
+    border-radius: 8px;
+    padding: 9px 14px 9px 36px;
+    font-size: 13px;
+    font-family: inherit;
+    width: 240px;
+    transition: all 0.15s;
+  }
+  .search-input:focus {
+    outline: none;
+    border-color: var(--gold);
+    background: var(--white);
+  }
+  .search-icon {
+    position: absolute;
+    left: 12px;
+    color: var(--gray-500);
+    pointer-events: none;
+  }
+  .search-icon [data-lucide] { width: 15px; height: 15px; }
+
+  /* ===== STATS BAR ===== */
+  .stats-bar {
+    display: flex;
+    gap: 18px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+  .stat-mini {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: 10px;
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    min-width: 200px;
+  }
+  .stat-mini-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .stat-mini-icon [data-lucide] { width: 18px; height: 18px; }
+  .stat-mini-icon.pink { background: #fce7f3; color: var(--pink); }
+  .stat-mini-icon.purple { background: #ede9fe; color: var(--purple); }
+  .stat-mini-icon.green { background: #d1fae5; color: var(--green); }
+  .stat-mini-icon.blue { background: #dbeafe; color: var(--blue); }
+  .stat-mini-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1;
+  }
+  .stat-mini-label {
+    font-size: 11px;
+    color: var(--gray-500);
+    margin-top: 2px;
+  }
+
+  /* ===== MASONRY GRID ===== */
+  .masonry {
+    column-count: 4;
+    column-gap: 18px;
+  }
+  .masonry-item {
+    break-inside: avoid;
+    margin-bottom: 18px;
+    display: inline-block;
+    width: 100%;
+  }
+  .content-card {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: 14px;
+    overflow: hidden;
+    transition: all 0.25s;
+    cursor: pointer;
+    position: relative;
+  }
+  .content-card:hover {
+    border-color: var(--gold);
+    transform: translateY(-4px);
+    box-shadow: 0 18px 32px -14px rgba(15, 38, 71, 0.18);
+  }
+
+  /* Card thumbnail with gradient as placeholder */
+  .card-thumb {
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+    text-align: center;
+    padding: 24px;
+  }
+  /* Aspect ratios per type */
+  .card-thumb.story { aspect-ratio: 9/16; }
+  .card-thumb.feed { aspect-ratio: 1/1; }
+
+  /* Gradient styles for thumbnails (placeholder for real images) */
+  .grad-1 { background: linear-gradient(135deg, #0f2647 0%, #1e3a5f 100%); }
+  .grad-2 { background: linear-gradient(135deg, #c9a961 0%, #a88a45 100%); }
+  .grad-3 { background: linear-gradient(135deg, #ec4899 0%, #be185d 100%); }
+  .grad-4 { background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%); }
+  .grad-5 { background: linear-gradient(135deg, #059669 0%, #047857 100%); }
+  .grad-6 { background: linear-gradient(135deg, #2563eb 0%, #1e3a8a 100%); }
+  .grad-7 { background: linear-gradient(135deg, #ea580c 0%, #9a3412 100%); }
+  .grad-8 { background: linear-gradient(135deg, #475569 0%, #1e293b 100%); }
+  .grad-cream { background: linear-gradient(135deg, #faf8f3 0%, #e8dcc0 100%); color: var(--navy); }
+  .grad-cream .thumb-quote { color: var(--navy); }
+  .grad-cream .thumb-author { color: var(--gold-dark); }
+  .grad-cream .thumb-tag-label { color: var(--gold-dark); }
+
+  /* Thumbnail content overlay */
+  .thumb-tag-label {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.7);
+  }
+  .thumb-type-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(255,255,255,0.18);
+    backdrop-filter: blur(8px);
+    color: var(--white);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 12px;
+    letter-spacing: 0.5px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .thumb-type-badge [data-lucide] { width: 11px; height: 11px; }
+  .grad-cream .thumb-type-badge {
+    background: rgba(15, 38, 71, 0.1);
+    color: var(--navy);
+  }
+
+  .thumb-quote {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.3;
+    margin-bottom: 12px;
+    color: var(--white);
+  }
+  .thumb-quote.big {
+    font-size: 22px;
+  }
+  .thumb-stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 40px;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 8px;
+    color: var(--gold);
+  }
+  .thumb-stat-label {
+    font-size: 11px;
+    color: rgba(255,255,255,0.8);
+    line-height: 1.4;
+  }
+  .thumb-author {
+    font-size: 11px;
+    color: rgba(255,255,255,0.65);
+    margin-top: 8px;
+    letter-spacing: 0.5px;
+  }
+  .thumb-cta {
+    margin-top: 14px;
+    display: inline-block;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(8px);
+    color: var(--white);
+    padding: 6px 14px;
+    border-radius: 16px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .grad-cream .thumb-cta {
+    background: var(--navy);
+    color: var(--white);
+  }
+  .thumb-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 14px;
+  }
+  .thumb-icon [data-lucide] { width: 28px; height: 28px; color: var(--white); }
+
+  /* Card body */
+  .card-body {
+    padding: 14px 16px;
+  }
+  .card-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--navy);
+    line-height: 1.4;
+    margin-bottom: 6px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .card-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+  }
+  .card-tag {
+    display: inline-block;
+    background: var(--cream);
+    color: var(--gold-dark);
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.3px;
+  }
+  .download-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--navy);
+    color: var(--white);
+    border: none;
+    padding: 7px 12px;
+    border-radius: 7px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+  }
+  .download-btn [data-lucide] { width: 12px; height: 12px; }
+  .download-btn:hover {
+    background: var(--navy-dark);
+    transform: translateY(-1px);
+  }
+  .download-btn.downloaded {
+    background: var(--green);
+  }
+
+  /* Hover overlay on card thumb */
+  .card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.6) 100%);
+    opacity: 0;
+    transition: opacity 0.25s;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    padding: 12px;
+  }
+  .content-card:hover .card-overlay { opacity: 1; }
+  .overlay-actions {
+    display: flex;
+    gap: 6px;
+  }
+  .overlay-btn {
+    background: rgba(255,255,255,0.95);
+    color: var(--navy);
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+  }
+  .overlay-btn:hover {
+    background: var(--white);
+    transform: scale(1.1);
+  }
+  .overlay-btn [data-lucide] { width: 16px; height: 16px; }
+
+  /* ===== TOAST NOTIFICATION ===== */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--navy);
+    color: var(--white);
+    padding: 14px 22px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    box-shadow: 0 12px 30px rgba(15, 38, 71, 0.3);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    transition: transform 0.3s;
+    z-index: 1000;
+  }
+  .toast [data-lucide] { width: 16px; height: 16px; color: var(--gold); }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 1400px) {
+    .masonry { column-count: 3; }
+  }
+  @media (max-width: 1000px) {
+    .masonry { column-count: 2; }
+    .stats-bar { flex-wrap: wrap; }
+  }
+  @media (max-width: 768px) {
+    .layout { grid-template-columns: 1fr; }
+    .sidebar {
+      position: relative;
+      height: auto;
+      padding: 16px 0;
+    }
+    .nav-section { display: flex; overflow-x: auto; padding: 0 12px; }
+    .nav-label { display: none; }
+    .nav-item { white-space: nowrap; margin-right: 4px; }
+    .user-card { margin: 12px; }
+    .main { padding: 22px 18px; }
+    .page-title { font-size: 24px; }
+    .filter-bar { padding: 14px; gap: 14px; }
+    .search-box { margin-left: 0; width: 100%; }
+    .search-input { width: 100%; }
+    .masonry { column-count: 1; }
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="logo">AKP<span class="accent">Agenku</span></div>
+      <div class="sub">Dashboard Agen</div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">Menu Utama</div>
+      <a href="/dashboard.html" class="nav-item">
+        <i data-lucide="layout-dashboard"></i> <span>Dashboard</span>
+      </a>
+      <a href="/mini-site-editor.html" class="nav-item">
+        <i data-lucide="palette"></i> <span>Mini-site Editor</span>
+      </a>
+      <a href="/konten-library.html" class="nav-item active">
+        <i data-lucide="library"></i> <span>Konten Library</span>
+      </a>
+      <a href="#" class="nav-item">
+        <i data-lucide="target"></i> <span>Lead Magnet</span>
+      </a>
+      <a href="#" class="nav-item">
+        <i data-lucide="users"></i> <span>Lead & CRM</span>
+      </a>
+
+      <div class="nav-label">Pengaturan</div>
+      <a href="#" class="nav-item">
+        <i data-lucide="settings"></i> <span>Settings</span>
+      </a>
+      <a href="/login.html" class="nav-item">
+        <i data-lucide="log-out"></i> <span>Logout</span>
+      </a>
+    </div>
+
+    <div class="user-card">
+      <div class="user-avatar">C</div>
+      <div class="user-info">
+        <div class="user-name">Cristine L.</div>
+        <div class="user-plan">Paket Solo</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ===== MAIN ===== -->
+  <main class="main">
+
+    <!-- HEADER -->
+    <div class="page-header">
+      <h1 class="page-title">Konten Library</h1>
+      <p class="page-sub">Konten siap pakai untuk Instagram Anda. Download dan posting di sosmed.</p>
+    </div>
+
+    <!-- STATS MINI -->
+    <div class="stats-bar">
+      <div class="stat-mini">
+        <div class="stat-mini-icon pink"><i data-lucide="instagram"></i></div>
+        <div>
+          <div class="stat-mini-value">124</div>
+          <div class="stat-mini-label">Total konten tersedia</div>
+        </div>
+      </div>
+      <div class="stat-mini">
+        <div class="stat-mini-icon purple"><i data-lucide="sparkles"></i></div>
+        <div>
+          <div class="stat-mini-value">12</div>
+          <div class="stat-mini-label">Baru bulan ini</div>
+        </div>
+      </div>
+      <div class="stat-mini">
+        <div class="stat-mini-icon green"><i data-lucide="download"></i></div>
+        <div>
+          <div class="stat-mini-value">8</div>
+          <div class="stat-mini-label">Anda download bulan ini</div>
+        </div>
+      </div>
+      <div class="stat-mini">
+        <div class="stat-mini-icon blue"><i data-lucide="trending-up"></i></div>
+        <div>
+          <div class="stat-mini-value">+18</div>
+          <div class="stat-mini-label">Konten dijadwal admin</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FILTER BAR -->
+    <div class="filter-bar">
+      <div class="filter-group">
+        <span class="filter-label">Jenis:</span>
+        <div class="filter-tabs">
+          <button class="filter-tab active" onclick="filterByType('all', this)">
+            <i data-lucide="layout-grid"></i> Semua
+          </button>
+          <button class="filter-tab" onclick="filterByType('story', this)">
+            <i data-lucide="zap"></i> Story
+          </button>
+          <button class="filter-tab" onclick="filterByType('feed', this)">
+            <i data-lucide="square"></i> Feed
+          </button>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <span class="filter-label">Topik:</span>
+        <button class="filter-pill active" onclick="filterByTopic('all', this)">Semua</button>
+        <button class="filter-pill" onclick="filterByTopic('jiwa', this)">Asuransi Jiwa</button>
+        <button class="filter-pill" onclick="filterByTopic('kritis', this)">Penyakit Kritis</button>
+        <button class="filter-pill" onclick="filterByTopic('pendidikan', this)">Pendidikan</button>
+        <button class="filter-pill" onclick="filterByTopic('kesehatan', this)">Kesehatan</button>
+      </div>
+
+      <div class="search-box">
+        <span class="search-icon"><i data-lucide="search"></i></span>
+        <input type="text" class="search-input" placeholder="Cari konten...">
+      </div>
+    </div>
+
+    <!-- MASONRY GRID -->
+    <div class="masonry" id="masonryGrid">
+
+      <!-- STORY 1 -->
+      <div class="masonry-item" data-type="story" data-topic="jiwa">
+        <div class="content-card">
+          <div class="card-thumb story grad-1">
+            <span class="thumb-tag-label">EDUKASI</span>
+            <span class="thumb-type-badge"><i data-lucide="zap"></i> Story</span>
+            <div>
+              <div class="thumb-icon"><i data-lucide="heart-pulse"></i></div>
+              <div class="thumb-quote">3 Alasan Keluarga Muda Butuh Asuransi Jiwa</div>
+              <div class="thumb-author">— SWIPE UP</div>
+            </div>
+            <div class="card-overlay">
+              <div class="overlay-actions">
+                <button class="overlay-btn" title="Preview"><i data-lucide="eye"></i></button>
+                <button class="overlay-btn" title="Download"><i data-lucide="download"></i></button>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="card-title">3 Alasan Keluarga Muda Butuh Asuransi Jiwa</div>
+            <div class="card-meta">
+              <span class="card-tag">ASURANSI JIWA</span>
+              <button class="download-btn" onclick="downloadContent(this)"><i data-lucide="download"></i> Download</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FEED 1 -->
+      <div class="masonry-item" data-type="feed" data-topic="pendidikan">
+        <div class="content-card">
+          <div class="card-thumb feed grad-2">
+            <span class="thumb-tag-label">FAKTA</span>
+            <span class="thumb-type-badge"><i data-lucide="square"></i> Feed</span>
+            <div>
+              <div class="thumb-stat-value">Rp 450jt</div>
+              <div class="thumb-stat-label">Biaya kuliah 18 tahun lagi<br>(estimasi univ. swasta)</div>
+            </div>
+            <div class="card-overlay">
+              <div class="overlay-actions">
+                <button class="overlay-btn" title="Preview"><i data-lucide="eye"></i></button>
+                <button class="overlay-btn" title="Download"><i data-lucide="download"></i></button>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="card-title">Biaya Kuliah 18 Tahun Lagi: Apakah Sudah Anda Hitung?</div>
+            <div class="card-meta">
+              <span class="card-tag">PENDIDIKAN</span>
+              <button class="download-btn" onclick="downloadContent(this)"><i data-lucide="download"></i> Download</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STORY 2 -->
+      <div class="masonry-item" data-type="story" data-topic="kritis">
+        <div class="content-card">
+          <div class="card-thumb story grad-3">
+            <span class="thumb-tag-label">FAKTA SEHAT</span>
+            <span class="thumb-type-badge"><i data-lucide="zap"></i> Story</span>
+            <div>
+              <div class="thumb-stat-value">1 dari 4</div>
+              <div class="thumb-stat-label">Orang Indonesia akan kena<br>penyakit kritis seumur hidup</div>
+              <div class="thumb-cta">Cek faktor risiko Anda →</div>
+            </div>
+            <div class="card-overlay">
+              <div class="overlay-actions">
+                <button class="overlay-btn" title="Preview"><i data-lucide="eye"></i></button>
+                <button class="overlay-btn" title="Download"><i data-lucide="download"></i></button>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="card-title">Statistik Penyakit Kritis di Indonesia</div>
+            <div class="card-meta">
+              <span class="card-tag">PENYAKIT KRITIS</span>
+              <button class="download-btn" onclick="downloadContent(this)"><i data-lucide="download"></i> Download</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FEED 2 (cream/quote) -->
+      <div class="masonry-item" data-type="feed" data-topic="jiwa">
+        <div class="content-card">
+          <div class="card-thumb feed grad-cream">
+            <span class="thumb-tag-label">QUOTE</span>
+            <span class="thumb-type-badge"><i data-lucide="square"></i> Feed</span>
+            <div>
+              <div class="thumb-quote big">"Asuransi bukan untuk yang sudah meninggal, tapi untuk yang masih hidup."</div>
+              <div class="thumb-author">— Cristine Lestari</div>
+            </div>
+            <div class="card-overlay">
+              <div class="overlay-actions">
+                <button class="overlay-btn" title="Preview"><i data-lucide="eye"></i></button>
+                <button class="overlay-btn" title="Download"><i data-lucide="download"></i></button>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="card-title">Quote Edukasi: Tujuan Sebenarnya Asuransi</div>
+            <div class="card-meta">
+              <span class="card-tag">QUOTE</span>
+              <button class="download-btn" onclick="downloadContent(this)"><i data-lucide="download"></i> Download</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STORY 3 -->
+      <div class="masonry-item" data-type="story" data-topic="kesehatan">
+        <div class="content-card">
+          <div class="card-thumb story grad-5">
+            <span class="thumb-tag-label">TIPS HARI INI</span>
+            <span class="thumb-type-badge"><i data-lucide="zap"></i> Story</span>
+            <div>
+              <div class="thumb-icon"><i data-lucide="stethoscope"></i></div>
+              <div class="thumb-quote">5 Hal yang BPJS Tidak Cover</div>
+              <div class="thumb-author">— GESER UNTUK CEK →</div>
+            </div>
+            <div class="card-overlay">
+              <div class="overlay-actions">
+                <button class="overlay-btn" title="Preview"><i data-lucide="eye"></i></button>
+                <button class="overlay-btn" title="Download"><i data-lucide="download"></i></button>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="card-title">5 Hal yang BPJS Tidak Cover (Wajib Tahu)</div>
+            <div class="card-meta">
+              <span class="card-tag">KESEHATAN</span>
+              <button class="download-btn" onclick="downloadContent(this)"><i data-lucide="download"></i> Download</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FEED 3 (carousel hint) -->
+      <div class="masonry-item" data-type="feed" data-topic="kesehatan">
+        <div class="content-card">
+          <div class="card-thumb feed grad-4">
+            <span class="thumb-tag-label">CAROUSEL · 5 SLIDE</span>
+            <span class="thumb-type-badge"><i data-lucide="square"></i> Feed</span>
+            <div>
+              <div class="thumb-icon"><i data-lucide="layers"></i></div>
+              <div class="thumb-quote">7 Mitos Asuransi yang Masih Banyak Dipercaya</div>
+              <div class="thumb-cta">Geser ke kiri →</div>
+            </div>
+            <div class="card-overlay">
+              <div class="overlay-actions">
+                <button class="overlay-btn" title="Preview"><i data-lucide="eye"></i></button>
+                <button class="overlay-btn" title="Download"><i data-lucide="download"></i></button>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="card-title">7 Mitos Asuransi yang Masih Banyak Dipercaya</div>
+            <div class="card-meta">
+              <span class="card-tag">EDUKASI</span>
+              <button class="download-btn" onclick="downloadContent(this)"><i data-lucide="download"></i> Download</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STORY 4 -->
+      <div class="masonry-item" data-type="story" data-topic="pendidikan">
+        <div class="content-card">
+          <div class="card-thumb story grad-6">
+            <span class="thumb-tag-label">KALKULATOR</span>
+            <span class="thumb-type-badge"><i data-lucide="zap"></i> Story</span>
+            <div>
+              <div class="thumb-icon"><i data-lucide="calculator"></i></div>
+              <div class="thumb-quote">Hitung Dana Pendidikan Anak Anda</div>
+              <div class="thumb-author">— GRATIS · 1 MENIT</div>
+              <div class="thumb-cta">Coba sekarang →</div>
+            </div>
+            <div class="card-overlay">
+              <div class="overlay-actions">
+                <button class="overlay-btn" title="Preview"><i data-lucide="eye"></i></button>
+                <button class="overlay-btn" title="Download"><i data-lucide="download"></i></button>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="card-title">Promosi: Kalkulator Dana Pendidikan</div>
+            <div class="card-meta">
+              <span class="card-tag">LEAD MAGNET</span>
+              <button class="download-btn" onclick="downloadContent(this)"><i data-lucide="download"></i> Download</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FEED 4 -->
+      <div class="masonry-item" data-type="feed" data-topic="kritis">
+        <div class="content-card">
+          <div class="card-thumb feed grad-7">
+            <span class="thumb-tag-label">STUDI KASUS</span>
+            <span class="thumb-type-badge"><i data-lucide="square"></i> Feed</span>
+            <div>
+              <div class="thumb-stat-value">Rp 380jt</div>
+              <div class="thumb-stat-label">Biaya pengobatan kanker stadium 2<br>(rata-rata di RS swasta)</div>
+            </div>
+            <div class="card-overlay">
+              <div class="overlay-actions">
+                <button class="overlay-btn" title="Preview"><i data-lucide="eye"></i></button>
+                <button class="overlay-btn" title="Download"><i data-lucide="download"></i></button>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="card-title">Berapa Biaya Pengobatan Kanker Sebenarnya?</div>
+            <div class="card-meta">
+              <span class="card-tag">PENYAKIT KRITIS</span>
+              <button class="download-btn" onclick="downloadContent(this)"><i data-lucide="download"></i> Download</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STORY 5 -->
+      <div class="masonry-item" data-type="story" data-topic="jiwa">
+        <div class="content-card">
+          <div class="card-thumb story grad-8">
+            <span class="thumb-tag-label">CEKLIS</span>
+            <span class="thumb-type-badge"><i data-lucide="zap"></i> Story</span>
+            <div>
+              <div class="thumb-icon"><i data-lucide="check-circle-2"></i></div>
+              <div class="thumb-quote">Cek Skor Kesehatan Keuangan Anda</div>
+              <div class="thumb-author">— GRATIS, TANPA DAFTAR</div>
+              <div class="thumb-cta">Mulai cek →</div>
+            </div>
+            <div class="card-overlay">
+              <div class="overlay-actions">
+                <button class="overlay-btn" title="Preview"><i data-lucide="eye"></i></button>
+                <button class="overlay-btn" title="Download"><i data-lucide="download"></i></button>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="card-title">Promosi: Kuis Skor Kesehatan Keuangan</div>
+            <div class="card-meta">
+              <span class="card-tag">LEAD MAGNET</span>
+              <button class="download-btn" onclick="downloadContent(this)"><i data-lucide="download"></i> Download</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FEED 5 -->
+      <div class="masonry-item" data-type="feed" data-topic="kesehatan">
+        <div class="content-card">
+          <div class="card-thumb feed grad-cream">
+            <span class="thumb-tag-label">QUOTE</span>
+            <span class="thumb-type-badge"><i data-lucide="square"></i> Feed</span>
+            <div>
+              <div class="thumb-quote big">"Kesehatan adalah harta yang paling sering kita lupakan—sampai kita harus membayar untuk menjaganya."</div>
+              <div class="thumb-author">— ANONYMOUS</div>
+            </div>
+            <div class="card-overlay">
+              <div class="overlay-actions">
+                <button class="overlay-btn" title="Preview"><i data-lucide="eye"></i></button>
+                <button class="overlay-btn" title="Download"><i data-lucide="download"></i></button>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="card-title">Quote Refleksi tentang Kesehatan</div>
+            <div class="card-meta">
+              <span class="card-tag">QUOTE</span>
+              <button class="download-btn" onclick="downloadContent(this)"><i data-lucide="download"></i> Download</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STORY 6 -->
+      <div class="masonry-item" data-type="story" data-topic="pendidikan">
+        <div class="content-card">
+          <div class="card-thumb story grad-3">
+            <span class="thumb-tag-label">DID YOU KNOW</span>
+            <span class="thumb-type-badge"><i data-lucide="zap"></i> Story</span>
+            <div>
+              <div class="thumb-icon"><i data-lucide="graduation-cap"></i></div>
+              <div class="thumb-quote">Inflasi pendidikan di Indonesia mencapai 10-15% per tahun</div>
+              <div class="thumb-author">— SUMBER: BPS 2024</div>
+            </div>
+            <div class="card-overlay">
+              <div class="overlay-actions">
+                <button class="overlay-btn" title="Preview"><i data-lucide="eye"></i></button>
+                <button class="overlay-btn" title="Download"><i data-lucide="download"></i></button>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="card-title">Fakta: Inflasi Biaya Pendidikan Indonesia</div>
+            <div class="card-meta">
+              <span class="card-tag">PENDIDIKAN</span>
+              <button class="download-btn" onclick="downloadContent(this)"><i data-lucide="download"></i> Download</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FEED 6 -->
+      <div class="masonry-item" data-type="feed" data-topic="jiwa">
+        <div class="content-card">
+          <div class="card-thumb feed grad-5">
+            <span class="thumb-tag-label">CHECKLIST</span>
+            <span class="thumb-type-badge"><i data-lucide="square"></i> Feed</span>
+            <div>
+              <div class="thumb-icon"><i data-lucide="list-checks"></i></div>
+              <div class="thumb-quote">5 Tanda Anda Sudah Siap Punya Asuransi Jiwa</div>
+              <div class="thumb-cta">Cek apakah Anda termasuk →</div>
+            </div>
+            <div class="card-overlay">
+              <div class="overlay-actions">
+                <button class="overlay-btn" title="Preview"><i data-lucide="eye"></i></button>
+                <button class="overlay-btn" title="Download"><i data-lucide="download"></i></button>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="card-title">5 Tanda Anda Siap Punya Asuransi Jiwa</div>
+            <div class="card-meta">
+              <span class="card-tag">CHECKLIST</span>
+              <button class="download-btn" onclick="downloadContent(this)"><i data-lucide="download"></i> Download</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+</div>
+
+<!-- ===== TOAST ===== -->
+<div class="toast" id="toast">
+  <i data-lucide="check-circle-2"></i>
+  <span id="toastMsg">Konten berhasil di-download!</span>
+</div>
+
+<script>
+// ===== Filter by Type =====
+let currentType = 'all';
+let currentTopic = 'all';
+
+function filterByType(type, btn) {
+  currentType = type;
+  document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  applyFilters();
+}
+
+function filterByTopic(topic, btn) {
+  currentTopic = topic;
+  document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  applyFilters();
+}
+
+function applyFilters() {
+  const items = document.querySelectorAll('.masonry-item');
+  items.forEach(item => {
+    const type = item.dataset.type;
+    const topic = item.dataset.topic;
+    const typeMatch = currentType === 'all' || type === currentType;
+    const topicMatch = currentTopic === 'all' || topic === currentTopic;
+    item.style.display = (typeMatch && topicMatch) ? '' : 'none';
+  });
+}
+
+// ===== Search =====
+document.querySelector('.search-input').addEventListener('input', (e) => {
+  const query = e.target.value.toLowerCase();
+  document.querySelectorAll('.masonry-item').forEach(item => {
+    const title = item.querySelector('.card-title').textContent.toLowerCase();
+    item.style.display = title.includes(query) ? '' : 'none';
+  });
+});
+
+// ===== Download =====
+function downloadContent(btn) {
+  // Simulate download
+  btn.innerHTML = '<i data-lucide="check"></i> Tersimpan';
+  btn.classList.add('downloaded');
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+
+  // Show toast
+  showToast('Konten berhasil di-download ke perangkat Anda');
+
+  setTimeout(() => {
+    btn.innerHTML = '<i data-lucide="download"></i> Download';
+    btn.classList.remove('downloaded');
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }, 2400);
+}
+
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2400);
+}
+
+// Init Lucide icons
+window.addEventListener('DOMContentLoaded', () => {
+  if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
+  }
+});
+</script>
+
+</body>
+</html>

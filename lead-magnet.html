@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lead Magnet | AKPAgenku</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  :root {
+    --navy: #0f2647;
+    --navy-light: #1e3a5f;
+    --navy-dark: #081a33;
+    --gold: #c9a961;
+    --gold-light: #d9bd7f;
+    --gold-dark: #a88a45;
+    --cream: #faf8f3;
+    --gray-50: #fafafa;
+    --gray-100: #f5f5f5;
+    --gray-200: #e5e5e5;
+    --gray-300: #d4d4d4;
+    --gray-500: #737373;
+    --gray-700: #404040;
+    --gray-900: #171717;
+    --white: #ffffff;
+    --green: #059669;
+    --green-light: #d1fae5;
+    --blue: #2563eb;
+    --blue-light: #dbeafe;
+    --purple: #7c3aed;
+    --purple-light: #ede9fe;
+    --orange: #ea580c;
+    --orange-light: #fed7aa;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    color: var(--gray-900);
+    line-height: 1.5;
+    background: var(--gray-50);
+    min-height: 100vh;
+  }
+  a { color: inherit; text-decoration: none; }
+  [data-lucide] { stroke-width: 2; flex-shrink: 0; }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    min-height: 100vh;
+  }
+  .sidebar {
+    background: var(--navy);
+    color: var(--white);
+    padding: 24px 0;
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+  }
+  .sidebar-brand {
+    padding: 0 24px 24px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    margin-bottom: 16px;
+  }
+  .sidebar-brand .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--white);
+  }
+  .sidebar-brand .logo .accent { color: var(--gold); }
+  .sidebar-brand .sub {
+    font-size: 11px;
+    color: rgba(255,255,255,0.5);
+    margin-top: 4px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .nav-section { flex: 1; padding: 0 12px; }
+  .nav-label {
+    font-size: 10px;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 12px 16px 8px;
+    font-weight: 600;
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 16px;
+    color: rgba(255,255,255,0.75);
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    margin-bottom: 2px;
+  }
+  .nav-item:hover { background: rgba(255,255,255,0.06); color: var(--white); }
+  .nav-item.active {
+    background: rgba(201, 169, 97, 0.15);
+    color: var(--gold);
+    border-left: 3px solid var(--gold);
+    padding-left: 13px;
+  }
+  .nav-item [data-lucide] { width: 18px; height: 18px; }
+
+  .user-card {
+    margin: 16px 12px;
+    padding: 14px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .user-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    color: var(--navy);
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+  .user-info { flex: 1; min-width: 0; }
+  .user-name { font-size: 13px; font-weight: 600; color: var(--white); }
+  .user-plan { font-size: 11px; color: var(--gold); margin-top: 1px; }
+
+  /* MAIN */
+  .main { padding: 32px 36px; overflow-x: hidden; }
+  .page-header { margin-bottom: 28px; }
+  .page-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 30px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 6px;
+    letter-spacing: -0.5px;
+  }
+  .page-sub { color: var(--gray-700); font-size: 14px; }
+
+  /* STATS */
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-bottom: 32px;
+  }
+  .stat-card {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: 12px;
+    padding: 22px;
+    transition: all 0.2s;
+  }
+  .stat-card:hover {
+    border-color: var(--gold);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px -8px rgba(15, 38, 71, 0.1);
+  }
+  .stat-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+  }
+  .stat-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .stat-icon [data-lucide] { width: 20px; height: 20px; }
+  .stat-icon.blue { background: var(--blue-light); color: var(--blue); }
+  .stat-icon.green { background: var(--green-light); color: var(--green); }
+  .stat-icon.purple { background: var(--purple-light); color: var(--purple); }
+  .stat-icon.orange { background: var(--orange-light); color: var(--orange); }
+  .stat-trend {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 12px;
+    background: var(--green-light);
+    color: var(--green);
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+  }
+  .stat-trend [data-lucide] { width: 12px; height: 12px; }
+  .stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .stat-label { font-size: 13px; color: var(--gray-500); font-weight: 500; }
+
+  /* MAGNET CARDS */
+  .magnet-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 22px;
+  }
+  .magnet-item {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.2s;
+  }
+  .magnet-item:hover {
+    border-color: var(--gold);
+    transform: translateY(-4px);
+    box-shadow: 0 18px 32px -14px rgba(15, 38, 71, 0.15);
+  }
+  .magnet-thumb {
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+    position: relative;
+    overflow: hidden;
+  }
+  .magnet-thumb::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at top right, rgba(255,255,255,0.15) 0%, transparent 60%);
+  }
+  .magnet-thumb.skor { background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%); }
+  .magnet-thumb.pendidikan { background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%); }
+  .magnet-thumb.pensiun { background: linear-gradient(135deg, #ea580c 0%, #9a3412 100%); }
+  .magnet-thumb.darurat { background: linear-gradient(135deg, #059669 0%, #047857 100%); }
+
+  .magnet-thumb-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .magnet-thumb-icon [data-lucide] { width: 30px; height: 30px; color: var(--white); }
+
+  .magnet-badge-primary {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    background: var(--gold);
+    color: var(--navy);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 9px;
+    border-radius: 12px;
+    letter-spacing: 0.5px;
+  }
+  .magnet-badge-type {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    background: rgba(255,255,255,0.2);
+    backdrop-filter: blur(8px);
+    color: var(--white);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 9px;
+    border-radius: 12px;
+    letter-spacing: 0.5px;
+  }
+
+  .magnet-body { padding: 22px 24px 24px; }
+  .magnet-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 19px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 6px;
+    line-height: 1.3;
+  }
+  .magnet-desc {
+    font-size: 13px;
+    color: var(--gray-700);
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+  .magnet-stats-row {
+    display: flex;
+    gap: 22px;
+    padding: 14px 0;
+    border-top: 1px solid var(--gray-100);
+    border-bottom: 1px solid var(--gray-100);
+    margin-bottom: 16px;
+  }
+  .magnet-stat-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .magnet-stat-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: var(--cream);
+    color: var(--gold-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .magnet-stat-icon [data-lucide] { width: 15px; height: 15px; }
+  .magnet-stat-text { line-height: 1.2; }
+  .magnet-stat-value {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--navy);
+    font-family: 'Playfair Display', serif;
+  }
+  .magnet-stat-label {
+    font-size: 10px;
+    color: var(--gray-500);
+    margin-top: 2px;
+    letter-spacing: 0.3px;
+  }
+
+  .magnet-link-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    border-radius: 8px;
+    padding: 8px 8px 8px 14px;
+    margin-bottom: 12px;
+  }
+  .magnet-link-text {
+    flex: 1;
+    font-size: 12px;
+    color: var(--gray-700);
+    font-family: 'SF Mono', monospace;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .magnet-copy-btn {
+    background: var(--navy);
+    color: var(--white);
+    border: none;
+    padding: 7px 12px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .magnet-copy-btn [data-lucide] { width: 12px; height: 12px; }
+  .magnet-copy-btn:hover { background: var(--navy-dark); }
+  .magnet-copy-btn.copied { background: var(--green); }
+
+  .magnet-actions {
+    display: flex;
+    gap: 8px;
+  }
+  .magnet-btn {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 11px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+    border: none;
+  }
+  .magnet-btn [data-lucide] { width: 14px; height: 14px; }
+  .magnet-btn.primary {
+    background: var(--navy);
+    color: var(--white);
+  }
+  .magnet-btn.primary:hover {
+    background: var(--navy-dark);
+    transform: translateY(-1px);
+  }
+  .magnet-btn.ghost {
+    background: var(--white);
+    color: var(--gray-700);
+    border: 1.5px solid var(--gray-200);
+  }
+  .magnet-btn.ghost:hover {
+    border-color: var(--gold);
+    color: var(--navy);
+  }
+
+  /* INFO BANNER */
+  .info-banner {
+    background: linear-gradient(135deg, var(--cream) 0%, var(--white) 100%);
+    border: 1px solid rgba(201, 169, 97, 0.3);
+    border-radius: 14px;
+    padding: 22px 26px;
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+  .info-banner-icon {
+    width: 48px;
+    height: 48px;
+    background: rgba(201, 169, 97, 0.2);
+    color: var(--gold-dark);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .info-banner-icon [data-lucide] { width: 22px; height: 22px; }
+  .info-banner-text { flex: 1; }
+  .info-banner-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 4px;
+  }
+  .info-banner-desc {
+    font-size: 13px;
+    color: var(--gray-700);
+    line-height: 1.6;
+  }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--navy);
+    color: var(--white);
+    padding: 14px 22px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    box-shadow: 0 12px 30px rgba(15, 38, 71, 0.3);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    transition: transform 0.3s;
+    z-index: 1000;
+  }
+  .toast [data-lucide] { width: 16px; height: 16px; color: var(--gold); }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 1100px) {
+    .stats-bar { grid-template-columns: repeat(2, 1fr); }
+    .magnet-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 768px) {
+    .layout { grid-template-columns: 1fr; }
+    .sidebar { position: relative; height: auto; padding: 16px 0; }
+    .nav-section { display: flex; overflow-x: auto; padding: 0 12px; }
+    .nav-label { display: none; }
+    .nav-item { white-space: nowrap; margin-right: 4px; }
+    .user-card { margin: 12px; }
+    .main { padding: 22px 18px; }
+    .stats-bar { grid-template-columns: 1fr 1fr; gap: 12px; }
+    .stat-value { font-size: 24px; }
+    .magnet-actions { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="logo">AKP<span class="accent">Agenku</span></div>
+      <div class="sub">Dashboard Agen</div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">Menu Utama</div>
+      <a href="/dashboard.html" class="nav-item">
+        <i data-lucide="layout-dashboard"></i> <span>Dashboard</span>
+      </a>
+      <a href="/mini-site-editor.html" class="nav-item">
+        <i data-lucide="palette"></i> <span>Mini-site Editor</span>
+      </a>
+      <a href="/konten-library.html" class="nav-item">
+        <i data-lucide="library"></i> <span>Konten Library</span>
+      </a>
+      <a href="/lead-magnet.html" class="nav-item active">
+        <i data-lucide="target"></i> <span>Lead Magnet</span>
+      </a>
+      <a href="#" class="nav-item">
+        <i data-lucide="users"></i> <span>Lead & CRM</span>
+      </a>
+
+      <div class="nav-label">Pengaturan</div>
+      <a href="#" class="nav-item">
+        <i data-lucide="settings"></i> <span>Settings</span>
+      </a>
+      <a href="/login.html" class="nav-item">
+        <i data-lucide="log-out"></i> <span>Logout</span>
+      </a>
+    </div>
+
+    <div class="user-card">
+      <div class="user-avatar">C</div>
+      <div class="user-info">
+        <div class="user-name">Cristine L.</div>
+        <div class="user-plan">Paket Solo</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <div class="page-header">
+      <h1 class="page-title">Lead Magnet</h1>
+      <p class="page-sub">Tool gratis (kuis & kalkulator) yang bisa Anda share ke prospek untuk dapat lead baru.</p>
+    </div>
+
+    <!-- INFO BANNER -->
+    <div class="info-banner">
+      <div class="info-banner-icon"><i data-lucide="info"></i></div>
+      <div class="info-banner-text">
+        <div class="info-banner-title">Cara kerja Lead Magnet</div>
+        <div class="info-banner-desc">
+          Ada <strong>8 lead magnet</strong> tersedia. Pilih 1 utama + 3 supporting di <a href="/mini-site-editor.html" style="color: var(--gold-dark); font-weight: 600;">Mini-site Editor</a> untuk ditampilkan di halaman publik Anda.
+          Prospek yang isi tool akan otomatis masuk ke <strong>Lead & CRM</strong> Anda.
+        </div>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-bar">
+      <div class="stat-card">
+        <div class="stat-head">
+          <div class="stat-icon blue"><i data-lucide="mouse-pointer-click"></i></div>
+          <span class="stat-trend"><i data-lucide="trending-up"></i> 32%</span>
+        </div>
+        <div class="stat-value">156</div>
+        <div class="stat-label">Total klik bulan ini</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-head">
+          <div class="stat-icon green"><i data-lucide="check-circle-2"></i></div>
+          <span class="stat-trend"><i data-lucide="trending-up"></i> 18%</span>
+        </div>
+        <div class="stat-value">47</div>
+        <div class="stat-label">Lead masuk</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-head">
+          <div class="stat-icon purple"><i data-lucide="percent"></i></div>
+          <span class="stat-trend"><i data-lucide="trending-up"></i> 4%</span>
+        </div>
+        <div class="stat-value">30%</div>
+        <div class="stat-label">Conversion klik → lead</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-head">
+          <div class="stat-icon orange"><i data-lucide="star"></i></div>
+          <span class="stat-trend"><i data-lucide="trending-up"></i> +1</span>
+        </div>
+        <div class="stat-value">Skor</div>
+        <div class="stat-label">Magnet paling laku</div>
+      </div>
+    </div>
+
+    <!-- MAGNET GRID -->
+    <div class="magnet-grid">
+
+      <!-- KUIS UTAMA -->
+      <div class="magnet-item">
+        <div class="magnet-thumb skor">
+          <span class="magnet-badge-primary"><i data-lucide="star" style="width:10px;height:10px;display:inline;margin-right:2px;"></i> UTAMA</span>
+          <span class="magnet-badge-type">KUIS</span>
+          <div class="magnet-thumb-icon"><i data-lucide="sparkles"></i></div>
+        </div>
+        <div class="magnet-body">
+          <div class="magnet-name">Skor Kesehatan Keuangan</div>
+          <div class="magnet-desc">
+            8 pertanyaan singkat. Prospek dapat skor objektif + 3 area yang perlu diperhatikan.
+            Magnet paling populer untuk capture lead.
+          </div>
+
+          <div class="magnet-stats-row">
+            <div class="magnet-stat-item">
+              <div class="magnet-stat-icon"><i data-lucide="mouse-pointer-click"></i></div>
+              <div class="magnet-stat-text">
+                <div class="magnet-stat-value">89</div>
+                <div class="magnet-stat-label">KLIK</div>
+              </div>
+            </div>
+            <div class="magnet-stat-item">
+              <div class="magnet-stat-icon"><i data-lucide="users"></i></div>
+              <div class="magnet-stat-text">
+                <div class="magnet-stat-value">28</div>
+                <div class="magnet-stat-label">LEAD</div>
+              </div>
+            </div>
+            <div class="magnet-stat-item">
+              <div class="magnet-stat-icon"><i data-lucide="percent"></i></div>
+              <div class="magnet-stat-text">
+                <div class="magnet-stat-value">31%</div>
+                <div class="magnet-stat-label">KONVERSI</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="magnet-link-row">
+            <span class="magnet-link-text">akpagenku.com/cristine/skor-keuangan</span>
+            <button class="magnet-copy-btn" onclick="copyLink(this, 'akpagenku.com/cristine/skor-keuangan')"><i data-lucide="copy"></i> Salin</button>
+          </div>
+
+          <div class="magnet-actions">
+            <a href="/cristine.html#kuis" target="_blank" class="magnet-btn ghost"><i data-lucide="eye"></i> Preview</a>
+            <button class="magnet-btn primary" onclick="shareWA('Skor Kesehatan Keuangan', 'akpagenku.com/cristine/skor-keuangan')"><i data-lucide="message-circle"></i> Share ke WhatsApp</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- KALKULATOR PENDIDIKAN -->
+      <div class="magnet-item">
+        <div class="magnet-thumb pendidikan">
+          <span class="magnet-badge-type">KALKULATOR</span>
+          <div class="magnet-thumb-icon"><i data-lucide="graduation-cap"></i></div>
+        </div>
+        <div class="magnet-body">
+          <div class="magnet-name">Kalkulator Dana Pendidikan</div>
+          <div class="magnet-desc">
+            Prospek input target univ. & usia anak. Dapat estimasi total kebutuhan dana
+            + setoran bulanan. Cocok untuk audience orang tua.
+          </div>
+
+          <div class="magnet-stats-row">
+            <div class="magnet-stat-item">
+              <div class="magnet-stat-icon"><i data-lucide="mouse-pointer-click"></i></div>
+              <div class="magnet-stat-text">
+                <div class="magnet-stat-value">34</div>
+                <div class="magnet-stat-label">KLIK</div>
+              </div>
+            </div>
+            <div class="magnet-stat-item">
+              <div class="magnet-stat-icon"><i data-lucide="users"></i></div>
+              <div class="magnet-stat-text">
+                <div class="magnet-stat-value">11</div>
+                <div class="magnet-stat-label">LEAD</div>
+              </div>
+            </div>
+            <div class="magnet-stat-item">
+              <div class="magnet-stat-icon"><i data-lucide="percent"></i></div>
+              <div class="magnet-stat-text">
+                <div class="magnet-stat-value">32%</div>
+                <div class="magnet-stat-label">KONVERSI</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="magnet-link-row">
+            <span class="magnet-link-text">akpagenku.com/cristine/dana-pendidikan</span>
+            <button class="magnet-copy-btn" onclick="copyLink(this, 'akpagenku.com/cristine/dana-pendidikan')"><i data-lucide="copy"></i> Salin</button>
+          </div>
+
+          <div class="magnet-actions">
+            <a href="/cristine.html" target="_blank" class="magnet-btn ghost"><i data-lucide="eye"></i> Preview</a>
+            <button class="magnet-btn primary" onclick="shareWA('Kalkulator Dana Pendidikan', 'akpagenku.com/cristine/dana-pendidikan')"><i data-lucide="message-circle"></i> Share ke WhatsApp</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- KALKULATOR PENSIUN -->
+      <div class="magnet-item">
+        <div class="magnet-thumb pensiun">
+          <span class="magnet-badge-type">KALKULATOR</span>
+          <div class="magnet-thumb-icon"><i data-lucide="piggy-bank"></i></div>
+        </div>
+        <div class="magnet-body">
+          <div class="magnet-name">Kalkulator Dana Pensiun</div>
+          <div class="magnet-desc">
+            Cek apakah tabungan pensiun cukup untuk hidup tenang di usia 60+.
+            Cocok untuk audience profesional usia 30-45.
+          </div>
+
+          <div class="magnet-stats-row">
+            <div class="magnet-stat-item">
+              <div class="magnet-stat-icon"><i data-lucide="mouse-pointer-click"></i></div>
+              <div class="magnet-stat-text">
+                <div class="magnet-stat-value">22</div>
+                <div class="magnet-stat-label">KLIK</div>
+              </div>
+            </div>
+            <div class="magnet-stat-item">
+              <div class="magnet-stat-icon"><i data-lucide="users"></i></div>
+              <div class="magnet-stat-text">
+                <div class="magnet-stat-value">5</div>
+                <div class="magnet-stat-label">LEAD</div>
+              </div>
+            </div>
+            <div class="magnet-stat-item">
+              <div class="magnet-stat-icon"><i data-lucide="percent"></i></div>
+              <div class="magnet-stat-text">
+                <div class="magnet-stat-value">23%</div>
+                <div class="magnet-stat-label">KONVERSI</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="magnet-link-row">
+            <span class="magnet-link-text">akpagenku.com/cristine/dana-pensiun</span>
+            <button class="magnet-copy-btn" onclick="copyLink(this, 'akpagenku.com/cristine/dana-pensiun')"><i data-lucide="copy"></i> Salin</button>
+          </div>
+
+          <div class="magnet-actions">
+            <a href="/cristine.html" target="_blank" class="magnet-btn ghost"><i data-lucide="eye"></i> Preview</a>
+            <button class="magnet-btn primary" onclick="shareWA('Kalkulator Dana Pensiun', 'akpagenku.com/cristine/dana-pensiun')"><i data-lucide="message-circle"></i> Share ke WhatsApp</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- KALKULATOR DARURAT -->
+      <div class="magnet-item">
+        <div class="magnet-thumb darurat">
+          <span class="magnet-badge-type">KALKULATOR</span>
+          <div class="magnet-thumb-icon"><i data-lucide="shield"></i></div>
+        </div>
+        <div class="magnet-body">
+          <div class="magnet-name">Kalkulator Dana Darurat</div>
+          <div class="magnet-desc">
+            Tentukan jumlah ideal dana darurat berdasarkan pengeluaran bulanan
+            dan jumlah tanggungan. Entry-level magnet yang gampang viral.
+          </div>
+
+          <div class="magnet-stats-row">
+            <div class="magnet-stat-item">
+              <div class="magnet-stat-icon"><i data-lucide="mouse-pointer-click"></i></div>
+              <div class="magnet-stat-text">
+                <div class="magnet-stat-value">11</div>
+                <div class="magnet-stat-label">KLIK</div>
+              </div>
+            </div>
+            <div class="magnet-stat-item">
+              <div class="magnet-stat-icon"><i data-lucide="users"></i></div>
+              <div class="magnet-stat-text">
+                <div class="magnet-stat-value">3</div>
+                <div class="magnet-stat-label">LEAD</div>
+              </div>
+            </div>
+            <div class="magnet-stat-item">
+              <div class="magnet-stat-icon"><i data-lucide="percent"></i></div>
+              <div class="magnet-stat-text">
+                <div class="magnet-stat-value">27%</div>
+                <div class="magnet-stat-label">KONVERSI</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="magnet-link-row">
+            <span class="magnet-link-text">akpagenku.com/cristine/dana-darurat</span>
+            <button class="magnet-copy-btn" onclick="copyLink(this, 'akpagenku.com/cristine/dana-darurat')"><i data-lucide="copy"></i> Salin</button>
+          </div>
+
+          <div class="magnet-actions">
+            <a href="/cristine.html" target="_blank" class="magnet-btn ghost"><i data-lucide="eye"></i> Preview</a>
+            <button class="magnet-btn primary" onclick="shareWA('Kalkulator Dana Darurat', 'akpagenku.com/cristine/dana-darurat')"><i data-lucide="message-circle"></i> Share ke WhatsApp</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- KALKULATOR PREMI ASURANSI JIWA -->
+      <div class="magnet-item">
+        <div class="magnet-thumb" style="background: linear-gradient(135deg, #be185d 0%, #9d174d 100%);">
+          <span class="magnet-badge-type">KALKULATOR</span>
+          <div class="magnet-thumb-icon"><i data-lucide="heart-pulse"></i></div>
+        </div>
+        <div class="magnet-body">
+          <div class="magnet-name">Kalkulator Premi Asuransi Jiwa</div>
+          <div class="magnet-desc">
+            Prospek input umur, pendapatan, tanggungan. Dapat estimasi UP & premi
+            yang sesuai. Cocok untuk pencari nafkah utama.
+          </div>
+
+          <div class="magnet-stats-row">
+            <div class="magnet-stat-item">
+              <div class="magnet-stat-icon"><i data-lucide="mouse-pointer-click"></i></div>
+              <div class="magnet-stat-text">
+                <div class="magnet-stat-value">0</div>
+                <div class="magnet-stat-label">KLIK</div>
+              </div>
+            </div>
+            <div class="magnet-stat-item">
+              <div class="magnet-stat-icon"><i data-lucide="users"></i></div>
+              <div class="magnet-stat-text">
+                <div class="magnet-stat-value">0</div>
+                <div class="magnet-stat-label">LEAD</div>
+              </div>
+            </div>
+            <div class="magnet-stat-item">
+              <div class="magnet-stat-icon"><i data-lucide="info"></i></div>
+              <div class="magnet-stat-text">
+                <div class="magnet-stat-value" style="font-size: 11px; color: var(--gray-500);">Belum aktif</div>
+                <div class="magnet-stat-label">STATUS</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="magnet-link-row">
+            <span class="magnet-link-text">akpagenku.com/cristine/premi-jiwa</span>
+            <button class="magnet-copy-btn" onclick="copyLink(this, 'akpagenku.com/cristine/premi-jiwa')"><i data-lucide="copy"></i> Salin</button>
+          </div>
+
+          <div class="magnet-actions">
+            <a href="/mini-site-editor.html" class="magnet-btn ghost"><i data-lucide="plus"></i> Aktifkan</a>
+            <button class="magnet-btn primary" onclick="shareWA('Kalkulator Premi Asuransi Jiwa', 'akpagenku.com/cristine/premi-jiwa')"><i data-lucide="message-circle"></i> Share ke WhatsApp</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- KALKULATOR COVER PENYAKIT KRITIS -->
+      <div class="magnet-item">
+        <div class="magnet-thumb" style="background: linear-gradient(135deg, #ea580c 0%, #7c2d12 100%);">
+          <span class="magnet-badge-type">KALKULATOR</span>
+          <div class="magnet-thumb-icon"><i data-lucide="activity"></i></div>
+        </div>
+        <div class="magnet-body">
+          <div class="magnet-name">Kalkulator Cover Penyakit Kritis</div>
+          <div class="magnet-desc">
+            Estimasi UP yang dibutuhkan untuk cover biaya pengobatan & kehilangan
+            pendapatan saat sakit kritis. High-impact magnet.
+          </div>
+
+          <div class="magnet-stats-row">
+            <div class="magnet-stat-item">
+              <div class="magnet-stat-icon"><i data-lucide="mouse-pointer-click"></i></div>
+              <div class="magnet-stat-text">
+                <div class="magnet-stat-value">0</div>
+                <div class="magnet-stat-label">KLIK</div>
+              </div>
+            </div>
+            <div class="magnet-stat-item">
+              <div class="magnet-stat-icon"><i data-lucide="users"></i></div>
+              <div class="magnet-stat-text">
+                <div class="magnet-stat-value">0</div>
+                <div class="magnet-stat-label">LEAD</div>
+              </div>
+            </div>
+            <div class="magnet-stat-item">
+              <div class="magnet-stat-icon"><i data-lucide="info"></i></div>
+              <div class="magnet-stat-text">
+                <div class="magnet-stat-value" style="font-size: 11px; color: var(--gray-500);">Belum aktif</div>
+                <div class="magnet-stat-label">STATUS</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="magnet-link-row">
+            <span class="magnet-link-text">akpagenku.com/cristine/cover-kritis</span>
+            <button class="magnet-copy-btn" onclick="copyLink(this, 'akpagenku.com/cristine/cover-kritis')"><i data-lucide="copy"></i> Salin</button>
+          </div>
+
+          <div class="magnet-actions">
+            <a href="/mini-site-editor.html" class="magnet-btn ghost"><i data-lucide="plus"></i> Aktifkan</a>
+            <button class="magnet-btn primary" onclick="shareWA('Kalkulator Cover Penyakit Kritis', 'akpagenku.com/cristine/cover-kritis')"><i data-lucide="message-circle"></i> Share ke WhatsApp</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- KUIS PROFIL RISIKO -->
+      <div class="magnet-item">
+        <div class="magnet-thumb" style="background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);">
+          <span class="magnet-badge-type">KUIS</span>
+          <div class="magnet-thumb-icon"><i data-lucide="bar-chart-3"></i></div>
+        </div>
+        <div class="magnet-body">
+          <div class="magnet-name">Kuis Profil Risiko Keuangan</div>
+          <div class="magnet-desc">
+            10 pertanyaan untuk tahu prospek tipe konservatif, moderat, atau agresif.
+            Bagus sebagai entry point sebelum jualan produk investasi.
+          </div>
+
+          <div class="magnet-stats-row">
+            <div class="magnet-stat-item">
+              <div class="magnet-stat-icon"><i data-lucide="mouse-pointer-click"></i></div>
+              <div class="magnet-stat-text">
+                <div class="magnet-stat-value">0</div>
+                <div class="magnet-stat-label">KLIK</div>
+              </div>
+            </div>
+            <div class="magnet-stat-item">
+              <div class="magnet-stat-icon"><i data-lucide="users"></i></div>
+              <div class="magnet-stat-text">
+                <div class="magnet-stat-value">0</div>
+                <div class="magnet-stat-label">LEAD</div>
+              </div>
+            </div>
+            <div class="magnet-stat-item">
+              <div class="magnet-stat-icon"><i data-lucide="info"></i></div>
+              <div class="magnet-stat-text">
+                <div class="magnet-stat-value" style="font-size: 11px; color: var(--gray-500);">Belum aktif</div>
+                <div class="magnet-stat-label">STATUS</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="magnet-link-row">
+            <span class="magnet-link-text">akpagenku.com/cristine/profil-risiko</span>
+            <button class="magnet-copy-btn" onclick="copyLink(this, 'akpagenku.com/cristine/profil-risiko')"><i data-lucide="copy"></i> Salin</button>
+          </div>
+
+          <div class="magnet-actions">
+            <a href="/mini-site-editor.html" class="magnet-btn ghost"><i data-lucide="plus"></i> Aktifkan</a>
+            <button class="magnet-btn primary" onclick="shareWA('Kuis Profil Risiko Keuangan', 'akpagenku.com/cristine/profil-risiko')"><i data-lucide="message-circle"></i> Share ke WhatsApp</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- KALKULATOR WARISAN -->
+      <div class="magnet-item">
+        <div class="magnet-thumb" style="background: linear-gradient(135deg, #4c1d95 0%, #3730a3 100%);">
+          <span class="magnet-badge-type">KALKULATOR</span>
+          <div class="magnet-thumb-icon"><i data-lucide="landmark"></i></div>
+        </div>
+        <div class="magnet-body">
+          <div class="magnet-name">Kalkulator Warisan</div>
+          <div class="magnet-desc">
+            Estate planning untuk keluarga. Estimasi warisan yang perlu disiapkan
+            agar keluarga tetap sejahtera. Cocok untuk audience HNW.
+          </div>
+
+          <div class="magnet-stats-row">
+            <div class="magnet-stat-item">
+              <div class="magnet-stat-icon"><i data-lucide="mouse-pointer-click"></i></div>
+              <div class="magnet-stat-text">
+                <div class="magnet-stat-value">0</div>
+                <div class="magnet-stat-label">KLIK</div>
+              </div>
+            </div>
+            <div class="magnet-stat-item">
+              <div class="magnet-stat-icon"><i data-lucide="users"></i></div>
+              <div class="magnet-stat-text">
+                <div class="magnet-stat-value">0</div>
+                <div class="magnet-stat-label">LEAD</div>
+              </div>
+            </div>
+            <div class="magnet-stat-item">
+              <div class="magnet-stat-icon"><i data-lucide="info"></i></div>
+              <div class="magnet-stat-text">
+                <div class="magnet-stat-value" style="font-size: 11px; color: var(--gray-500);">Belum aktif</div>
+                <div class="magnet-stat-label">STATUS</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="magnet-link-row">
+            <span class="magnet-link-text">akpagenku.com/cristine/warisan</span>
+            <button class="magnet-copy-btn" onclick="copyLink(this, 'akpagenku.com/cristine/warisan')"><i data-lucide="copy"></i> Salin</button>
+          </div>
+
+          <div class="magnet-actions">
+            <a href="/mini-site-editor.html" class="magnet-btn ghost"><i data-lucide="plus"></i> Aktifkan</a>
+            <button class="magnet-btn primary" onclick="shareWA('Kalkulator Warisan', 'akpagenku.com/cristine/warisan')"><i data-lucide="message-circle"></i> Share ke WhatsApp</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+</div>
+
+<div class="toast" id="toast">
+  <i data-lucide="check-circle-2"></i>
+  <span id="toastMsg">Link tersalin!</span>
+</div>
+
+<script>
+function copyLink(btn, link) {
+  const fullLink = 'https://' + link;
+  navigator.clipboard.writeText(fullLink).then(() => {
+    const original = btn.innerHTML;
+    btn.innerHTML = '<i data-lucide="check"></i> Tersalin';
+    btn.classList.add('copied');
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+    showToast('Link tersalin ke clipboard');
+    setTimeout(() => {
+      btn.innerHTML = original;
+      btn.classList.remove('copied');
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }, 2000);
+  }).catch(() => alert('Link: https://' + link));
+}
+
+function shareWA(name, link) {
+  const text = `Hi! Saya rekomendasiin tool gratis ini: *${name}*\n\n${'https://' + link}\n\nGratis, gak perlu daftar, langsung dapat hasil. Coba aja 🙂`;
+  window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+}
+
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2000);
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+});
+</script>
+
+</body>
+</html>

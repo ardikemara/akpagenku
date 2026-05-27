@@ -367,6 +367,117 @@
     color: var(--gray-500);
   }
 
+  /* ===== MAGNET PICKER (Konten tab) ===== */
+  .magnet-info-bar {
+    background: var(--cream);
+    border: 1px solid rgba(201, 169, 97, 0.3);
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-bottom: 12px;
+    display: flex;
+    gap: 18px;
+  }
+  .magnet-count-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+  }
+  .magnet-count-label {
+    color: var(--gray-700);
+    font-weight: 500;
+  }
+  .magnet-count-value {
+    color: var(--navy);
+    font-weight: 700;
+    font-family: 'Playfair Display', serif;
+    font-size: 14px;
+  }
+  .magnet-pick-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .magnet-pick {
+    background: var(--white);
+    border: 1.5px solid var(--gray-200);
+    border-radius: 10px;
+    padding: 12px 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  .magnet-pick:hover { border-color: var(--gold); }
+  .magnet-pick.is-supporting {
+    border-color: var(--gold);
+    background: rgba(201, 169, 97, 0.06);
+  }
+  .magnet-pick.is-utama {
+    border-color: var(--navy);
+    background: rgba(15, 38, 71, 0.04);
+    border-width: 2px;
+  }
+  .magnet-pick-icon {
+    width: 36px;
+    height: 36px;
+    background: var(--cream);
+    color: var(--gold-dark);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .magnet-pick-icon [data-lucide] { width: 17px; height: 17px; }
+  .magnet-pick.is-utama .magnet-pick-icon {
+    background: var(--navy);
+    color: var(--gold);
+  }
+  .magnet-pick-body { flex: 1; min-width: 0; }
+  .magnet-pick-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 2px;
+    line-height: 1.3;
+  }
+  .magnet-pick-desc {
+    font-size: 11px;
+    color: var(--gray-500);
+    line-height: 1.4;
+  }
+  .magnet-pick-controls {
+    flex-shrink: 0;
+  }
+  .pick-btn {
+    background: transparent;
+    border: 1.5px solid var(--gray-200);
+    color: var(--gray-500);
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .pick-btn [data-lucide] { width: 12px; height: 12px; }
+  .magnet-pick.is-supporting .pick-btn { border-color: var(--gold); color: var(--gold-dark); }
+  .pick-btn.active {
+    background: var(--navy);
+    color: var(--gold);
+    border-color: var(--navy);
+  }
+  .pick-btn:hover:not(.active) {
+    border-color: var(--navy);
+    color: var(--navy);
+  }
+
   /* ===== CHECKBOX LIST (Produk, Konten) ===== */
   .check-list {
     display: flex;
@@ -817,10 +928,10 @@
       <a href="/mini-site-editor.html" class="nav-item active">
         <i data-lucide="palette"></i> <span>Mini-site Editor</span>
       </a>
-      <a href="#" class="nav-item">
+      <a href="/konten-library.html" class="nav-item">
         <i data-lucide="library"></i> <span>Konten Library</span>
       </a>
-      <a href="#" class="nav-item">
+      <a href="/lead-magnet.html" class="nav-item">
         <i data-lucide="target"></i> <span>Lead Magnet</span>
       </a>
       <a href="#" class="nav-item">
@@ -853,11 +964,14 @@
       <div class="topbar-left">
         <div>
           <div class="topbar-title">Mini-site Editor</div>
-          <div class="topbar-sub">akpagenku.com/cristine</div>
+          <a href="/cristine.html" target="_blank" class="topbar-sub" style="display: inline-flex; align-items: center; gap: 4px; color: var(--gray-500); text-decoration: none;">
+            akpagenku.com/cristine
+            <i data-lucide="external-link" style="width: 11px; height: 11px;"></i>
+          </a>
         </div>
       </div>
       <div class="topbar-actions">
-        <button type="button" class="btn btn-ghost"><i data-lucide="eye"></i> Preview Penuh</button>
+        <a href="/cristine.html" target="_blank" class="btn btn-ghost" style="text-decoration: none;"><i data-lucide="eye"></i> Preview Penuh</a>
         <button type="button" class="btn btn-primary"><i data-lucide="save"></i> Simpan Perubahan</button>
         <button type="button" class="btn btn-gold"><i data-lucide="rocket"></i> Publish</button>
       </div>
@@ -1062,14 +1176,139 @@
           </div>
 
           <div class="field-group" style="margin-top: 28px;">
-            <label class="field-label">Lead Magnet Utama</label>
-            <select class="field-select" id="input-magnet" onchange="updatePreview()">
-              <option value="skor">Skor Kesehatan Keuangan (Kuis)</option>
-              <option value="pensiun">Kalkulator Dana Pensiun</option>
-              <option value="pendidikan">Kalkulator Dana Pendidikan</option>
-              <option value="darurat">Kalkulator Dana Darurat</option>
-            </select>
-            <div class="field-help">Tool gratis yang ditampilkan paling besar di mini-site untuk capture lead.</div>
+            <label class="field-label">Lead Magnet</label>
+            <div class="field-help" style="margin-top: 0; margin-bottom: 12px;">
+              Pilih <strong>1 magnet utama</strong> (tampil besar) dan <strong>3 supporting</strong> (tampil di section "Tool Lainnya"). Total 4 dari 8.
+            </div>
+
+            <!-- Magnet info bar -->
+            <div class="magnet-info-bar">
+              <div class="magnet-count-item">
+                <span class="magnet-count-label">Utama:</span>
+                <span class="magnet-count-value" id="utamaCount">1/1</span>
+              </div>
+              <div class="magnet-count-item">
+                <span class="magnet-count-label">Supporting:</span>
+                <span class="magnet-count-value" id="supportingCount">3/3</span>
+              </div>
+            </div>
+
+            <!-- All 8 magnets -->
+            <div class="magnet-pick-list">
+
+              <!-- 1. Skor Kesehatan Keuangan -->
+              <div class="magnet-pick is-utama is-supporting" data-id="skor" onclick="toggleMagnet(this)">
+                <div class="magnet-pick-icon"><i data-lucide="sparkles"></i></div>
+                <div class="magnet-pick-body">
+                  <div class="magnet-pick-title">Skor Kesehatan Keuangan</div>
+                  <div class="magnet-pick-desc">Kuis · 8 pertanyaan, paling populer</div>
+                </div>
+                <div class="magnet-pick-controls">
+                  <button type="button" class="pick-btn utama-btn active" onclick="event.stopPropagation(); setUtama(this)" title="Jadikan utama">
+                    <i data-lucide="star"></i> Utama
+                  </button>
+                </div>
+              </div>
+
+              <!-- 2. Dana Pendidikan -->
+              <div class="magnet-pick is-supporting" data-id="pendidikan" onclick="toggleMagnet(this)">
+                <div class="magnet-pick-icon"><i data-lucide="graduation-cap"></i></div>
+                <div class="magnet-pick-body">
+                  <div class="magnet-pick-title">Kalkulator Dana Pendidikan</div>
+                  <div class="magnet-pick-desc">Target univ. + estimasi setoran bulanan</div>
+                </div>
+                <div class="magnet-pick-controls">
+                  <button type="button" class="pick-btn utama-btn" onclick="event.stopPropagation(); setUtama(this)" title="Jadikan utama">
+                    <i data-lucide="star"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- 3. Dana Pensiun -->
+              <div class="magnet-pick is-supporting" data-id="pensiun" onclick="toggleMagnet(this)">
+                <div class="magnet-pick-icon"><i data-lucide="piggy-bank"></i></div>
+                <div class="magnet-pick-body">
+                  <div class="magnet-pick-title">Kalkulator Dana Pensiun</div>
+                  <div class="magnet-pick-desc">Target pensiun + estimasi setoran</div>
+                </div>
+                <div class="magnet-pick-controls">
+                  <button type="button" class="pick-btn utama-btn" onclick="event.stopPropagation(); setUtama(this)" title="Jadikan utama">
+                    <i data-lucide="star"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- 4. Dana Darurat -->
+              <div class="magnet-pick is-supporting" data-id="darurat" onclick="toggleMagnet(this)">
+                <div class="magnet-pick-icon"><i data-lucide="shield"></i></div>
+                <div class="magnet-pick-body">
+                  <div class="magnet-pick-title">Kalkulator Dana Darurat</div>
+                  <div class="magnet-pick-desc">Ideal jumlah berdasar pengeluaran</div>
+                </div>
+                <div class="magnet-pick-controls">
+                  <button type="button" class="pick-btn utama-btn" onclick="event.stopPropagation(); setUtama(this)" title="Jadikan utama">
+                    <i data-lucide="star"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- 5. Premi Asuransi Jiwa -->
+              <div class="magnet-pick" data-id="jiwa" onclick="toggleMagnet(this)">
+                <div class="magnet-pick-icon"><i data-lucide="heart-pulse"></i></div>
+                <div class="magnet-pick-body">
+                  <div class="magnet-pick-title">Kalkulator Premi Asuransi Jiwa</div>
+                  <div class="magnet-pick-desc">Estimasi premi sesuai profil</div>
+                </div>
+                <div class="magnet-pick-controls">
+                  <button type="button" class="pick-btn utama-btn" onclick="event.stopPropagation(); setUtama(this)" title="Jadikan utama">
+                    <i data-lucide="star"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- 6. Cover Penyakit Kritis -->
+              <div class="magnet-pick" data-id="kritis" onclick="toggleMagnet(this)">
+                <div class="magnet-pick-icon"><i data-lucide="activity"></i></div>
+                <div class="magnet-pick-body">
+                  <div class="magnet-pick-title">Kalkulator Cover Penyakit Kritis</div>
+                  <div class="magnet-pick-desc">Estimasi UP yang dibutuhkan</div>
+                </div>
+                <div class="magnet-pick-controls">
+                  <button type="button" class="pick-btn utama-btn" onclick="event.stopPropagation(); setUtama(this)" title="Jadikan utama">
+                    <i data-lucide="star"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- 7. Profil Risiko -->
+              <div class="magnet-pick" data-id="risiko" onclick="toggleMagnet(this)">
+                <div class="magnet-pick-icon"><i data-lucide="bar-chart-3"></i></div>
+                <div class="magnet-pick-body">
+                  <div class="magnet-pick-title">Kuis Profil Risiko Keuangan</div>
+                  <div class="magnet-pick-desc">Konservatif, moderat, atau agresif?</div>
+                </div>
+                <div class="magnet-pick-controls">
+                  <button type="button" class="pick-btn utama-btn" onclick="event.stopPropagation(); setUtama(this)" title="Jadikan utama">
+                    <i data-lucide="star"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- 8. Warisan -->
+              <div class="magnet-pick" data-id="warisan" onclick="toggleMagnet(this)">
+                <div class="magnet-pick-icon"><i data-lucide="landmark"></i></div>
+                <div class="magnet-pick-body">
+                  <div class="magnet-pick-title">Kalkulator Warisan</div>
+                  <div class="magnet-pick-desc">Estate planning untuk keluarga</div>
+                </div>
+                <div class="magnet-pick-controls">
+                  <button type="button" class="pick-btn utama-btn" onclick="event.stopPropagation(); setUtama(this)" title="Jadikan utama">
+                    <i data-lucide="star"></i>
+                  </button>
+                </div>
+              </div>
+
+            </div>
           </div>
         </div>
 
@@ -1243,7 +1482,6 @@ function updatePreview() {
   const cta = document.getElementById('input-cta')?.value || '';
   const bio = document.getElementById('input-bio')?.value || '';
   const creds = document.getElementById('input-creds')?.value || '';
-  const magnet = document.getElementById('input-magnet')?.value || 'skor';
 
   if (headline) document.getElementById('prev-headline').textContent = headline;
   if (subheadline) document.getElementById('prev-subheadline').textContent = subheadline;
@@ -1257,14 +1495,76 @@ function updatePreview() {
       .join('');
   }
 
-  // Update lead magnet title
-  const magnetTitles = {
-    skor: 'Skor Kesehatan Keuangan Anda',
-    pensiun: 'Kalkulator Dana Pensiun',
-    pendidikan: 'Kalkulator Dana Pendidikan',
-    darurat: 'Kalkulator Dana Darurat'
-  };
-  document.getElementById('prev-magnet-title').textContent = magnetTitles[magnet] || magnetTitles.skor;
+  // Update lead magnet preview (utama)
+  updateMagnetPreview();
+}
+
+// ===== LEAD MAGNET PICKER =====
+const magnetData = {
+  skor:       { title: 'Skor Kesehatan Keuangan Anda', icon: 'sparkles' },
+  pendidikan: { title: 'Kalkulator Dana Pendidikan', icon: 'graduation-cap' },
+  pensiun:    { title: 'Kalkulator Dana Pensiun', icon: 'piggy-bank' },
+  darurat:    { title: 'Kalkulator Dana Darurat', icon: 'shield' },
+  jiwa:       { title: 'Kalkulator Premi Asuransi Jiwa', icon: 'heart-pulse' },
+  kritis:     { title: 'Kalkulator Cover Penyakit Kritis', icon: 'activity' },
+  risiko:     { title: 'Kuis Profil Risiko Keuangan', icon: 'bar-chart-3' },
+  warisan:    { title: 'Kalkulator Warisan', icon: 'landmark' }
+};
+
+function toggleMagnet(el) {
+  // Kalau ini magnet utama, gak bisa di-uncheck dari sini
+  if (el.classList.contains('is-utama')) return;
+
+  const isSupporting = el.classList.contains('is-supporting');
+  if (isSupporting) {
+    // Uncheck
+    el.classList.remove('is-supporting');
+  } else {
+    // Cek max 3 supporting
+    const currentSupporting = document.querySelectorAll('.magnet-pick.is-supporting:not(.is-utama)').length;
+    if (currentSupporting >= 3) {
+      alert('Maksimal 3 supporting. Hapus salah satu dulu.');
+      return;
+    }
+    el.classList.add('is-supporting');
+  }
+  updateMagnetCounts();
+  updateMagnetPreview();
+}
+
+function setUtama(btn) {
+  const card = btn.closest('.magnet-pick');
+
+  // Remove old utama
+  document.querySelectorAll('.magnet-pick.is-utama').forEach(el => {
+    el.classList.remove('is-utama');
+    const btn = el.querySelector('.utama-btn');
+    btn.classList.remove('active');
+    btn.innerHTML = '<i data-lucide="star"></i>';
+  });
+
+  // Set new utama
+  card.classList.add('is-utama');
+  card.classList.add('is-supporting'); // utama selalu juga supporting (counts as 1)
+  btn.classList.add('active');
+  btn.innerHTML = '<i data-lucide="star"></i> Utama';
+
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+  updateMagnetCounts();
+  updateMagnetPreview();
+}
+
+function updateMagnetCounts() {
+  const utamaCount = document.querySelectorAll('.magnet-pick.is-utama').length;
+  const supportingCount = document.querySelectorAll('.magnet-pick.is-supporting:not(.is-utama)').length;
+  document.getElementById('utamaCount').textContent = utamaCount + '/1';
+  document.getElementById('supportingCount').textContent = supportingCount + '/3';
+}
+
+function updateMagnetPreview() {
+  const utama = document.querySelector('.magnet-pick.is-utama');
+  const utamaId = utama?.dataset.id || 'skor';
+  document.getElementById('prev-magnet-title').textContent = magnetData[utamaId]?.title || magnetData.skor.title;
 }
 
 // Toggle produk
