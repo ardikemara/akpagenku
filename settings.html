@@ -1,0 +1,1340 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Settings | AKPAgenku</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  :root {
+    --navy: #0f2647;
+    --navy-light: #1e3a5f;
+    --navy-dark: #081a33;
+    --gold: #c9a961;
+    --gold-light: #d9bd7f;
+    --gold-dark: #a88a45;
+    --cream: #faf8f3;
+    --gray-50: #fafafa;
+    --gray-100: #f5f5f5;
+    --gray-200: #e5e5e5;
+    --gray-300: #d4d4d4;
+    --gray-500: #737373;
+    --gray-700: #404040;
+    --gray-900: #171717;
+    --white: #ffffff;
+    --green: #059669;
+    --green-light: #d1fae5;
+    --blue: #2563eb;
+    --blue-light: #dbeafe;
+    --red: #dc2626;
+    --red-light: #fee2e2;
+    --orange: #ea580c;
+    --orange-light: #fed7aa;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    color: var(--gray-900);
+    line-height: 1.5;
+    background: var(--gray-50);
+    min-height: 100vh;
+  }
+  a { color: inherit; text-decoration: none; }
+  [data-lucide] { stroke-width: 2; flex-shrink: 0; }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    min-height: 100vh;
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    background: var(--navy);
+    color: var(--white);
+    padding: 24px 0;
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+  }
+  .sidebar-brand {
+    padding: 0 24px 24px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    margin-bottom: 16px;
+  }
+  .sidebar-brand .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--white);
+  }
+  .sidebar-brand .logo .accent { color: var(--gold); }
+  .sidebar-brand .sub {
+    font-size: 11px;
+    color: rgba(255,255,255,0.5);
+    margin-top: 4px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .nav-section { flex: 1; padding: 0 12px; }
+  .nav-label {
+    font-size: 10px;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 12px 16px 8px;
+    font-weight: 600;
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 16px;
+    color: rgba(255,255,255,0.75);
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    margin-bottom: 2px;
+  }
+  .nav-item:hover { background: rgba(255,255,255,0.06); color: var(--white); }
+  .nav-item.active {
+    background: rgba(201, 169, 97, 0.15);
+    color: var(--gold);
+    border-left: 3px solid var(--gold);
+    padding-left: 13px;
+  }
+  .nav-item [data-lucide] { width: 18px; height: 18px; }
+  .nav-item .badge {
+    margin-left: auto;
+    background: var(--gold);
+    color: var(--navy);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 10px;
+  }
+  .user-card {
+    margin: 16px 12px;
+    padding: 14px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .user-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    color: var(--navy);
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+  .user-info { flex: 1; min-width: 0; }
+  .user-name { font-size: 13px; font-weight: 600; color: var(--white); }
+  .user-plan { font-size: 11px; color: var(--gold); margin-top: 1px; }
+
+  /* MAIN */
+  .main { padding: 32px 36px; overflow-x: hidden; }
+
+  .page-header { margin-bottom: 28px; }
+  .page-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 30px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 6px;
+    letter-spacing: -0.5px;
+  }
+  .page-sub { color: var(--gray-700); font-size: 14px; }
+
+  /* SETTINGS LAYOUT */
+  .settings-layout {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 32px;
+    align-items: start;
+  }
+
+  .settings-tabs {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: 12px;
+    padding: 12px;
+    position: sticky;
+    top: 24px;
+  }
+  .settings-tab {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gray-700);
+    cursor: pointer;
+    transition: all 0.15s;
+    margin-bottom: 4px;
+    background: transparent;
+    border: none;
+    width: 100%;
+    text-align: left;
+    font-family: inherit;
+  }
+  .settings-tab [data-lucide] { width: 16px; height: 16px; }
+  .settings-tab:hover { background: var(--gray-50); color: var(--navy); }
+  .settings-tab.active {
+    background: rgba(201, 169, 97, 0.12);
+    color: var(--navy);
+  }
+  .settings-tab.active [data-lucide] { color: var(--gold-dark); }
+
+  .settings-content {
+    min-width: 0;
+  }
+  .settings-panel {
+    display: none;
+  }
+  .settings-panel.active {
+    display: block;
+  }
+
+  .panel-card {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: 14px;
+    padding: 28px 32px;
+    margin-bottom: 18px;
+  }
+  .panel-card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 4px;
+  }
+  .panel-card-sub {
+    font-size: 13px;
+    color: var(--gray-500);
+    margin-bottom: 24px;
+  }
+
+  /* FORM */
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-bottom: 18px;
+  }
+  .form-group { margin-bottom: 18px; }
+  .form-group:last-child { margin-bottom: 0; }
+  .form-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 6px;
+    letter-spacing: 0.2px;
+  }
+  .form-input,
+  .form-textarea,
+  .form-select {
+    width: 100%;
+    padding: 10px 13px;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 8px;
+    font-size: 13px;
+    font-family: inherit;
+    color: var(--gray-900);
+    background: var(--white);
+    transition: all 0.15s;
+  }
+  .form-input:focus,
+  .form-textarea:focus,
+  .form-select:focus {
+    outline: none;
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(201, 169, 97, 0.15);
+  }
+  .form-textarea { min-height: 80px; resize: vertical; }
+  .form-help {
+    font-size: 11px;
+    color: var(--gray-500);
+    margin-top: 5px;
+    line-height: 1.5;
+  }
+  .input-with-prefix {
+    display: flex;
+    align-items: center;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 8px;
+    background: var(--white);
+    transition: all 0.15s;
+    overflow: hidden;
+  }
+  .input-with-prefix:focus-within {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(201, 169, 97, 0.15);
+  }
+  .input-prefix {
+    background: var(--gray-50);
+    color: var(--gray-500);
+    padding: 10px 13px;
+    font-size: 13px;
+    border-right: 1px solid var(--gray-200);
+    white-space: nowrap;
+  }
+  .input-with-prefix .form-input {
+    border: none;
+    border-radius: 0;
+    flex: 1;
+  }
+  .input-with-prefix .form-input:focus {
+    box-shadow: none;
+  }
+
+  /* AVATAR UPLOADER */
+  .avatar-uploader {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 16px;
+    background: var(--gray-50);
+    border-radius: 12px;
+    margin-bottom: 24px;
+  }
+  .avatar-uploader-img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+    color: var(--navy);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 700;
+    flex-shrink: 0;
+    border: 3px solid var(--white);
+    box-shadow: 0 6px 16px rgba(201, 169, 97, 0.25);
+  }
+  .avatar-uploader-info { flex: 1; }
+  .avatar-uploader-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 3px;
+  }
+  .avatar-uploader-sub {
+    font-size: 12px;
+    color: var(--gray-500);
+    margin-bottom: 10px;
+  }
+  .avatar-uploader-actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  /* BUTTONS */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+    border: none;
+  }
+  .btn [data-lucide] { width: 14px; height: 14px; }
+  .btn-primary { background: var(--navy); color: var(--white); }
+  .btn-primary:hover { background: var(--navy-dark); transform: translateY(-1px); }
+  .btn-ghost {
+    background: var(--white);
+    color: var(--gray-700);
+    border: 1.5px solid var(--gray-200);
+  }
+  .btn-ghost:hover { border-color: var(--navy); color: var(--navy); }
+  .btn-danger { background: var(--red); color: var(--white); }
+  .btn-danger:hover { background: #b91c1c; transform: translateY(-1px); }
+  .btn-success { background: var(--green); color: var(--white); }
+  .btn-success:hover { background: #047857; transform: translateY(-1px); }
+
+  .save-bar {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding-top: 20px;
+    border-top: 1px solid var(--gray-100);
+    margin-top: 24px;
+  }
+
+  /* PLAN CARD */
+  .plan-card {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+    color: var(--white);
+    border-radius: 14px;
+    padding: 28px 32px;
+    margin-bottom: 18px;
+    position: relative;
+    overflow: hidden;
+  }
+  .plan-card::before {
+    content: '';
+    position: absolute;
+    top: -60px;
+    right: -60px;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(201, 169, 97, 0.2) 0%, transparent 70%);
+  }
+  .plan-card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    position: relative;
+  }
+  .plan-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 4px;
+  }
+  .plan-price {
+    color: var(--gold);
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .plan-badge {
+    background: rgba(201, 169, 97, 0.2);
+    color: var(--gold);
+    padding: 5px 12px;
+    border-radius: 14px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .plan-meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    padding-top: 18px;
+    border-top: 1px solid rgba(255,255,255,0.12);
+    position: relative;
+  }
+  .plan-meta-item .label {
+    font-size: 11px;
+    color: rgba(255,255,255,0.6);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .plan-meta-item .value {
+    font-size: 14px;
+    color: var(--white);
+    font-weight: 600;
+  }
+  .plan-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    position: relative;
+  }
+  .plan-actions .btn-ghost {
+    background: rgba(255,255,255,0.1);
+    color: var(--white);
+    border-color: rgba(255,255,255,0.2);
+  }
+  .plan-actions .btn-ghost:hover {
+    background: rgba(255,255,255,0.15);
+    border-color: var(--gold);
+  }
+  .plan-actions .btn-primary {
+    background: var(--gold);
+    color: var(--navy);
+  }
+  .plan-actions .btn-primary:hover {
+    background: var(--gold-light);
+  }
+
+  /* INVOICE TABLE */
+  .invoice-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 0.6fr 0.6fr;
+    gap: 12px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--gray-100);
+    align-items: center;
+    font-size: 13px;
+  }
+  .invoice-row:last-child { border-bottom: none; }
+  .invoice-row.head {
+    border-bottom: 2px solid var(--gray-200);
+    padding-bottom: 10px;
+  }
+  .invoice-row.head > div {
+    font-size: 10px;
+    color: var(--gray-500);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  .invoice-date { color: var(--gray-700); }
+  .invoice-desc { color: var(--navy); font-weight: 600; }
+  .invoice-amount {
+    font-family: 'Playfair Display', serif;
+    color: var(--navy);
+    font-weight: 700;
+  }
+  .invoice-status {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 10px;
+  }
+  .invoice-status.paid { background: var(--green-light); color: var(--green); }
+  .invoice-status.pending { background: var(--orange-light); color: var(--orange); }
+  .invoice-action {
+    color: var(--gold-dark);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .invoice-action:hover { color: var(--navy); }
+
+  /* PAYMENT METHOD CARD */
+  .payment-method {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    border-radius: 10px;
+    margin-bottom: 10px;
+  }
+  .payment-method-icon {
+    width: 44px;
+    height: 32px;
+    background: var(--white);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    color: var(--navy);
+    font-size: 12px;
+    border: 1px solid var(--gray-200);
+  }
+  .payment-method-info { flex: 1; }
+  .payment-method-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--navy);
+  }
+  .payment-method-meta {
+    font-size: 11px;
+    color: var(--gray-500);
+    margin-top: 2px;
+  }
+  .payment-method-badge {
+    background: var(--cream);
+    color: var(--gold-dark);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 10px;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+  }
+
+  /* TOGGLE SWITCH */
+  .toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--gray-100);
+  }
+  .toggle-row:last-child { border-bottom: none; }
+  .toggle-info { flex: 1; padding-right: 16px; }
+  .toggle-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 3px;
+  }
+  .toggle-desc {
+    font-size: 12px;
+    color: var(--gray-500);
+    line-height: 1.5;
+  }
+  .toggle-switch {
+    position: relative;
+    width: 42px;
+    height: 24px;
+    background: var(--gray-300);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.2s;
+    flex-shrink: 0;
+  }
+  .toggle-switch.on { background: var(--green); }
+  .toggle-switch::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    background: var(--white);
+    border-radius: 50%;
+    transition: transform 0.2s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+  }
+  .toggle-switch.on::after {
+    transform: translateX(18px);
+  }
+
+  /* INTEGRATION CARD */
+  .integration-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 20px;
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: 12px;
+    margin-bottom: 10px;
+    transition: all 0.15s;
+  }
+  .integration-card:hover {
+    border-color: var(--gold);
+  }
+  .integration-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .integration-icon [data-lucide] { width: 24px; height: 24px; }
+  .integration-icon.wa { background: #e8f9ed; color: #25d366; }
+  .integration-icon.gcal { background: var(--blue-light); color: var(--blue); }
+  .integration-icon.webhook { background: rgba(201, 169, 97, 0.15); color: var(--gold-dark); }
+  .integration-icon.mailchimp { background: var(--gray-100); color: var(--gray-500); }
+  .integration-icon.zapier { background: var(--gray-100); color: var(--gray-500); }
+
+  .integration-body { flex: 1; min-width: 0; }
+  .integration-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 3px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .integration-status {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 8px;
+    letter-spacing: 0.3px;
+  }
+  .integration-status.connected { background: var(--green-light); color: var(--green); }
+  .integration-status.soon { background: var(--gray-100); color: var(--gray-500); }
+  .integration-desc {
+    font-size: 12px;
+    color: var(--gray-500);
+    line-height: 1.5;
+  }
+
+  /* SESSION ROW */
+  .session-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--gray-100);
+  }
+  .session-row:last-child { border-bottom: none; }
+  .session-icon {
+    width: 36px;
+    height: 36px;
+    background: var(--cream);
+    color: var(--gold-dark);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .session-icon [data-lucide] { width: 17px; height: 17px; }
+  .session-info { flex: 1; min-width: 0; }
+  .session-device {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--navy);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .session-meta {
+    font-size: 11px;
+    color: var(--gray-500);
+    margin-top: 2px;
+  }
+  .session-current {
+    background: var(--green-light);
+    color: var(--green);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+    letter-spacing: 0.3px;
+  }
+
+  /* DANGER ZONE */
+  .danger-zone {
+    border: 1.5px solid var(--red-light);
+    background: #fef9f9;
+  }
+  .danger-zone .panel-card-title { color: var(--red); }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--navy);
+    color: var(--white);
+    padding: 14px 22px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    box-shadow: 0 12px 30px rgba(15, 38, 71, 0.3);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    transition: transform 0.3s;
+    z-index: 1000;
+  }
+  .toast [data-lucide] { width: 16px; height: 16px; color: var(--gold); }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* RESPONSIVE */
+  @media (max-width: 960px) {
+    .settings-layout { grid-template-columns: 1fr; }
+    .settings-tabs {
+      position: relative;
+      top: 0;
+      display: flex;
+      overflow-x: auto;
+      padding: 8px;
+    }
+    .settings-tab { white-space: nowrap; }
+    .form-row { grid-template-columns: 1fr; }
+    .plan-meta { grid-template-columns: 1fr; }
+    .invoice-row { grid-template-columns: 1fr 1fr; gap: 8px; font-size: 12px; }
+    .invoice-row > div:nth-child(3), .invoice-row > div:nth-child(5) { display: none; }
+  }
+  @media (max-width: 768px) {
+    .layout { grid-template-columns: 1fr; }
+    .sidebar { position: relative; height: auto; padding: 16px 0; }
+    .nav-section { display: flex; overflow-x: auto; padding: 0 12px; }
+    .nav-label { display: none; }
+    .nav-item { white-space: nowrap; margin-right: 4px; }
+    .user-card { margin: 12px; }
+    .main { padding: 22px 18px; }
+    .panel-card { padding: 22px 20px; }
+    .page-title { font-size: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="logo">AKP<span class="accent">Agenku</span></div>
+      <div class="sub">Dashboard Agen</div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">Menu Utama</div>
+      <a href="/dashboard.html" class="nav-item">
+        <i data-lucide="layout-dashboard"></i> <span>Dashboard</span>
+      </a>
+      <a href="/mini-site-editor.html" class="nav-item">
+        <i data-lucide="palette"></i> <span>Mini-site Editor</span>
+      </a>
+      <a href="/konten-library.html" class="nav-item">
+        <i data-lucide="library"></i> <span>Konten Library</span>
+      </a>
+      <a href="/lead-magnet.html" class="nav-item">
+        <i data-lucide="target"></i> <span>Lead Magnet</span>
+      </a>
+      <a href="/lead-crm.html" class="nav-item">
+        <i data-lucide="users"></i> <span>Lead & CRM</span>
+        <span class="badge">12</span>
+      </a>
+
+      <div class="nav-label">Pengaturan</div>
+      <a href="/settings.html" class="nav-item active">
+        <i data-lucide="settings"></i> <span>Settings</span>
+      </a>
+      <a href="/login.html" class="nav-item">
+        <i data-lucide="log-out"></i> <span>Logout</span>
+      </a>
+    </div>
+
+    <div class="user-card">
+      <div class="user-avatar">C</div>
+      <div class="user-info">
+        <div class="user-name">Cristine L.</div>
+        <div class="user-plan">Paket Solo</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <div class="page-header">
+      <h1 class="page-title">Settings</h1>
+      <p class="page-sub">Atur preferensi akun, tagihan, notifikasi, integrasi, dan keamanan.</p>
+    </div>
+
+    <div class="settings-layout">
+
+      <!-- TABS -->
+      <div class="settings-tabs">
+        <button class="settings-tab active" onclick="switchTab('profil', this)">
+          <i data-lucide="user"></i> Profil
+        </button>
+        <button class="settings-tab" onclick="switchTab('akun', this)">
+          <i data-lucide="credit-card"></i> Akun & Tagihan
+        </button>
+        <button class="settings-tab" onclick="switchTab('notifikasi', this)">
+          <i data-lucide="bell"></i> Notifikasi
+        </button>
+        <button class="settings-tab" onclick="switchTab('integrasi', this)">
+          <i data-lucide="plug"></i> Integrasi
+        </button>
+        <button class="settings-tab" onclick="switchTab('keamanan', this)">
+          <i data-lucide="shield"></i> Keamanan
+        </button>
+      </div>
+
+      <!-- CONTENT -->
+      <div class="settings-content">
+
+        <!-- ===== TAB 1: PROFIL ===== -->
+        <div class="settings-panel active" id="panel-profil">
+          <div class="panel-card">
+            <div class="panel-card-title">Foto Profil</div>
+            <div class="panel-card-sub">Foto ini akan tampil di mini-site publik Anda dan di dashboard.</div>
+
+            <div class="avatar-uploader">
+              <div class="avatar-uploader-img">C</div>
+              <div class="avatar-uploader-info">
+                <div class="avatar-uploader-title">Cristine Lestari</div>
+                <div class="avatar-uploader-sub">PNG atau JPG, maksimal 2MB. Ukuran rekomendasi 400×400px.</div>
+                <div class="avatar-uploader-actions">
+                  <button class="btn btn-primary"><i data-lucide="upload"></i> Upload Foto Baru</button>
+                  <button class="btn btn-ghost"><i data-lucide="trash-2"></i> Hapus</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel-card">
+            <div class="panel-card-title">Informasi Profil</div>
+            <div class="panel-card-sub">Informasi ini muncul di mini-site dan menjadi identitas Anda di platform.</div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Nama Lengkap</label>
+                <input type="text" class="form-input" value="Cristine Lestari">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Nama Panggilan</label>
+                <input type="text" class="form-input" value="Cristine">
+                <div class="form-help">Digunakan untuk sapaan di dashboard.</div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">URL Mini-site Anda</label>
+              <div class="input-with-prefix">
+                <span class="input-prefix">akpagenku.com/</span>
+                <input type="text" class="form-input" value="cristine">
+              </div>
+              <div class="form-help">Link mini-site Anda. Hanya bisa diubah maksimal 1x per 30 hari.</div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-input" value="cristine.lestari@email.com">
+                <div class="form-help">Email untuk login & notifikasi.</div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">WhatsApp Business</label>
+                <div class="input-with-prefix">
+                  <span class="input-prefix">+62</span>
+                  <input type="tel" class="form-input" value="81234567890">
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Kota</label>
+                <input type="text" class="form-input" value="Jakarta">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Perusahaan Asuransi</label>
+                <input type="text" class="form-input" value="Prudential Indonesia">
+              </div>
+            </div>
+
+            <div class="save-bar">
+              <button class="btn btn-ghost">Batal</button>
+              <button class="btn btn-primary" onclick="showToast('Profil berhasil diperbarui')"><i data-lucide="save"></i> Simpan Perubahan</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== TAB 2: AKUN & TAGIHAN ===== -->
+        <div class="settings-panel" id="panel-akun">
+
+          <!-- Plan Card -->
+          <div class="plan-card">
+            <div class="plan-card-head">
+              <div>
+                <div class="plan-name">Paket Solo</div>
+                <div class="plan-price">Rp 600.000 / bulan</div>
+              </div>
+              <span class="plan-badge">AKTIF</span>
+            </div>
+
+            <div class="plan-meta">
+              <div class="plan-meta-item">
+                <div class="label">Tagihan Berikutnya</div>
+                <div class="value">27 Juni 2026</div>
+              </div>
+              <div class="plan-meta-item">
+                <div class="label">Total Berikutnya</div>
+                <div class="value">Rp 666.000 (incl PPN)</div>
+              </div>
+            </div>
+
+            <div class="plan-actions">
+              <button class="btn btn-primary"><i data-lucide="trending-up"></i> Upgrade ke Team</button>
+              <button class="btn btn-ghost">Lihat Detail Paket</button>
+            </div>
+          </div>
+
+          <!-- Payment Method -->
+          <div class="panel-card">
+            <div class="panel-card-title">Metode Pembayaran</div>
+            <div class="panel-card-sub">Metode pembayaran yang akan digunakan untuk tagihan berikutnya.</div>
+
+            <div class="payment-method">
+              <div class="payment-method-icon">G</div>
+              <div class="payment-method-info">
+                <div class="payment-method-name">GoPay</div>
+                <div class="payment-method-meta">+62 812-3456-7890</div>
+              </div>
+              <span class="payment-method-badge">Default</span>
+              <button class="btn btn-ghost" style="margin-left: 10px;"><i data-lucide="edit-3"></i> Ubah</button>
+            </div>
+
+            <button class="btn btn-ghost" style="margin-top: 10px;"><i data-lucide="plus"></i> Tambah Metode Pembayaran</button>
+          </div>
+
+          <!-- Invoice History -->
+          <div class="panel-card">
+            <div class="panel-card-title">Riwayat Pembayaran</div>
+            <div class="panel-card-sub">Riwayat tagihan 6 bulan terakhir.</div>
+
+            <div class="invoice-row head">
+              <div>Tanggal</div>
+              <div>Deskripsi</div>
+              <div>Metode</div>
+              <div>Nominal</div>
+              <div>Status</div>
+            </div>
+
+            <div class="invoice-row">
+              <div class="invoice-date">27 Mei 2026</div>
+              <div class="invoice-desc">Paket Solo · Mei</div>
+              <div class="invoice-date">GoPay</div>
+              <div class="invoice-amount">Rp 666.000</div>
+              <div><span class="invoice-status paid">Lunas</span></div>
+            </div>
+
+            <div class="invoice-row">
+              <div class="invoice-date">27 Apr 2026</div>
+              <div class="invoice-desc">Paket Solo · Apr</div>
+              <div class="invoice-date">GoPay</div>
+              <div class="invoice-amount">Rp 666.000</div>
+              <div><span class="invoice-status paid">Lunas</span></div>
+            </div>
+
+            <div class="invoice-row">
+              <div class="invoice-date">27 Mar 2026</div>
+              <div class="invoice-desc">Paket Solo · Mar</div>
+              <div class="invoice-date">BCA VA</div>
+              <div class="invoice-amount">Rp 666.000</div>
+              <div><span class="invoice-status paid">Lunas</span></div>
+            </div>
+
+            <div class="invoice-row">
+              <div class="invoice-date">27 Feb 2026</div>
+              <div class="invoice-desc">Paket Solo · Feb</div>
+              <div class="invoice-date">BCA VA</div>
+              <div class="invoice-amount">Rp 666.000</div>
+              <div><span class="invoice-status paid">Lunas</span></div>
+            </div>
+
+            <div class="save-bar">
+              <button class="btn btn-ghost"><i data-lucide="download"></i> Download Semua Invoice</button>
+            </div>
+          </div>
+
+          <!-- Cancel Subscription -->
+          <div class="panel-card danger-zone">
+            <div class="panel-card-title">Berhenti Langganan</div>
+            <div class="panel-card-sub">Jika berhenti, mini-site Anda akan offline & data lead akan terhapus 30 hari setelah pembatalan.</div>
+            <button class="btn btn-danger"><i data-lucide="x-circle"></i> Berhenti Langganan</button>
+          </div>
+        </div>
+
+        <!-- ===== TAB 3: NOTIFIKASI ===== -->
+        <div class="settings-panel" id="panel-notifikasi">
+          <div class="panel-card">
+            <div class="panel-card-title">Notifikasi Email</div>
+            <div class="panel-card-sub">Email yang dikirim ke cristine.lestari@email.com</div>
+
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <div class="toggle-title">Lead baru masuk</div>
+                <div class="toggle-desc">Dapat email instan saat ada prospek isi kuis/kalkulator Anda.</div>
+              </div>
+              <div class="toggle-switch on" onclick="toggleSwitch(this)"></div>
+            </div>
+
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <div class="toggle-title">Ringkasan harian</div>
+                <div class="toggle-desc">Email setiap pagi jam 7 berisi summary lead & performa kemarin.</div>
+              </div>
+              <div class="toggle-switch on" onclick="toggleSwitch(this)"></div>
+            </div>
+
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <div class="toggle-title">Lead belum di-followup</div>
+                <div class="toggle-desc">Reminder lead di kolom "Prospek Baru" yang sudah lebih dari 3 hari.</div>
+              </div>
+              <div class="toggle-switch on" onclick="toggleSwitch(this)"></div>
+            </div>
+
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <div class="toggle-title">Konten baru dari admin</div>
+                <div class="toggle-desc">Notifikasi saat admin upload konten baru ke Konten Library.</div>
+              </div>
+              <div class="toggle-switch" onclick="toggleSwitch(this)"></div>
+            </div>
+          </div>
+
+          <div class="panel-card">
+            <div class="panel-card-title">Notifikasi WhatsApp</div>
+            <div class="panel-card-sub">Pesan WhatsApp ke +62 812-3456-7890</div>
+
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <div class="toggle-title">Lead hot (high priority)</div>
+                <div class="toggle-desc">Notif WA saat ada lead dengan skor rendah (butuh follow-up cepat).</div>
+              </div>
+              <div class="toggle-switch on" onclick="toggleSwitch(this)"></div>
+            </div>
+
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <div class="toggle-title">Reminder follow-up</div>
+                <div class="toggle-desc">Pengingat WA pukul 09:00 untuk lead yang perlu dihubungi hari ini.</div>
+              </div>
+              <div class="toggle-switch on" onclick="toggleSwitch(this)"></div>
+            </div>
+
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <div class="toggle-title">Tagihan jatuh tempo</div>
+                <div class="toggle-desc">Pengingat WA 3 hari sebelum tagihan jatuh tempo.</div>
+              </div>
+              <div class="toggle-switch on" onclick="toggleSwitch(this)"></div>
+            </div>
+          </div>
+
+          <div class="panel-card">
+            <div class="panel-card-title">Notifikasi Sistem</div>
+            <div class="panel-card-sub">Update & pengumuman platform AKPAgenku</div>
+
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <div class="toggle-title">Update fitur baru</div>
+                <div class="toggle-desc">Email saat ada fitur baru yang dirilis.</div>
+              </div>
+              <div class="toggle-switch on" onclick="toggleSwitch(this)"></div>
+            </div>
+
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <div class="toggle-title">Maintenance & downtime</div>
+                <div class="toggle-desc">Pemberitahuan saat ada maintenance terjadwal.</div>
+              </div>
+              <div class="toggle-switch on" onclick="toggleSwitch(this)"></div>
+            </div>
+
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <div class="toggle-title">Newsletter mingguan</div>
+                <div class="toggle-desc">Tips & best practice lead generation untuk agen asuransi.</div>
+              </div>
+              <div class="toggle-switch" onclick="toggleSwitch(this)"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== TAB 4: INTEGRASI ===== -->
+        <div class="settings-panel" id="panel-integrasi">
+          <div class="panel-card">
+            <div class="panel-card-title">Integrasi Aktif</div>
+            <div class="panel-card-sub">Hubungkan AKPAgenku dengan tool yang Anda gunakan sehari-hari.</div>
+
+            <div class="integration-card">
+              <div class="integration-icon wa"><i data-lucide="message-circle"></i></div>
+              <div class="integration-body">
+                <div class="integration-title">
+                  WhatsApp Business API
+                  <span class="integration-status connected">CONNECTED</span>
+                </div>
+                <div class="integration-desc">Kirim pesan otomatis ke lead langsung dari dashboard. Tersambung sejak 12 Feb 2026.</div>
+              </div>
+              <button class="btn btn-ghost"><i data-lucide="settings"></i> Kelola</button>
+            </div>
+
+            <div class="integration-card">
+              <div class="integration-icon gcal"><i data-lucide="calendar"></i></div>
+              <div class="integration-body">
+                <div class="integration-title">Google Calendar</div>
+                <div class="integration-desc">Sync meeting dengan lead langsung ke kalender Anda. Reminder otomatis.</div>
+              </div>
+              <button class="btn btn-primary"><i data-lucide="plug"></i> Sambungkan</button>
+            </div>
+
+            <div class="integration-card">
+              <div class="integration-icon webhook"><i data-lucide="webhook"></i></div>
+              <div class="integration-body">
+                <div class="integration-title">Webhook Custom</div>
+                <div class="integration-desc">Untuk developer: kirim event lead ke endpoint Anda sendiri. Cocok untuk Zapier, n8n, dll.</div>
+              </div>
+              <button class="btn btn-ghost"><i data-lucide="code"></i> Setup</button>
+            </div>
+          </div>
+
+          <div class="panel-card">
+            <div class="panel-card-title">Akan Datang</div>
+            <div class="panel-card-sub">Integrasi yang sedang kami siapkan.</div>
+
+            <div class="integration-card">
+              <div class="integration-icon mailchimp"><i data-lucide="mail"></i></div>
+              <div class="integration-body">
+                <div class="integration-title">
+                  Mailchimp
+                  <span class="integration-status soon">COMING SOON</span>
+                </div>
+                <div class="integration-desc">Auto-sync lead ke list Mailchimp untuk email marketing campaign.</div>
+              </div>
+              <button class="btn btn-ghost" disabled style="opacity: 0.5; cursor: not-allowed;"><i data-lucide="bell"></i> Notify Saya</button>
+            </div>
+
+            <div class="integration-card">
+              <div class="integration-icon zapier"><i data-lucide="zap"></i></div>
+              <div class="integration-body">
+                <div class="integration-title">
+                  Zapier
+                  <span class="integration-status soon">COMING SOON</span>
+                </div>
+                <div class="integration-desc">Hubungkan dengan 5000+ aplikasi lain via Zapier (Sheets, Notion, Trello, dll).</div>
+              </div>
+              <button class="btn btn-ghost" disabled style="opacity: 0.5; cursor: not-allowed;"><i data-lucide="bell"></i> Notify Saya</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== TAB 5: KEAMANAN ===== -->
+        <div class="settings-panel" id="panel-keamanan">
+          <div class="panel-card">
+            <div class="panel-card-title">Ganti Password</div>
+            <div class="panel-card-sub">Pastikan password baru minimal 8 karakter, mengandung huruf besar, angka, dan simbol.</div>
+
+            <div class="form-group">
+              <label class="form-label">Password Saat Ini</label>
+              <input type="password" class="form-input" placeholder="••••••••">
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Password Baru</label>
+                <input type="password" class="form-input" placeholder="Minimal 8 karakter">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Konfirmasi Password Baru</label>
+                <input type="password" class="form-input" placeholder="Ulang password baru">
+              </div>
+            </div>
+
+            <div class="save-bar">
+              <button class="btn btn-primary" onclick="showToast('Password berhasil diubah')"><i data-lucide="key"></i> Ubah Password</button>
+            </div>
+          </div>
+
+          <div class="panel-card">
+            <div class="panel-card-title">Two-Factor Authentication (2FA)</div>
+            <div class="panel-card-sub">Tambah lapisan keamanan ekstra untuk akun Anda.</div>
+
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <div class="toggle-title">Aktifkan 2FA via SMS</div>
+                <div class="toggle-desc">Kode OTP dikirim via SMS ke nomor WhatsApp Anda saat login dari device baru.</div>
+              </div>
+              <div class="toggle-switch" onclick="toggleSwitch(this)"></div>
+            </div>
+
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <div class="toggle-title">Aktifkan 2FA via Authenticator App</div>
+                <div class="toggle-desc">Gunakan Google Authenticator atau Authy untuk kode 2FA.</div>
+              </div>
+              <div class="toggle-switch" onclick="toggleSwitch(this)"></div>
+            </div>
+          </div>
+
+          <div class="panel-card">
+            <div class="panel-card-title">Sesi Aktif</div>
+            <div class="panel-card-sub">Device yang saat ini login ke akun Anda.</div>
+
+            <div class="session-row">
+              <div class="session-icon"><i data-lucide="laptop"></i></div>
+              <div class="session-info">
+                <div class="session-device">Chrome di MacBook Pro <span class="session-current">CURRENT</span></div>
+                <div class="session-meta">Jakarta, Indonesia · Aktif sekarang</div>
+              </div>
+            </div>
+
+            <div class="session-row">
+              <div class="session-icon"><i data-lucide="smartphone"></i></div>
+              <div class="session-info">
+                <div class="session-device">Safari di iPhone</div>
+                <div class="session-meta">Jakarta, Indonesia · 2 jam lalu</div>
+              </div>
+              <button class="btn btn-ghost"><i data-lucide="log-out"></i> Logout</button>
+            </div>
+
+            <div class="session-row">
+              <div class="session-icon"><i data-lucide="tablet"></i></div>
+              <div class="session-info">
+                <div class="session-device">Chrome di iPad</div>
+                <div class="session-meta">Jakarta, Indonesia · 5 hari lalu</div>
+              </div>
+              <button class="btn btn-ghost"><i data-lucide="log-out"></i> Logout</button>
+            </div>
+
+            <div class="save-bar">
+              <button class="btn btn-danger"><i data-lucide="log-out"></i> Logout dari Semua Device Lain</button>
+            </div>
+          </div>
+
+          <div class="panel-card danger-zone">
+            <div class="panel-card-title">Hapus Akun</div>
+            <div class="panel-card-sub">Tindakan ini permanen. Mini-site, data lead, dan riwayat akan terhapus dan tidak bisa dipulihkan.</div>
+            <button class="btn btn-danger"><i data-lucide="trash-2"></i> Hapus Akun Saya</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div class="toast" id="toast">
+  <i data-lucide="check-circle-2"></i>
+  <span id="toastMsg">Tersimpan</span>
+</div>
+
+<script>
+function switchTab(tab, btn) {
+  document.querySelectorAll('.settings-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.settings-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + tab).classList.add('active');
+  if (btn && !btn.classList.contains('settings-tab')) btn = btn.closest('.settings-tab');
+  if (btn) btn.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function toggleSwitch(el) {
+  el.classList.toggle('on');
+  showToast(el.classList.contains('on') ? 'Notifikasi aktif' : 'Notifikasi dinonaktifkan');
+}
+
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 1800);
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+});
+</script>
+
+</body>
+</html>
