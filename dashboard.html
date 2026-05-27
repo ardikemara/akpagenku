@@ -257,6 +257,13 @@
     align-items: center;
     gap: 14px;
     max-width: 380px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .site-link-box:hover {
+    border-color: var(--gold);
+    box-shadow: 0 6px 16px -8px rgba(15, 38, 71, 0.12);
+    transform: translateY(-1px);
   }
   .site-link-box .label-icon {
     width: 38px;
@@ -730,14 +737,14 @@
         <h1>Selamat datang, Cristine <i data-lucide="hand"></i></h1>
         <p>Ini ringkasan performa Anda bulan ini.</p>
       </div>
-      <div class="site-link-box">
+      <a href="/cristine.html" target="_blank" class="site-link-box" style="text-decoration: none;">
         <div class="label-icon"><i data-lucide="globe"></i></div>
         <div class="info">
-          <div class="label-text">Mini-site Anda</div>
+          <div class="label-text">Mini-site Anda · Klik untuk lihat</div>
           <div class="url">akpagenku.com/cristine</div>
         </div>
-        <button class="copy-btn"><i data-lucide="copy"></i> Salin</button>
-      </div>
+        <button class="copy-btn" onclick="event.preventDefault(); copyMinisiteLink(this);"><i data-lucide="copy"></i> Salin</button>
+      </a>
     </div>
 
     <!-- STATS -->
@@ -879,26 +886,26 @@
       <div class="card-title">Aksi Cepat</div>
     </div>
     <div class="quick-actions">
-      <div class="action-card">
+      <a href="/mini-site-editor.html" class="action-card">
         <div class="action-icon"><i data-lucide="palette"></i></div>
         <div class="action-title">Edit Mini-site</div>
         <div class="action-desc">Ubah tampilan & konten</div>
-      </div>
-      <div class="action-card">
-        <div class="action-icon"><i data-lucide="file-text"></i></div>
-        <div class="action-title">Pilih Artikel Baru</div>
-        <div class="action-desc">8 artikel baru bulan ini</div>
-      </div>
-      <div class="action-card">
+      </a>
+      <a href="/cristine.html" target="_blank" class="action-card">
+        <div class="action-icon"><i data-lucide="eye"></i></div>
+        <div class="action-title">Lihat Mini-site</div>
+        <div class="action-desc">Buka tampilan publik</div>
+      </a>
+      <a href="#" onclick="event.preventDefault(); copyMinisiteLink(this);" class="action-card">
         <div class="action-icon"><i data-lucide="link"></i></div>
-        <div class="action-title">Salin Link Kuis</div>
+        <div class="action-title">Salin Link</div>
         <div class="action-desc">Share ke WA / sosmed</div>
-      </div>
-      <div class="action-card">
+      </a>
+      <a href="#" class="action-card">
         <div class="action-icon"><i data-lucide="message-circle"></i></div>
         <div class="action-title">Follow-up Lead</div>
         <div class="action-desc">5 lead perlu dihubungi</div>
-      </div>
+      </a>
     </div>
 
     <!-- ===== CONTENT GRID (Funnel + Lead Terbaru) ===== -->
@@ -1010,6 +1017,25 @@ function setMode(mode, btn) {
   document.querySelectorAll('.demo-toggle button').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById('userPlan').textContent = mode === 'team' ? 'Paket Team (Leader)' : 'Paket Solo';
+}
+
+function copyMinisiteLink(btn) {
+  const link = window.location.origin + '/cristine.html';
+  navigator.clipboard.writeText(link).then(() => {
+    const original = btn.innerHTML;
+    btn.innerHTML = '<i data-lucide="check"></i> Tersalin!';
+    btn.style.color = 'var(--green)';
+    btn.style.borderColor = 'var(--green)';
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+    setTimeout(() => {
+      btn.innerHTML = original;
+      btn.style.color = '';
+      btn.style.borderColor = '';
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }, 1800);
+  }).catch(() => {
+    alert('Link: ' + link);
+  });
 }
 
 window.addEventListener('DOMContentLoaded', () => {
