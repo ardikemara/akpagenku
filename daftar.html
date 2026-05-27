@@ -442,7 +442,7 @@
       Isi data berikut untuk membuat akun. Hanya 2 menit, langsung lanjut ke pembayaran.
     </p>
 
-    <form id="daftarForm" onsubmit="handleSubmit(event)">
+    <form id="daftarForm">
 
       <div class="form-group">
         <label class="form-label">Nama Lengkap <span class="req">*</span></label>
@@ -700,6 +700,21 @@ async function handleSubmit(event) {
     btn.disabled = false;
     btn.textContent = 'Daftar Sekarang →';
   }
+}
+
+// Attach submit handler via addEventListener (more reliable than inline onsubmit)
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.getElementById('daftarForm');
+  if (form) {
+    form.addEventListener('submit', handleSubmit);
+    console.log('Submit handler attached');
+  }
+});
+
+// Also try immediate attach in case DOMContentLoaded already fired
+const formImmediate = document.getElementById('daftarForm');
+if (formImmediate) {
+  formImmediate.addEventListener('submit', handleSubmit);
 }
 </script>
 
