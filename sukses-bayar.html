@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pembayaran Berhasil | AKPAgenku</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0f2647;
+    --navy-light: #1e3a5f;
+    --navy-dark: #081a33;
+    --gold: #c9a961;
+    --gold-light: #d9bd7f;
+    --gold-dark: #a88a45;
+    --cream: #faf8f3;
+    --gray-100: #f5f5f5;
+    --gray-200: #e5e5e5;
+    --gray-500: #737373;
+    --gray-700: #404040;
+    --gray-900: #171717;
+    --white: #ffffff;
+    --green: #059669;
+    --green-light: #d1fae5;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    color: var(--gray-900);
+    line-height: 1.6;
+    background: var(--cream);
+    min-height: 100vh;
+  }
+  a { color: inherit; text-decoration: none; }
+
+  /* ===== NAVBAR ===== */
+  .navbar {
+    background: var(--white);
+    border-bottom: 1px solid var(--gray-200);
+    padding: 18px 24px;
+  }
+  .nav-inner {
+    max-width: 1180px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--navy);
+  }
+  .logo .accent { color: var(--gold); }
+
+  /* ===== STEPPER ===== */
+  .stepper {
+    background: var(--white);
+    padding: 24px 0;
+    border-bottom: 1px solid var(--gray-200);
+  }
+  .stepper-inner {
+    max-width: 700px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 24px;
+  }
+  .step {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+  }
+  .step-num {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--gray-200);
+    color: var(--gray-500);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  .step.done .step-num {
+    background: var(--green);
+    color: var(--white);
+  }
+  .step.active .step-num {
+    background: var(--navy);
+    color: var(--gold);
+  }
+  .step-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--gray-500);
+  }
+  .step.done .step-label,
+  .step.active .step-label { color: var(--navy); }
+  .step-line {
+    flex: 1;
+    height: 2px;
+    background: var(--gray-200);
+    margin: 0 12px;
+    max-width: 80px;
+  }
+  .step-line.done { background: var(--green); }
+
+  /* ===== MAIN ===== */
+  .container {
+    max-width: 620px;
+    margin: 0 auto;
+    padding: 60px 24px 80px;
+  }
+
+  .success-card {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 60px 48px;
+    box-shadow: 0 4px 20px rgba(15, 38, 71, 0.08);
+    border: 1px solid var(--gray-200);
+    text-align: center;
+  }
+
+  .success-icon-wrap {
+    margin: 0 auto 32px;
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    background: var(--green-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    animation: scaleIn 0.5s ease-out;
+  }
+  .success-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--green);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+    font-size: 30px;
+    font-weight: 700;
+  }
+  @keyframes scaleIn {
+    0% { transform: scale(0); opacity: 0; }
+    60% { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  .success-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    font-weight: 600;
+    color: var(--navy);
+    line-height: 1.15;
+    margin-bottom: 14px;
+    letter-spacing: -0.5px;
+  }
+  .success-sub {
+    color: var(--gray-700);
+    font-size: 16px;
+    margin-bottom: 36px;
+    line-height: 1.7;
+  }
+  .success-sub strong { color: var(--navy); }
+
+  /* ===== INFO CARD ===== */
+  .info-card {
+    background: var(--cream);
+    border: 1px solid rgba(201, 169, 97, 0.25);
+    border-radius: 14px;
+    padding: 24px 28px;
+    text-align: left;
+    margin-bottom: 32px;
+  }
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    font-size: 14px;
+  }
+  .info-row .label {
+    color: var(--gray-700);
+  }
+  .info-row .val {
+    color: var(--navy);
+    font-weight: 600;
+  }
+  .info-divider {
+    border-top: 1px dashed rgba(201, 169, 97, 0.4);
+    margin: 10px 0;
+  }
+  .info-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding-top: 12px;
+    border-top: 1.5px solid var(--gold);
+    margin-top: 6px;
+  }
+  .info-total .label {
+    font-size: 14px;
+    color: var(--gray-700);
+    font-weight: 600;
+  }
+  .info-total .val {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    color: var(--navy);
+    font-weight: 700;
+  }
+
+  /* ===== EMAIL NOTICE ===== */
+  .email-notice {
+    background: rgba(15, 38, 71, 0.04);
+    border-left: 3px solid var(--gold);
+    border-radius: 8px;
+    padding: 18px 22px;
+    text-align: left;
+    margin-bottom: 32px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .email-notice .icon {
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .email-notice .content {
+    font-size: 14px;
+    color: var(--gray-700);
+    line-height: 1.65;
+  }
+  .email-notice .content strong {
+    color: var(--navy);
+    display: block;
+    margin-bottom: 4px;
+    font-size: 14px;
+  }
+  .email-notice .content .email-addr {
+    color: var(--navy);
+    font-weight: 600;
+  }
+
+  /* ===== BUTTONS ===== */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 15px 28px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    font-family: inherit;
+    width: 100%;
+    text-decoration: none;
+  }
+  .btn-primary {
+    background: var(--navy);
+    color: var(--white);
+  }
+  .btn-primary:hover {
+    background: var(--navy-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(15, 38, 71, 0.25);
+  }
+  .btn-link {
+    color: var(--gray-700);
+    font-size: 14px;
+    margin-top: 18px;
+    display: inline-block;
+    text-decoration: underline;
+  }
+  .btn-link:hover { color: var(--navy); }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 600px) {
+    .container { padding: 30px 16px 60px; }
+    .success-card { padding: 40px 24px; }
+    .success-title { font-size: 26px; }
+    .stepper-inner { padding: 0 16px; }
+    .step-label { display: none; }
+    .step-line { max-width: 60px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="/" class="logo">AKP<span class="accent">Agenku</span></a>
+  </div>
+</nav>
+
+<!-- ===== STEPPER ===== -->
+<div class="stepper">
+  <div class="stepper-inner">
+    <div class="step done">
+      <div class="step-num">✓</div>
+      <div class="step-label">Daftar</div>
+    </div>
+    <div class="step-line done"></div>
+    <div class="step done">
+      <div class="step-num">✓</div>
+      <div class="step-label">Pembayaran</div>
+    </div>
+    <div class="step-line done"></div>
+    <div class="step active">
+      <div class="step-num">3</div>
+      <div class="step-label">Dashboard</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MAIN ===== -->
+<div class="container">
+  <div class="success-card">
+
+    <div class="success-icon-wrap">
+      <div class="success-icon">✓</div>
+    </div>
+
+    <h1 class="success-title">Pembayaran Berhasil!</h1>
+    <p class="success-sub">
+      Selamat <strong id="namaAgen">Cristine</strong>! Akun AKPAgenku Anda sudah aktif.
+      Kami sudah kirim informasi login ke email Anda.
+    </p>
+
+    <!-- Info Card -->
+    <div class="info-card">
+      <div class="info-row">
+        <span class="label">Paket</span>
+        <span class="val" id="sumPaket">Solo</span>
+      </div>
+      <div class="info-row">
+        <span class="label">Email</span>
+        <span class="val" id="sumEmail">cristine@email.com</span>
+      </div>
+      <div class="info-row">
+        <span class="label">Mini-site Anda</span>
+        <span class="val">akpagenku.com/<span id="sumSlug">cristine</span></span>
+      </div>
+      <div class="info-divider"></div>
+      <div class="info-total">
+        <span class="label">Total Dibayar</span>
+        <span class="val" id="sumTotal">Rp 666.000</span>
+      </div>
+    </div>
+
+    <!-- Email Notice -->
+    <div class="email-notice">
+      <span class="icon">📧</span>
+      <div class="content">
+        <strong>Cek inbox email Anda</strong>
+        Email login dengan password sementara sudah dikirim ke <span class="email-addr" id="emailAddr">cristine@email.com</span>. Jika tidak ada di Inbox, cek folder Spam.
+      </div>
+    </div>
+
+    <a href="/login.html" class="btn btn-primary">Lanjut ke Halaman Login →</a>
+
+    <div>
+      <a href="/" class="btn-link">Kembali ke Beranda</a>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// Ambil data dari sessionStorage
+const data = JSON.parse(sessionStorage.getItem('daftar_data') || '{}');
+
+if (data.nama) {
+  document.getElementById('namaAgen').textContent = data.nama.split(' ')[0];
+  // Bikin slug dari nama (lowercase, ganti spasi dengan dash)
+  const slug = data.nama.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+  document.getElementById('sumSlug').textContent = slug;
+}
+if (data.email) {
+  document.getElementById('sumEmail').textContent = data.email;
+  document.getElementById('emailAddr').textContent = data.email;
+}
+
+if (data.paket === 'team') {
+  document.getElementById('sumPaket').textContent = 'Team (per agen)';
+  document.getElementById('sumTotal').textContent = 'Rp 444.000';
+}
+</script>
+
+</body>
+</html>

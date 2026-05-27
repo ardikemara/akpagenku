@@ -602,7 +602,12 @@ if (data.paket === 'team') {
 
 function handlePay() {
   const method = document.querySelector('input[name="method"]:checked').value;
-  alert('Demo: pembayaran via ' + method.toUpperCase() + ' akan diproses. (Halaman pembayaran sebenarnya akan terintegrasi dengan payment gateway nanti.)');
+  // Simpan metode pembayaran di sessionStorage
+  const data = JSON.parse(sessionStorage.getItem('daftar_data') || '{}');
+  data.metode = method;
+  sessionStorage.setItem('daftar_data', JSON.stringify(data));
+  // Redirect ke halaman sukses
+  window.location.href = '/sukses-bayar.html';
 }
 </script>
 

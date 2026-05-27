@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Masuk | AKPAgenku</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0f2647;
+    --navy-light: #1e3a5f;
+    --navy-dark: #081a33;
+    --gold: #c9a961;
+    --gold-light: #d9bd7f;
+    --gold-dark: #a88a45;
+    --cream: #faf8f3;
+    --gray-100: #f5f5f5;
+    --gray-200: #e5e5e5;
+    --gray-300: #d4d4d4;
+    --gray-500: #737373;
+    --gray-700: #404040;
+    --gray-900: #171717;
+    --white: #ffffff;
+    --red: #dc2626;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    color: var(--gray-900);
+    line-height: 1.6;
+    background: var(--cream);
+    min-height: 100vh;
+  }
+  a { color: inherit; text-decoration: none; }
+
+  /* ===== LEFT SIDE: BRAND ===== */
+  .login-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 100vh;
+  }
+
+  .brand-side {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+    color: var(--white);
+    padding: 60px 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+  }
+  .brand-side::before {
+    content: '';
+    position: absolute;
+    top: -150px;
+    right: -150px;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(201, 169, 97, 0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .brand-side::after {
+    content: '';
+    position: absolute;
+    bottom: -200px;
+    left: -150px;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(201, 169, 97, 0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .brand-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 700;
+    position: relative;
+    z-index: 1;
+  }
+  .brand-logo .accent { color: var(--gold); }
+
+  .brand-content {
+    position: relative;
+    z-index: 1;
+  }
+  .brand-eyebrow {
+    color: var(--gold);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+    display: block;
+  }
+  .brand-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 42px;
+    font-weight: 600;
+    line-height: 1.15;
+    margin-bottom: 20px;
+    letter-spacing: -0.5px;
+  }
+  .brand-title .gold-italic {
+    color: var(--gold);
+    font-style: italic;
+  }
+  .brand-sub {
+    font-size: 16px;
+    color: rgba(255,255,255,0.75);
+    line-height: 1.7;
+    max-width: 440px;
+    margin-bottom: 36px;
+  }
+
+  /* ===== STATS ===== */
+  .brand-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    max-width: 460px;
+  }
+  .stat-box {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 18px 16px;
+    backdrop-filter: blur(10px);
+  }
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .stat-label {
+    font-size: 12px;
+    color: rgba(255,255,255,0.7);
+    line-height: 1.4;
+  }
+
+  .brand-footer {
+    position: relative;
+    z-index: 1;
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+  }
+
+  /* ===== RIGHT SIDE: FORM ===== */
+  .form-side {
+    background: var(--white);
+    padding: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .form-container {
+    width: 100%;
+    max-width: 420px;
+  }
+
+  .form-header {
+    margin-bottom: 36px;
+  }
+  .form-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 10px;
+    letter-spacing: -0.5px;
+  }
+  .form-sub {
+    color: var(--gray-700);
+    font-size: 15px;
+  }
+
+  /* ===== FORM ===== */
+  .form-group {
+    margin-bottom: 20px;
+  }
+  .form-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 8px;
+  }
+  .form-input {
+    width: 100%;
+    padding: 13px 16px;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 10px;
+    font-size: 15px;
+    font-family: inherit;
+    color: var(--gray-900);
+    background: var(--white);
+    transition: all 0.2s;
+  }
+  .form-input::placeholder { color: var(--gray-500); }
+  .form-input:focus {
+    outline: none;
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(201, 169, 97, 0.15);
+  }
+
+  .password-wrapper {
+    position: relative;
+  }
+  .password-toggle {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: var(--gray-500);
+    font-size: 18px;
+    background: none;
+    border: none;
+    padding: 4px;
+  }
+  .password-toggle:hover { color: var(--navy); }
+
+  .form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+    font-size: 14px;
+  }
+  .remember {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--gray-700);
+    cursor: pointer;
+  }
+  .remember input {
+    accent-color: var(--navy);
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+  }
+  .forgot-link {
+    color: var(--navy);
+    font-weight: 500;
+    text-decoration: underline;
+  }
+  .forgot-link:hover { color: var(--gold-dark); }
+
+  /* ===== BUTTONS ===== */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 24px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    font-family: inherit;
+    width: 100%;
+  }
+  .btn-primary {
+    background: var(--navy);
+    color: var(--white);
+  }
+  .btn-primary:hover {
+    background: var(--navy-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(15, 38, 71, 0.25);
+  }
+
+  .signup-link {
+    text-align: center;
+    margin-top: 28px;
+    font-size: 14px;
+    color: var(--gray-700);
+  }
+  .signup-link a {
+    color: var(--navy);
+    font-weight: 600;
+    text-decoration: underline;
+  }
+
+  /* ===== MOBILE BRAND HEADER ===== */
+  .mobile-brand {
+    display: none;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 900px) {
+    .login-wrapper {
+      grid-template-columns: 1fr;
+    }
+    .brand-side {
+      display: none;
+    }
+    .mobile-brand {
+      display: block;
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-200);
+      padding: 18px 24px;
+      text-align: center;
+    }
+    .mobile-brand .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+    .mobile-brand .logo .accent { color: var(--gold); }
+    .form-side {
+      padding: 40px 24px;
+      align-items: flex-start;
+      padding-top: 60px;
+    }
+    .form-title { font-size: 26px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== MOBILE BRAND (only on small screens) ===== -->
+<div class="mobile-brand">
+  <a href="/" class="logo">AKP<span class="accent">Agenku</span></a>
+</div>
+
+<div class="login-wrapper">
+
+  <!-- LEFT: BRAND -->
+  <div class="brand-side">
+    <a href="/" class="brand-logo">AKP<span class="accent">Agenku</span></a>
+
+    <div class="brand-content">
+      <span class="brand-eyebrow">★ Selamat Datang Kembali</span>
+      <h1 class="brand-title">Lanjutkan Membangun <span class="gold-italic">Bisnis Anda</span></h1>
+      <p class="brand-sub">
+        Akses dashboard untuk kelola mini-site, lihat lead baru, dan pantau funnel prospek Anda.
+      </p>
+
+      <div class="brand-stats">
+        <div class="stat-box">
+          <div class="stat-num">500+</div>
+          <div class="stat-label">Agen aktif</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num">12rb+</div>
+          <div class="stat-label">Lead terkumpul</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num">95%</div>
+          <div class="stat-label">Tingkat kepuasan</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="brand-footer">
+      © 2026 AKPAgenku. Aman & terenkripsi.
+    </div>
+  </div>
+
+  <!-- RIGHT: FORM -->
+  <div class="form-side">
+    <div class="form-container">
+
+      <div class="form-header">
+        <h2 class="form-title">Masuk ke Akun Anda</h2>
+        <p class="form-sub">Gunakan email & password yang dikirim ke email Anda.</p>
+      </div>
+
+      <form onsubmit="handleLogin(event)">
+
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-input" name="email" id="loginEmail" placeholder="nama@email.com" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <div class="password-wrapper">
+            <input type="password" class="form-input" name="password" id="loginPassword" placeholder="Masukkan password" required>
+            <button type="button" class="password-toggle" onclick="togglePassword()">👁</button>
+          </div>
+        </div>
+
+        <div class="form-options">
+          <label class="remember">
+            <input type="checkbox" id="remember">
+            <span>Ingat saya</span>
+          </label>
+          <a href="#" class="forgot-link">Lupa password?</a>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Masuk →</button>
+
+        <div class="signup-link">
+          Belum punya akun? <a href="/daftar.html">Daftar di sini</a>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+// Auto-fill email kalau ada data dari sessionStorage
+const data = JSON.parse(sessionStorage.getItem('daftar_data') || '{}');
+if (data.email) {
+  document.getElementById('loginEmail').value = data.email;
+}
+
+function togglePassword() {
+  const input = document.getElementById('loginPassword');
+  input.type = input.type === 'password' ? 'text' : 'password';
+}
+
+function handleLogin(event) {
+  event.preventDefault();
+  // Demo: langsung redirect ke dashboard
+  window.location.href = '/dashboard.html';
+}
+</script>
+
+</body>
+</html>
