@@ -573,9 +573,8 @@
 
 </div>
 
+
 <!-- Supabase JS Library -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 (function() {
@@ -589,20 +588,18 @@
     const btn = document.getElementById('submitBtn');
     
     if (!form || !btn) {
-      console.error('Form or button not found');
+      console.error('[AKP] Form or button not found');
       return;
     }
     
-    console.log('Init OK - attaching handler');
+    console.log('[AKP] Init OK - attaching handler');
     
-    // Attach via button click (more reliable than form submit in some cases)
     btn.addEventListener('click', async function(e) {
       e.preventDefault();
       e.stopPropagation();
       
-      console.log('Submit button clicked');
+      console.log('[AKP] Submit button clicked');
       
-      // Get form data
       const nama = form.nama.value.trim();
       const email = form.email.value.trim().toLowerCase();
       const username = form.username.value.trim().toLowerCase();
@@ -614,7 +611,6 @@
       const paket = form.paket.value;
       const termsCheck = form.querySelector('input[type=checkbox]');
       
-      // Validations
       if (!nama || !email || !username || !whatsapp || !password) {
         alert('Mohon isi semua field yang wajib.');
         return;
@@ -647,13 +643,8 @@
       try {
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         
-        // Check duplicate email
         const { data: existingEmail } = await supabase
-          .from('users')
-          .select('id')
-          .eq('email', email)
-          .maybeSingle();
-        
+          .from('users').select('id').eq('email', email).maybeSingle();
         if (existingEmail) {
           alert('Email sudah terdaftar. Silakan pakai email lain atau hubungi admin via WhatsApp.');
           btn.disabled = false;
@@ -661,13 +652,8 @@
           return;
         }
         
-        // Check duplicate username
         const { data: existingUsername } = await supabase
-          .from('users')
-          .select('id')
-          .eq('username', username)
-          .maybeSingle();
-        
+          .from('users').select('id').eq('username', username).maybeSingle();
         if (existingUsername) {
           alert('Username "' + username + '" sudah dipakai. Silakan pilih username lain.');
           btn.disabled = false;
@@ -675,7 +661,6 @@
           return;
         }
         
-        // Insert
         const { data, error } = await supabase
           .from('users')
           .insert({
@@ -694,14 +679,15 @@
           .single();
         
         if (error) {
-          console.error('Supabase error:', error);
+          console.error('[AKP] Supabase error:', error);
           alert('Terjadi kesalahan: ' + error.message);
           btn.disabled = false;
           btn.textContent = originalText;
           return;
         }
         
-        // Save data for confirmation page
+        console.log('[AKP] User created:', data.id);
+        
         sessionStorage.setItem('daftar_success', JSON.stringify({
           nama: data.nama_lengkap,
           email: data.email,
@@ -711,7 +697,6 @@
           id: data.id
         }));
         
-        // Trigger send welcome email (non-blocking)
         fetch(SUPABASE_URL + '/functions/v1/send-welcome-email', {
           method: 'POST',
           headers: {
@@ -728,28 +713,26 @@
             perusahaan: data.perusahaan
           })
         }).catch(err => {
-          console.error('Email send error (non-blocking):', err);
+          console.error('[AKP] Email send error (non-blocking):', err);
         });
         
-        // Redirect
         window.location.href = '/menunggu-approval.html';
         
       } catch (err) {
-        console.error('Submit error:', err);
+        console.error('[AKP] Submit error:', err);
         alert('Terjadi kesalahan koneksi. Pastikan internet stabil & coba lagi.');
         btn.disabled = false;
         btn.textContent = originalText;
       }
     });
     
-    // Also prevent default form submit (in case Enter key)
     form.addEventListener('submit', function(e) {
       e.preventDefault();
       e.stopPropagation();
       btn.click();
     });
     
-    console.log('Handlers attached successfully');
+    console.log('[AKP] Handlers attached successfully');
   }
   
   if (document.readyState === 'loading') {
