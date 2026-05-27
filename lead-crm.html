@@ -898,85 +898,14 @@
           <div class="kanban-col-head">
             <span class="col-dot new"></span>
             <span class="col-title">Prospek Baru</span>
-            <span class="col-count">4</span>
+            <span class="col-count" id="kanban-count-new">0</span>
             <button class="col-add-btn" title="Tambah"><i data-lucide="plus"></i></button>
           </div>
-          <div class="kanban-cards">
+          <div class="kanban-cards" id="kanban-cards-new">
 
-            <div class="lead-card" data-source="skor" data-stage="new" onclick='openModal({"name":"Rina Wijaya","initial":"RW","stage":"new","source":"Kuis Skor Kesehatan Keuangan","sourceTag":"skor","wa":"081234567801","email":"rina.wijaya@email.com","city":"Jakarta","age":34,"income":"15-25jt","time":"2 jam lalu","score":62,"grade":"Perlu Perhatian","interests":["Dana Pendidikan","Asuransi Jiwa"],"priority":"hot"})'>
-              <div class="lead-card-top">
-                <div class="lead-avatar">RW</div>
-                <div class="lead-name">Rina Wijaya</div>
-                <span class="lead-priority hot" title="Hot lead">🔥</span>
-              </div>
-              <span class="lead-source-tag">Kuis Skor</span>
-              <div class="lead-meta">
-                <i data-lucide="clock"></i> 2 jam lalu
-              </div>
-              <div class="lead-card-footer">
-                <div class="lead-score">Skor: <strong>62</strong>/100</div>
-                <div class="lead-quick-actions">
-                  <button class="quick-action-btn wa" title="WhatsApp" onclick="event.stopPropagation(); openWA('081234567801', 'Rina')"><i data-lucide="message-circle"></i></button>
-                  <button class="quick-action-btn" title="Detail"><i data-lucide="arrow-right"></i></button>
-                </div>
-              </div>
-            </div>
 
-            <div class="lead-card" data-source="darurat" data-stage="new" onclick='openModal({"name":"Doni Saputra","initial":"DS","stage":"new","source":"Kalkulator Dana Darurat","sourceTag":"darurat","wa":"081234567802","email":"doni.s@email.com","city":"Bandung","age":29,"income":"8-15jt","time":"5 jam lalu","score":null,"grade":null,"result":"Butuh dana darurat Rp 45 jt","interests":["Dana Darurat","Investasi"],"priority":"warm"})'>
-              <div class="lead-card-top">
-                <div class="lead-avatar">DS</div>
-                <div class="lead-name">Doni Saputra</div>
-                <span class="lead-priority warm" title="Warm lead">⚡</span>
-              </div>
-              <span class="lead-source-tag">Kalk Darurat</span>
-              <div class="lead-meta">
-                <i data-lucide="clock"></i> 5 jam lalu
-              </div>
-              <div class="lead-card-footer">
-                <div class="lead-score">Rp <strong>45jt</strong></div>
-                <div class="lead-quick-actions">
-                  <button class="quick-action-btn wa" title="WhatsApp" onclick="event.stopPropagation(); openWA('081234567802', 'Doni')"><i data-lucide="message-circle"></i></button>
-                  <button class="quick-action-btn" title="Detail"><i data-lucide="arrow-right"></i></button>
-                </div>
-              </div>
-            </div>
 
-            <div class="lead-card" data-source="pendidikan" data-stage="new" onclick='openModal({"name":"Bu Linda","initial":"BL","stage":"new","source":"Kalkulator Dana Pendidikan","sourceTag":"pendidikan","wa":"081234567803","email":"linda.m@email.com","city":"Surabaya","age":38,"income":"25-50jt","time":"8 jam lalu","score":null,"result":"Target Rp 480jt untuk univ swasta","interests":["Dana Pendidikan"],"priority":"hot"})'>
-              <div class="lead-card-top">
-                <div class="lead-avatar">BL</div>
-                <div class="lead-name">Bu Linda</div>
-                <span class="lead-priority hot">🔥</span>
-              </div>
-              <span class="lead-source-tag">Kalk Pendidikan</span>
-              <div class="lead-meta">
-                <i data-lucide="clock"></i> 8 jam lalu
-              </div>
-              <div class="lead-card-footer">
-                <div class="lead-score">Rp <strong>480jt</strong></div>
-                <div class="lead-quick-actions">
-                  <button class="quick-action-btn wa" title="WhatsApp" onclick="event.stopPropagation(); openWA('081234567803', 'Bu Linda')"><i data-lucide="message-circle"></i></button>
-                  <button class="quick-action-btn" title="Detail"><i data-lucide="arrow-right"></i></button>
-                </div>
-              </div>
-            </div>
 
-            <div class="lead-card" data-source="skor" data-stage="new" onclick='openModal({"name":"Andre Kurnia","initial":"AK","stage":"new","source":"Kuis Skor Kesehatan Keuangan","sourceTag":"skor","wa":"081234567804","email":"andre.k@email.com","city":"Jakarta","age":41,"income":"50jt+","time":"kemarin","score":78,"grade":"Cukup Baik","interests":["Dana Pensiun","Asuransi Jiwa"],"priority":"warm"})'>
-              <div class="lead-card-top">
-                <div class="lead-avatar">AK</div>
-                <div class="lead-name">Andre Kurnia</div>
-              </div>
-              <span class="lead-source-tag">Kuis Skor</span>
-              <div class="lead-meta">
-                <i data-lucide="clock"></i> kemarin
-              </div>
-              <div class="lead-card-footer">
-                <div class="lead-score">Skor: <strong>78</strong>/100</div>
-                <div class="lead-quick-actions">
-                  <button class="quick-action-btn wa" title="WhatsApp" onclick="event.stopPropagation(); openWA('081234567804', 'Andre')"><i data-lucide="message-circle"></i></button>
-                  <button class="quick-action-btn" title="Detail"><i data-lucide="arrow-right"></i></button>
-                </div>
-              </div>
-            </div>
 
           </div>
         </div>
@@ -986,65 +915,13 @@
           <div class="kanban-col-head">
             <span class="col-dot engaged"></span>
             <span class="col-title">Engaged</span>
-            <span class="col-count">3</span>
+            <span class="col-count" id="kanban-count-engaged">0</span>
             <button class="col-add-btn"><i data-lucide="plus"></i></button>
           </div>
-          <div class="kanban-cards">
+          <div class="kanban-cards" id="kanban-cards-engaged">
 
-            <div class="lead-card" data-source="skor" data-stage="engaged" onclick='openModal({"name":"Sinta Larasati","initial":"SL","stage":"engaged","source":"Kuis Skor Kesehatan Keuangan","sourceTag":"skor","wa":"081234567811","email":"sinta.l@email.com","city":"Jakarta","age":32,"income":"15-25jt","time":"3 hari lalu","score":54,"grade":"Perlu Perhatian","interests":["Asuransi Jiwa","Dana Darurat"],"priority":"hot","note":"Sudah follow-up WA 2x, minta brosur. Tertarik produk jiwa term life."})'>
-              <div class="lead-card-top">
-                <div class="lead-avatar">SL</div>
-                <div class="lead-name">Sinta Larasati</div>
-                <span class="lead-priority hot">🔥</span>
-              </div>
-              <span class="lead-source-tag">Kuis Skor</span>
-              <div class="lead-meta">
-                <i data-lucide="clock"></i> 3 hari lalu · 2x kontak
-              </div>
-              <div class="lead-card-footer">
-                <div class="lead-score">Skor: <strong>54</strong>/100</div>
-                <div class="lead-quick-actions">
-                  <button class="quick-action-btn wa" title="WhatsApp" onclick="event.stopPropagation(); openWA('081234567811', 'Sinta')"><i data-lucide="message-circle"></i></button>
-                  <button class="quick-action-btn" title="Detail"><i data-lucide="arrow-right"></i></button>
-                </div>
-              </div>
-            </div>
 
-            <div class="lead-card" data-source="pensiun" data-stage="engaged" onclick='openModal({"name":"Hadi Pratama","initial":"HP","stage":"engaged","source":"Kalkulator Dana Pensiun","sourceTag":"pensiun","wa":"081234567812","email":"hadi.p@email.com","city":"Tangerang","age":45,"income":"25-50jt","time":"5 hari lalu","score":null,"result":"Defisit Rp 1.2M di usia 60","interests":["Dana Pensiun"],"priority":"warm","note":"Sudah meeting 1x. Mau brosur produk pensiun + ilustrasi 20 tahun."})'>
-              <div class="lead-card-top">
-                <div class="lead-avatar">HP</div>
-                <div class="lead-name">Hadi Pratama</div>
-              </div>
-              <span class="lead-source-tag">Kalk Pensiun</span>
-              <div class="lead-meta">
-                <i data-lucide="clock"></i> 5 hari lalu · 1x meeting
-              </div>
-              <div class="lead-card-footer">
-                <div class="lead-score">Defisit <strong>1.2M</strong></div>
-                <div class="lead-quick-actions">
-                  <button class="quick-action-btn wa" title="WhatsApp" onclick="event.stopPropagation(); openWA('081234567812', 'Hadi')"><i data-lucide="message-circle"></i></button>
-                  <button class="quick-action-btn" title="Detail"><i data-lucide="arrow-right"></i></button>
-                </div>
-              </div>
-            </div>
 
-            <div class="lead-card" data-source="pendidikan" data-stage="engaged" onclick='openModal({"name":"Pak Budi","initial":"BD","stage":"engaged","source":"Kalkulator Dana Pendidikan","sourceTag":"pendidikan","wa":"081234567813","email":"budi.s@email.com","city":"Depok","age":36,"income":"25-50jt","time":"1 minggu lalu","score":null,"result":"Target Rp 620jt (anak 8 thn)","interests":["Dana Pendidikan","Dana Pensiun"],"priority":"warm","note":"Ngobrol WA panjang, masih bandingin dengan reksadana."})'>
-              <div class="lead-card-top">
-                <div class="lead-avatar">BD</div>
-                <div class="lead-name">Pak Budi</div>
-              </div>
-              <span class="lead-source-tag">Kalk Pendidikan</span>
-              <div class="lead-meta">
-                <i data-lucide="clock"></i> 1 minggu · 4x kontak
-              </div>
-              <div class="lead-card-footer">
-                <div class="lead-score">Rp <strong>620jt</strong></div>
-                <div class="lead-quick-actions">
-                  <button class="quick-action-btn wa" title="WhatsApp" onclick="event.stopPropagation(); openWA('081234567813', 'Pak Budi')"><i data-lucide="message-circle"></i></button>
-                  <button class="quick-action-btn" title="Detail"><i data-lucide="arrow-right"></i></button>
-                </div>
-              </div>
-            </div>
 
           </div>
         </div>
@@ -1054,47 +931,12 @@
           <div class="kanban-col-head">
             <span class="col-dot closing"></span>
             <span class="col-title">Closing</span>
-            <span class="col-count">2</span>
+            <span class="col-count" id="kanban-count-closing">0</span>
             <button class="col-add-btn"><i data-lucide="plus"></i></button>
           </div>
-          <div class="kanban-cards">
+          <div class="kanban-cards" id="kanban-cards-closing">
 
-            <div class="lead-card" data-source="skor" data-stage="closing" onclick='openModal({"name":"Maya Anggraini","initial":"MA","stage":"closing","source":"Kuis Skor Kesehatan Keuangan","sourceTag":"skor","wa":"081234567821","email":"maya.a@email.com","city":"Jakarta","age":35,"income":"25-50jt","time":"2 minggu lalu","score":48,"grade":"Berisiko","interests":["Asuransi Jiwa","Penyakit Kritis"],"priority":"hot","note":"Sudah submit aplikasi term life Rp 2M + critical illness rider. Tinggal medical check-up."})'>
-              <div class="lead-card-top">
-                <div class="lead-avatar">MA</div>
-                <div class="lead-name">Maya Anggraini</div>
-                <span class="lead-priority hot">🔥</span>
-              </div>
-              <span class="lead-source-tag">Kuis Skor</span>
-              <div class="lead-meta">
-                <i data-lucide="clock"></i> 2 minggu · MedCheck
-              </div>
-              <div class="lead-card-footer">
-                <div class="lead-score">UP <strong>Rp 2M</strong></div>
-                <div class="lead-quick-actions">
-                  <button class="quick-action-btn wa" title="WhatsApp" onclick="event.stopPropagation(); openWA('081234567821', 'Bu Maya')"><i data-lucide="message-circle"></i></button>
-                  <button class="quick-action-btn" title="Detail"><i data-lucide="arrow-right"></i></button>
-                </div>
-              </div>
-            </div>
 
-            <div class="lead-card" data-source="pendidikan" data-stage="closing" onclick='openModal({"name":"Ibu Sari","initial":"IS","stage":"closing","source":"Kalkulator Dana Pendidikan","sourceTag":"pendidikan","wa":"081234567822","email":"sari.w@email.com","city":"Bandung","age":33,"income":"15-25jt","time":"3 minggu lalu","score":null,"result":"Target Rp 380jt","interests":["Dana Pendidikan"],"priority":"warm","note":"Setuju ambil education plan Rp 3jt/bulan. Tunggu approval suami."})'>
-              <div class="lead-card-top">
-                <div class="lead-avatar">IS</div>
-                <div class="lead-name">Ibu Sari</div>
-              </div>
-              <span class="lead-source-tag">Kalk Pendidikan</span>
-              <div class="lead-meta">
-                <i data-lucide="clock"></i> 3 minggu · approval
-              </div>
-              <div class="lead-card-footer">
-                <div class="lead-score">Premi <strong>3jt</strong>/bln</div>
-                <div class="lead-quick-actions">
-                  <button class="quick-action-btn wa" title="WhatsApp" onclick="event.stopPropagation(); openWA('081234567822', 'Ibu Sari')"><i data-lucide="message-circle"></i></button>
-                  <button class="quick-action-btn" title="Detail"><i data-lucide="arrow-right"></i></button>
-                </div>
-              </div>
-            </div>
 
           </div>
         </div>
@@ -1104,64 +946,13 @@
           <div class="kanban-col-head">
             <span class="col-dot closed"></span>
             <span class="col-title">Closed</span>
-            <span class="col-count">3</span>
+            <span class="col-count" id="kanban-count-closed">0</span>
             <button class="col-add-btn"><i data-lucide="plus"></i></button>
           </div>
-          <div class="kanban-cards">
+          <div class="kanban-cards" id="kanban-cards-closed">
 
-            <div class="lead-card" data-source="skor" data-stage="closed" onclick='openModal({"name":"Pak Joko","initial":"PJ","stage":"closed","source":"Kuis Skor Kesehatan Keuangan","sourceTag":"skor","wa":"081234567831","email":"joko.s@email.com","city":"Jakarta","age":42,"income":"50jt+","time":"1 bulan lalu","score":68,"grade":"Cukup Baik","interests":["Asuransi Jiwa","Pensiun"],"priority":"warm","note":"DEAL! Term Life Rp 3M + Pensiun Plan. Premi total Rp 5.5jt/bulan."})'>
-              <div class="lead-card-top">
-                <div class="lead-avatar">PJ</div>
-                <div class="lead-name">Pak Joko</div>
-              </div>
-              <span class="lead-source-tag">Kuis Skor</span>
-              <div class="lead-meta">
-                <i data-lucide="check-circle-2" style="color: var(--green);"></i> Closed 1 bln lalu
-              </div>
-              <div class="lead-card-footer">
-                <div class="lead-score" style="color: var(--green);">Premi <strong>5.5jt</strong>/bln</div>
-                <div class="lead-quick-actions">
-                  <button class="quick-action-btn wa" title="WhatsApp" onclick="event.stopPropagation(); openWA('081234567831', 'Pak Joko')"><i data-lucide="message-circle"></i></button>
-                  <button class="quick-action-btn" title="Detail"><i data-lucide="arrow-right"></i></button>
-                </div>
-              </div>
-            </div>
 
-            <div class="lead-card" data-source="pendidikan" data-stage="closed" onclick='openModal({"name":"Bu Ratna","initial":"BR","stage":"closed","source":"Kalkulator Dana Pendidikan","sourceTag":"pendidikan","wa":"081234567832","email":"ratna.h@email.com","city":"Tangerang","age":37,"income":"25-50jt","time":"2 bulan lalu","score":null,"result":"Edu Plan Rp 400jt","interests":["Dana Pendidikan"],"priority":"warm","note":"Education Plan untuk 2 anak. Premi Rp 4jt/bulan, periode 15 tahun."})'>
-              <div class="lead-card-top">
-                <div class="lead-avatar">BR</div>
-                <div class="lead-name">Bu Ratna</div>
-              </div>
-              <span class="lead-source-tag">Kalk Pendidikan</span>
-              <div class="lead-meta">
-                <i data-lucide="check-circle-2" style="color: var(--green);"></i> Closed 2 bln lalu
-              </div>
-              <div class="lead-card-footer">
-                <div class="lead-score" style="color: var(--green);">Premi <strong>4jt</strong>/bln</div>
-                <div class="lead-quick-actions">
-                  <button class="quick-action-btn wa" title="WhatsApp" onclick="event.stopPropagation(); openWA('081234567832', 'Bu Ratna')"><i data-lucide="message-circle"></i></button>
-                  <button class="quick-action-btn" title="Detail"><i data-lucide="arrow-right"></i></button>
-                </div>
-              </div>
-            </div>
 
-            <div class="lead-card" data-source="darurat" data-stage="closed" onclick='openModal({"name":"Pak Andi","initial":"PA","stage":"closed","source":"Kalkulator Dana Darurat","sourceTag":"darurat","wa":"081234567833","email":"andi.r@email.com","city":"Bekasi","age":31,"income":"15-25jt","time":"3 bulan lalu","score":null,"result":"Health Plan","interests":["Asuransi Kesehatan"],"priority":"warm","note":"Health Plan family. Premi Rp 2.2jt/bulan."})'>
-              <div class="lead-card-top">
-                <div class="lead-avatar">PA</div>
-                <div class="lead-name">Pak Andi</div>
-              </div>
-              <span class="lead-source-tag">Kalk Darurat</span>
-              <div class="lead-meta">
-                <i data-lucide="check-circle-2" style="color: var(--green);"></i> Closed 3 bln lalu
-              </div>
-              <div class="lead-card-footer">
-                <div class="lead-score" style="color: var(--green);">Premi <strong>2.2jt</strong>/bln</div>
-                <div class="lead-quick-actions">
-                  <button class="quick-action-btn wa" title="WhatsApp" onclick="event.stopPropagation(); openWA('081234567833', 'Pak Andi')"><i data-lucide="message-circle"></i></button>
-                  <button class="quick-action-btn" title="Detail"><i data-lucide="arrow-right"></i></button>
-                </div>
-              </div>
-            </div>
 
           </div>
         </div>
@@ -1279,8 +1070,15 @@
 <script>
 (function() {
   'use strict';
-  function init() {
-    let session;
+
+  const SUPABASE_URL = 'https://bfydtsfekvueqzvuschp.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_3Xec3HYKViIiuX99hHxHqg_Ih8ABX_T';
+  let supabase = null;
+  let session = null;
+  let allLeads = [];
+
+  async function init() {
+    // 1. Check session
     try {
       const sessionRaw = sessionStorage.getItem('akp_session');
       if (!sessionRaw) { window.location.href = '/login.html'; return; }
@@ -1289,6 +1087,11 @@
       window.location.href = '/login.html'; return;
     }
     window.akpSession = session;
+
+    // 2. Init Supabase
+    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // 3. Render user info
     const name = session.nama_panggilan || session.nama_lengkap.split(' ')[0];
     const fullName = session.nama_lengkap;
     const lastNameInitial = fullName.split(' ').length > 1 ? fullName.split(' ').slice(-1)[0][0] + '.' : '';
@@ -1297,8 +1100,164 @@
     document.getElementById('userAvatar').textContent = name[0].toUpperCase();
     const paketLabel = session.paket === 'team' ? (session.is_team_leader ? 'Paket Team (Leader)' : 'Paket Team') : 'Paket Solo';
     document.getElementById('userPlan').textContent = paketLabel;
+
+    // 4. Load leads from Supabase
+    await loadLeads();
+
     if (typeof lucide !== 'undefined') lucide.createIcons();
   }
+
+  async function loadLeads() {
+    try {
+      const { data, error } = await supabase
+        .from('leads')
+        .select('*')
+        .eq('owner_id', session.id)
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('[AKP CRM] Load error:', error);
+        renderEmptyState();
+        return;
+      }
+
+      allLeads = data || [];
+      console.log('[AKP CRM] Loaded', allLeads.length, 'leads');
+      renderLeads();
+    } catch (err) {
+      console.error('[AKP CRM] Unexpected error:', err);
+      renderEmptyState();
+    }
+  }
+
+  function getInitials(name) {
+    if (!name) return '?';
+    const parts = name.trim().split(/\s+/);
+    if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  }
+
+  function escapeHtml(text) {
+    if (text == null) return '';
+    return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+  }
+
+  function formatTimeAgo(date) {
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMin = Math.floor(diffMs / 60000);
+    const diffHr = Math.floor(diffMs / 3600000);
+    const diffDay = Math.floor(diffMs / 86400000);
+    if (diffMin < 1) return 'Baru saja';
+    if (diffMin < 60) return diffMin + ' menit lalu';
+    if (diffHr < 24) return diffHr + ' jam lalu';
+    if (diffDay < 7) return diffDay + ' hari lalu';
+    return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+  }
+
+  function sourceLabel(magnet) {
+    const labels = {
+      'skor': 'Kuis Skor',
+      'darurat': 'Kalk Darurat',
+      'pendidikan': 'Kalk Pendidikan',
+      'pensiun': 'Kalk Pensiun',
+      'kesehatan': 'Quiz Kesehatan'
+    };
+    return labels[magnet] || magnet || 'Direct';
+  }
+
+  function priorityEmoji(score) {
+    if (score == null) return '';
+    if (score >= 70) return '<span class="lead-priority hot" title="Hot lead">\ud83d\udd25</span>';
+    if (score >= 40) return '<span class="lead-priority warm" title="Warm lead">\u2728</span>';
+    return '<span class="lead-priority cold" title="Cold lead">\u2744\ufe0f</span>';
+  }
+
+  function buildLeadCard(lead) {
+    const initials = getInitials(lead.nama);
+    const timeAgo = formatTimeAgo(new Date(lead.created_at));
+    const srcTxt = sourceLabel(lead.source_magnet);
+    const prioritySpan = priorityEmoji(lead.score);
+    
+    // Build modal data for click
+    const modalData = {
+      name: lead.nama,
+      initial: initials,
+      stage: lead.stage,
+      source: srcTxt,
+      sourceTag: lead.source_magnet || '',
+      wa: lead.whatsapp || '',
+      email: lead.email || '',
+      city: lead.kota || '',
+      age: lead.usia || null,
+      income: lead.rentang_pendapatan || '',
+      time: timeAgo,
+      score: lead.score || null,
+      interests: lead.interests || []
+    };
+    
+    return `
+      <div class="lead-card" data-source="${escapeHtml(lead.source_magnet || '')}" data-stage="${escapeHtml(lead.stage)}" onclick='openModal(${JSON.stringify(modalData).replace(/'/g, "&#39;")})'>
+        <div class="lead-card-top">
+          <div class="lead-avatar">${escapeHtml(initials)}</div>
+          <div class="lead-name">${escapeHtml(lead.nama)}</div>
+          ${prioritySpan}
+        </div>
+        <span class="lead-source-tag">${escapeHtml(srcTxt)}</span>
+        <div class="lead-card-footer">
+          <span class="lead-time">${escapeHtml(timeAgo)}</span>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderLeads() {
+    const byStage = { new: [], engaged: [], closing: [], closed: [] };
+    allLeads.forEach(lead => {
+      if (byStage[lead.stage]) byStage[lead.stage].push(lead);
+    });
+
+    const stageContainers = {
+      new: 'kanban-cards-new',
+      engaged: 'kanban-cards-engaged',
+      closing: 'kanban-cards-closing',
+      closed: 'kanban-cards-closed'
+    };
+    const countIds = {
+      new: 'kanban-count-new',
+      engaged: 'kanban-count-engaged',
+      closing: 'kanban-count-closing',
+      closed: 'kanban-count-closed'
+    };
+
+    Object.keys(stageContainers).forEach(stage => {
+      const container = document.getElementById(stageContainers[stage]);
+      const countEl = document.getElementById(countIds[stage]);
+      const leads = byStage[stage];
+      
+      if (countEl) countEl.textContent = leads.length;
+      
+      if (!container) return;
+      
+      if (leads.length === 0) {
+        container.innerHTML = '<div style="padding:24px 12px; text-align:center; color:var(--gray-500); font-size:12px; font-style:italic;">Belum ada lead di tahap ini</div>';
+      } else {
+        container.innerHTML = leads.map(buildLeadCard).join('');
+      }
+    });
+    
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }
+
+  function renderEmptyState() {
+    ['new', 'engaged', 'closing', 'closed'].forEach(stage => {
+      const container = document.getElementById('kanban-cards-' + stage);
+      if (container) {
+        container.innerHTML = '<div style="padding:24px 12px; text-align:center; color:var(--gray-500); font-size:12px; font-style:italic;">Belum ada lead di tahap ini</div>';
+      }
+    });
+  }
+
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
   } else {
