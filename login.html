@@ -429,6 +429,11 @@ function handleLogin(event) {
   // Demo: langsung redirect ke dashboard
   window.location.href = '/dashboard.html';
 }
+
+// Export to window for onclick/onsubmit handlers
+window.togglePassword = togglePassword;
+window.handleLogin = handleLogin;
+console.log('[AKP Login] Handlers exported to window');
 </script>
 
 </body>
