@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mini-site Editor | AKPAgenku</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  :root {
+    --navy: #0f2647;
+    --navy-light: #1e3a5f;
+    --navy-dark: #081a33;
+    --gold: #c9a961;
+    --gold-light: #d9bd7f;
+    --gold-dark: #a88a45;
+    --cream: #faf8f3;
+    --gray-50: #fafafa;
+    --gray-100: #f5f5f5;
+    --gray-200: #e5e5e5;
+    --gray-300: #d4d4d4;
+    --gray-500: #737373;
+    --gray-700: #404040;
+    --gray-900: #171717;
+    --white: #ffffff;
+    --green: #059669;
+    --green-light: #d1fae5;
+    --blue: #2563eb;
+    --blue-light: #dbeafe;
+    --red: #dc2626;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    color: var(--gray-900);
+    line-height: 1.5;
+    background: var(--gray-50);
+    min-height: 100vh;
+    overflow: hidden;
+  }
+  a { color: inherit; text-decoration: none; }
+  [data-lucide] {
+    width: 18px;
+    height: 18px;
+    stroke-width: 2;
+    flex-shrink: 0;
+  }
+
+  /* ===== LAYOUT ===== */
+  .layout {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    height: 100vh;
+  }
+
+  /* ===== SIDEBAR ===== */
+  .sidebar {
+    background: var(--navy);
+    color: var(--white);
+    padding: 24px 0;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+  .sidebar-brand {
+    padding: 0 20px 24px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    margin-bottom: 16px;
+  }
+  .sidebar-brand .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--white);
+  }
+  .sidebar-brand .logo .accent { color: var(--gold); }
+  .sidebar-brand .sub {
+    font-size: 10px;
+    color: rgba(255,255,255,0.5);
+    margin-top: 4px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .nav-section { flex: 1; padding: 0 10px; }
+  .nav-label {
+    font-size: 10px;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 12px 14px 8px;
+    font-weight: 600;
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 10px 14px;
+    color: rgba(255,255,255,0.75);
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    margin-bottom: 2px;
+  }
+  .nav-item:hover {
+    background: rgba(255,255,255,0.06);
+    color: var(--white);
+  }
+  .nav-item.active {
+    background: rgba(201, 169, 97, 0.15);
+    color: var(--gold);
+    border-left: 3px solid var(--gold);
+    padding-left: 11px;
+  }
+  .nav-item [data-lucide] { width: 17px; height: 17px; }
+
+  .user-card {
+    margin: 16px 10px;
+    padding: 12px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    color: var(--navy);
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+  .user-info { flex: 1; min-width: 0; }
+  .user-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--white);
+  }
+  .user-plan {
+    font-size: 10px;
+    color: var(--gold);
+    margin-top: 1px;
+  }
+
+  /* ===== MAIN ===== */
+  .main {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--white);
+  }
+
+  /* ===== TOP BAR ===== */
+  .topbar {
+    padding: 16px 28px;
+    border-bottom: 1px solid var(--gray-200);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--white);
+  }
+  .topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .topbar-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--navy);
+    line-height: 1.2;
+  }
+  .topbar-sub {
+    font-size: 12px;
+    color: var(--gray-500);
+    margin-top: 2px;
+  }
+  .topbar-actions { display: flex; gap: 10px; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+  .btn [data-lucide] { width: 14px; height: 14px; }
+  .btn-ghost {
+    background: transparent;
+    color: var(--gray-700);
+    border: 1.5px solid var(--gray-200);
+  }
+  .btn-ghost:hover { border-color: var(--navy); color: var(--navy); }
+  .btn-primary {
+    background: var(--navy);
+    color: var(--white);
+  }
+  .btn-primary:hover {
+    background: var(--navy-dark);
+    box-shadow: 0 4px 12px rgba(15, 38, 71, 0.2);
+  }
+  .btn-gold {
+    background: var(--gold);
+    color: var(--navy);
+  }
+  .btn-gold:hover {
+    background: var(--gold-light);
+    box-shadow: 0 4px 12px rgba(201, 169, 97, 0.3);
+  }
+
+  /* ===== EDITOR LAYOUT ===== */
+  .editor-layout {
+    display: grid;
+    grid-template-columns: 480px 1fr;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  /* ===== EDITOR PANEL (KIRI) ===== */
+  .editor-panel {
+    background: var(--gray-50);
+    border-right: 1px solid var(--gray-200);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+  .tab-bar {
+    display: flex;
+    background: var(--white);
+    border-bottom: 1px solid var(--gray-200);
+    overflow-x: auto;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .tab-btn {
+    flex: 1;
+    padding: 14px 12px;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--gray-500);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    white-space: nowrap;
+  }
+  .tab-btn [data-lucide] { width: 14px; height: 14px; }
+  .tab-btn:hover { color: var(--navy); }
+  .tab-btn.active {
+    color: var(--navy);
+    border-bottom-color: var(--gold);
+  }
+
+  .tab-content {
+    padding: 24px 26px;
+    display: none;
+  }
+  .tab-content.active { display: block; }
+
+  /* ===== FORM ===== */
+  .field-group { margin-bottom: 20px; }
+  .field-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 6px;
+    letter-spacing: 0.2px;
+  }
+  .field-help {
+    font-size: 11px;
+    color: var(--gray-500);
+    margin-top: 5px;
+    line-height: 1.5;
+  }
+  .field-input,
+  .field-textarea,
+  .field-select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 8px;
+    font-size: 13px;
+    font-family: inherit;
+    color: var(--gray-900);
+    background: var(--white);
+    transition: all 0.15s;
+  }
+  .field-textarea {
+    resize: vertical;
+    min-height: 80px;
+    line-height: 1.5;
+  }
+  .field-input:focus,
+  .field-textarea:focus,
+  .field-select:focus {
+    outline: none;
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(201, 169, 97, 0.15);
+  }
+
+  .photo-uploader {
+    background: var(--white);
+    border: 1.5px dashed var(--gray-300);
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .photo-uploader:hover {
+    border-color: var(--gold);
+    background: var(--cream);
+  }
+  .photo-uploader .icon-wrap {
+    width: 48px;
+    height: 48px;
+    background: var(--cream);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gold-dark);
+  }
+  .photo-uploader .icon-wrap [data-lucide] { width: 20px; height: 20px; }
+  .photo-uploader-text {
+    font-size: 13px;
+    color: var(--navy);
+    font-weight: 600;
+  }
+  .photo-uploader-sub {
+    font-size: 11px;
+    color: var(--gray-500);
+  }
+
+  /* ===== CHECKBOX LIST (Produk, Konten) ===== */
+  .check-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .check-item {
+    background: var(--white);
+    border: 1.5px solid var(--gray-200);
+    border-radius: 10px;
+    padding: 12px 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .check-item:hover { border-color: var(--gold); }
+  .check-item.checked {
+    border-color: var(--gold);
+    background: rgba(201, 169, 97, 0.06);
+  }
+  .check-box {
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--gray-300);
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+    transition: all 0.15s;
+  }
+  .check-item.checked .check-box {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: var(--navy);
+  }
+  .check-box [data-lucide] {
+    width: 12px;
+    height: 12px;
+    stroke-width: 3;
+    display: none;
+  }
+  .check-item.checked .check-box [data-lucide] { display: block; }
+  .check-body { flex: 1; min-width: 0; }
+  .check-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 2px;
+  }
+  .check-desc {
+    font-size: 11px;
+    color: var(--gray-500);
+    line-height: 1.5;
+  }
+  .check-tag {
+    display: inline-block;
+    background: var(--cream);
+    color: var(--gold-dark);
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-top: 4px;
+  }
+
+  /* ===== COLOR PICKER ===== */
+  .color-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+    margin-top: 4px;
+  }
+  .color-swatch {
+    aspect-ratio: 1;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 2.5px solid transparent;
+    position: relative;
+    transition: all 0.15s;
+  }
+  .color-swatch.active {
+    border-color: var(--navy);
+    transform: scale(1.05);
+  }
+  .color-swatch.active::after {
+    content: '✓';
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+    font-size: 16px;
+    font-weight: 700;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  }
+
+  /* ===== FONT PICKER ===== */
+  .font-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .font-option {
+    background: var(--white);
+    border: 1.5px solid var(--gray-200);
+    border-radius: 8px;
+    padding: 14px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.15s;
+  }
+  .font-option:hover { border-color: var(--gold); }
+  .font-option.active {
+    border-color: var(--gold);
+    background: rgba(201, 169, 97, 0.06);
+  }
+  .font-preview {
+    font-size: 20px;
+    color: var(--navy);
+    margin-bottom: 4px;
+    line-height: 1;
+  }
+  .font-preview.serif { font-family: 'Playfair Display', serif; font-weight: 600; }
+  .font-preview.sans { font-family: 'Inter', sans-serif; font-weight: 700; }
+  .font-name {
+    font-size: 11px;
+    color: var(--gray-500);
+    font-weight: 600;
+  }
+
+  /* ===== PREVIEW PANEL (KANAN) ===== */
+  .preview-panel {
+    background: var(--gray-100);
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .preview-frame {
+    width: 100%;
+    max-width: 480px;
+    background: var(--white);
+    border-radius: 16px;
+    box-shadow: 0 12px 32px -8px rgba(15, 38, 71, 0.15);
+    overflow: hidden;
+    margin-bottom: 16px;
+    transition: all 0.3s;
+  }
+  .preview-browser-bar {
+    background: var(--gray-100);
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid var(--gray-200);
+  }
+  .browser-dots {
+    display: flex;
+    gap: 5px;
+  }
+  .browser-dots span {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--gray-300);
+  }
+  .browser-url {
+    flex: 1;
+    background: var(--white);
+    border-radius: 5px;
+    padding: 4px 10px;
+    font-size: 11px;
+    color: var(--gray-500);
+    font-family: 'SF Mono', monospace;
+  }
+
+  .preview-content {
+    padding: 0;
+  }
+
+  /* Preview Hero */
+  .preview-hero {
+    padding: 36px 28px 32px;
+    text-align: center;
+    background: var(--white);
+  }
+  .preview-avatar {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+    color: var(--navy);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    font-weight: 700;
+    margin: 0 auto 14px;
+  }
+  .preview-headline {
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 8px;
+    transition: all 0.3s;
+  }
+  .preview-subheadline {
+    font-size: 13px;
+    color: var(--gray-700);
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+  .preview-cta {
+    background: var(--navy);
+    color: var(--white);
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    display: inline-block;
+    transition: all 0.3s;
+  }
+
+  /* Preview Tentang */
+  .preview-section {
+    padding: 24px 28px;
+    border-top: 1px solid var(--gray-100);
+  }
+  .preview-section-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--gold-dark);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    transition: color 0.3s;
+  }
+  .preview-bio {
+    font-size: 13px;
+    color: var(--gray-700);
+    line-height: 1.65;
+    margin-bottom: 12px;
+  }
+  .preview-credentials {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .preview-cred-tag {
+    background: var(--cream);
+    color: var(--navy);
+    font-size: 10px;
+    font-weight: 600;
+    padding: 4px 9px;
+    border-radius: 12px;
+    border: 1px solid rgba(201, 169, 97, 0.3);
+  }
+
+  /* Preview Produk */
+  .preview-product-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .preview-product-card {
+    background: var(--cream);
+    border-radius: 10px;
+    padding: 14px;
+    border: 1px solid rgba(201, 169, 97, 0.2);
+  }
+  .preview-product-name {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 4px;
+  }
+  .preview-product-desc {
+    font-size: 10px;
+    color: var(--gray-700);
+    line-height: 1.5;
+  }
+
+  /* Preview Konten */
+  .preview-content-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .preview-content-card {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: 8px;
+    padding: 12px;
+    display: flex;
+    gap: 10px;
+  }
+  .preview-content-icon {
+    width: 32px;
+    height: 32px;
+    background: var(--cream);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gold-dark);
+    flex-shrink: 0;
+  }
+  .preview-content-icon [data-lucide] { width: 16px; height: 16px; }
+  .preview-content-info { flex: 1; min-width: 0; }
+  .preview-content-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--navy);
+    line-height: 1.3;
+    margin-bottom: 2px;
+  }
+  .preview-content-meta {
+    font-size: 9px;
+    color: var(--gray-500);
+  }
+
+  /* Preview Lead Magnet */
+  .preview-magnet {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+    color: var(--white);
+    border-radius: 12px;
+    padding: 18px;
+    text-align: center;
+  }
+  .preview-magnet-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .preview-magnet-sub {
+    font-size: 11px;
+    color: rgba(255,255,255,0.75);
+    margin-bottom: 12px;
+    line-height: 1.5;
+  }
+  .preview-magnet-btn {
+    background: var(--gold);
+    color: var(--navy);
+    padding: 9px 18px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    display: inline-block;
+  }
+
+  /* Preview info bar (bawah) */
+  .preview-meta {
+    padding: 10px 16px;
+    background: var(--white);
+    border-radius: 8px;
+    border: 1px solid var(--gray-200);
+    font-size: 11px;
+    color: var(--gray-500);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .preview-meta .dot {
+    width: 6px;
+    height: 6px;
+    background: var(--green);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* ===== THEME OVERRIDE (untuk preview) ===== */
+  .preview-frame.theme-default .preview-headline { color: var(--navy); }
+  .preview-frame.theme-default .preview-cta { background: var(--navy); }
+  .preview-frame.theme-default .preview-section-title { color: var(--gold-dark); }
+  .preview-frame.theme-default .preview-magnet { background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%); }
+  .preview-frame.theme-default .preview-magnet-btn { background: var(--gold); }
+
+  .preview-frame.theme-green .preview-headline { color: #065f46; }
+  .preview-frame.theme-green .preview-cta { background: #059669; }
+  .preview-frame.theme-green .preview-section-title { color: #059669; }
+  .preview-frame.theme-green .preview-magnet { background: linear-gradient(135deg, #065f46 0%, #059669 100%); }
+  .preview-frame.theme-green .preview-magnet-btn { background: #fbbf24; color: #065f46; }
+  .preview-frame.theme-green .preview-avatar { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); color: #065f46; }
+
+  .preview-frame.theme-rose .preview-headline { color: #881337; }
+  .preview-frame.theme-rose .preview-cta { background: #be123c; }
+  .preview-frame.theme-rose .preview-section-title { color: #be123c; }
+  .preview-frame.theme-rose .preview-magnet { background: linear-gradient(135deg, #881337 0%, #be123c 100%); }
+  .preview-frame.theme-rose .preview-magnet-btn { background: #fde047; color: #881337; }
+  .preview-frame.theme-rose .preview-avatar { background: linear-gradient(135deg, #fde047 0%, #facc15 100%); color: #881337; }
+
+  .preview-frame.theme-purple .preview-headline { color: #4c1d95; }
+  .preview-frame.theme-purple .preview-cta { background: #7c3aed; }
+  .preview-frame.theme-purple .preview-section-title { color: #7c3aed; }
+  .preview-frame.theme-purple .preview-magnet { background: linear-gradient(135deg, #4c1d95 0%, #7c3aed 100%); }
+  .preview-frame.theme-purple .preview-magnet-btn { background: #fbbf24; color: #4c1d95; }
+  .preview-frame.theme-purple .preview-avatar { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); color: #4c1d95; }
+
+  /* Font style */
+  .preview-frame.font-serif .preview-headline { font-family: 'Playfair Display', serif; }
+  .preview-frame.font-sans .preview-headline { font-family: 'Inter', sans-serif; }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 1100px) {
+    .editor-layout { grid-template-columns: 1fr; }
+    .preview-panel { display: none; }
+  }
+
+  @media (max-width: 768px) {
+    body { overflow: auto; }
+    .layout { grid-template-columns: 1fr; height: auto; }
+    .sidebar { display: none; }
+    .topbar { flex-wrap: wrap; gap: 12px; }
+    .tab-btn { font-size: 11px; padding: 12px 8px; }
+    .tab-btn span:not([data-lucide]) { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="logo">AKP<span class="accent">Agenku</span></div>
+      <div class="sub">Dashboard Agen</div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">Menu Utama</div>
+      <a href="/dashboard.html" class="nav-item">
+        <i data-lucide="layout-dashboard"></i> <span>Dashboard</span>
+      </a>
+      <div class="nav-item active">
+        <i data-lucide="palette"></i> <span>Mini-site Editor</span>
+      </div>
+      <div class="nav-item">
+        <i data-lucide="library"></i> <span>Konten Library</span>
+      </div>
+      <div class="nav-item">
+        <i data-lucide="target"></i> <span>Lead Magnet</span>
+      </div>
+      <div class="nav-item">
+        <i data-lucide="users"></i> <span>Lead & CRM</span>
+      </div>
+
+      <div class="nav-label">Pengaturan</div>
+      <div class="nav-item">
+        <i data-lucide="settings"></i> <span>Settings</span>
+      </div>
+      <div class="nav-item">
+        <i data-lucide="log-out"></i> <span>Logout</span>
+      </div>
+    </div>
+
+    <div class="user-card">
+      <div class="user-avatar">C</div>
+      <div class="user-info">
+        <div class="user-name">Cristine L.</div>
+        <div class="user-plan">Paket Solo</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ===== MAIN ===== -->
+  <main class="main">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <div>
+          <div class="topbar-title">Mini-site Editor</div>
+          <div class="topbar-sub">akpagenku.com/cristine</div>
+        </div>
+      </div>
+      <div class="topbar-actions">
+        <button type="button" class="btn btn-ghost"><i data-lucide="eye"></i> Preview Penuh</button>
+        <button type="button" class="btn btn-primary"><i data-lucide="save"></i> Simpan Perubahan</button>
+        <button type="button" class="btn btn-gold"><i data-lucide="rocket"></i> Publish</button>
+      </div>
+    </div>
+
+    <!-- EDITOR LAYOUT -->
+    <div class="editor-layout">
+
+      <!-- ============================ -->
+      <!-- LEFT: EDITOR PANEL          -->
+      <!-- ============================ -->
+      <div class="editor-panel">
+
+        <!-- TAB BAR -->
+        <div class="tab-bar">
+          <button type="button" class="tab-btn active" onclick="switchTab('hero', this)">
+            <i data-lucide="home"></i> <span>Hero</span>
+          </button>
+          <button type="button" class="tab-btn" onclick="switchTab('tentang', this)">
+            <i data-lucide="user"></i> <span>Tentang</span>
+          </button>
+          <button type="button" class="tab-btn" onclick="switchTab('produk', this)">
+            <i data-lucide="package"></i> <span>Produk</span>
+          </button>
+          <button type="button" class="tab-btn" onclick="switchTab('konten', this)">
+            <i data-lucide="book-open"></i> <span>Konten</span>
+          </button>
+          <button type="button" class="tab-btn" onclick="switchTab('tema', this)">
+            <i data-lucide="paintbrush"></i> <span>Tema</span>
+          </button>
+        </div>
+
+        <!-- TAB: HERO -->
+        <div class="tab-content active" id="tab-hero">
+          <div class="field-group">
+            <label class="field-label">Foto Profil</label>
+            <div class="photo-uploader">
+              <div class="icon-wrap"><i data-lucide="image-plus"></i></div>
+              <div class="photo-uploader-text">Klik untuk upload foto</div>
+              <div class="photo-uploader-sub">PNG, JPG max 2MB</div>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Headline (Judul Utama)</label>
+            <input type="text" class="field-input" id="input-headline" value="Keuangan Keluarga yang Lebih Tenang" oninput="updatePreview()">
+            <div class="field-help">Kalimat utama yang dilihat prospek. Bikin ringkas & jelas.</div>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Sub-headline (Penjelasan)</label>
+            <textarea class="field-textarea" id="input-subheadline" oninput="updatePreview()">Saya bantu keluarga muda Indonesia mengatur dana darurat, tabungan pendidikan anak, dan persiapan pensiun. Tanpa istilah ribet, tanpa pitch.</textarea>
+            <div class="field-help">2-3 kalimat yang menjelaskan value proposition Anda.</div>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Tombol CTA</label>
+            <input type="text" class="field-input" id="input-cta" value="Cek Skor Kesehatan Keuangan" oninput="updatePreview()">
+            <div class="field-help">Teks tombol utama yang mengarah ke kuis/kalkulator.</div>
+          </div>
+        </div>
+
+        <!-- TAB: TENTANG -->
+        <div class="tab-content" id="tab-tentang">
+          <div class="field-group">
+            <label class="field-label">Bio Singkat</label>
+            <textarea class="field-textarea" id="input-bio" oninput="updatePreview()" style="min-height: 110px;">Cristine adalah agen asuransi dengan 8+ tahun pengalaman membantu keluarga muda merencanakan keuangan. Fokus pada edukasi finansial, bukan jualan produk.</textarea>
+            <div class="field-help">Cerita singkat tentang Anda. Maksimal 3-4 kalimat.</div>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Perusahaan Asuransi</label>
+            <input type="text" class="field-input" value="Prudential Indonesia">
+            <div class="field-help">Perusahaan asuransi tempat Anda berlisensi.</div>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Sertifikasi / Kredensial</label>
+            <input type="text" class="field-input" id="input-creds" value="AAJI Bersertifikat, MDRT Member 2024, Top Agent 2023" oninput="updatePreview()">
+            <div class="field-help">Pisahkan dengan koma. Akan muncul sebagai badge di mini-site.</div>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Tahun Pengalaman</label>
+            <input type="number" class="field-input" value="8">
+          </div>
+        </div>
+
+        <!-- TAB: PRODUK -->
+        <div class="tab-content" id="tab-produk">
+          <div class="field-group">
+            <label class="field-label">Pilih Produk yang Anda Jual</label>
+            <div class="field-help" style="margin-top: 0; margin-bottom: 12px;">Centang produk yang ingin ditampilkan di mini-site. Maksimal 6 produk.</div>
+
+            <div class="check-list">
+              <div class="check-item checked" onclick="toggleCheck(this, 'jiwa')">
+                <div class="check-box"><i data-lucide="check"></i></div>
+                <div class="check-body">
+                  <div class="check-title">Asuransi Jiwa</div>
+                  <div class="check-desc">Proteksi finansial keluarga jika terjadi risiko</div>
+                  <span class="check-tag">Term Life · Whole Life</span>
+                </div>
+              </div>
+
+              <div class="check-item checked" onclick="toggleCheck(this, 'kritis')">
+                <div class="check-box"><i data-lucide="check"></i></div>
+                <div class="check-body">
+                  <div class="check-title">Penyakit Kritis</div>
+                  <div class="check-desc">Perlindungan saat terdiagnosa penyakit kritis</div>
+                  <span class="check-tag">Critical Illness</span>
+                </div>
+              </div>
+
+              <div class="check-item checked" onclick="toggleCheck(this, 'kesehatan')">
+                <div class="check-box"><i data-lucide="check"></i></div>
+                <div class="check-body">
+                  <div class="check-title">Asuransi Kesehatan</div>
+                  <div class="check-desc">Rawat inap & rawat jalan untuk keluarga</div>
+                  <span class="check-tag">Health Plan</span>
+                </div>
+              </div>
+
+              <div class="check-item checked" onclick="toggleCheck(this, 'pendidikan')">
+                <div class="check-box"><i data-lucide="check"></i></div>
+                <div class="check-body">
+                  <div class="check-title">Dana Pendidikan</div>
+                  <div class="check-desc">Persiapan biaya kuliah anak</div>
+                  <span class="check-tag">Goal-Based</span>
+                </div>
+              </div>
+
+              <div class="check-item" onclick="toggleCheck(this, 'pensiun')">
+                <div class="check-box"><i data-lucide="check"></i></div>
+                <div class="check-body">
+                  <div class="check-title">Dana Pensiun</div>
+                  <div class="check-desc">Persiapan masa tua yang tenang</div>
+                  <span class="check-tag">Retirement</span>
+                </div>
+              </div>
+
+              <div class="check-item" onclick="toggleCheck(this, 'syariah')">
+                <div class="check-box"><i data-lucide="check"></i></div>
+                <div class="check-body">
+                  <div class="check-title">Asuransi Syariah</div>
+                  <div class="check-desc">Produk berbasis prinsip syariah</div>
+                  <span class="check-tag">Syariah</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: KONTEN -->
+        <div class="tab-content" id="tab-konten">
+          <div class="field-group">
+            <label class="field-label">Pilih Artikel Edukasi</label>
+            <div class="field-help" style="margin-top: 0; margin-bottom: 12px;">Pilih artikel yang ditampilkan di mini-site Anda. Disarankan 3-6 artikel.</div>
+
+            <div class="check-list">
+              <div class="check-item checked" onclick="toggleArticleCheck(this)">
+                <div class="check-box"><i data-lucide="check"></i></div>
+                <div class="check-body">
+                  <div class="check-title">Cara Hitung Dana Darurat Ideal untuk Keluarga Muda</div>
+                  <div class="check-desc">Artikel · 5 menit baca</div>
+                </div>
+              </div>
+
+              <div class="check-item checked" onclick="toggleArticleCheck(this)">
+                <div class="check-box"><i data-lucide="check"></i></div>
+                <div class="check-body">
+                  <div class="check-title">Biaya Kuliah Anak 18 Tahun Lagi, Berapa yang Harus Disiapkan?</div>
+                  <div class="check-desc">Artikel · 7 menit baca</div>
+                </div>
+              </div>
+
+              <div class="check-item checked" onclick="toggleArticleCheck(this)">
+                <div class="check-box"><i data-lucide="check"></i></div>
+                <div class="check-body">
+                  <div class="check-title">BPJS Saja Cukup? Mari Hitung Biaya Sakit Kritis Sebenarnya</div>
+                  <div class="check-desc">Artikel · 6 menit baca</div>
+                </div>
+              </div>
+
+              <div class="check-item" onclick="toggleArticleCheck(this)">
+                <div class="check-box"><i data-lucide="check"></i></div>
+                <div class="check-body">
+                  <div class="check-title">5 Mitos Asuransi Pendidikan yang Sering Disalahpahami</div>
+                  <div class="check-desc">Artikel · 4 menit baca</div>
+                </div>
+              </div>
+
+              <div class="check-item" onclick="toggleArticleCheck(this)">
+                <div class="check-box"><i data-lucide="check"></i></div>
+                <div class="check-body">
+                  <div class="check-title">Term Life vs Whole Life: Mana yang Cocok untuk Anda?</div>
+                  <div class="check-desc">Artikel · 5 menit baca</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="field-group" style="margin-top: 28px;">
+            <label class="field-label">Lead Magnet Utama</label>
+            <select class="field-select" id="input-magnet" onchange="updatePreview()">
+              <option value="skor">Skor Kesehatan Keuangan (Kuis)</option>
+              <option value="pensiun">Kalkulator Dana Pensiun</option>
+              <option value="pendidikan">Kalkulator Dana Pendidikan</option>
+              <option value="darurat">Kalkulator Dana Darurat</option>
+            </select>
+            <div class="field-help">Tool gratis yang ditampilkan paling besar di mini-site untuk capture lead.</div>
+          </div>
+        </div>
+
+        <!-- TAB: TEMA -->
+        <div class="tab-content" id="tab-tema">
+          <div class="field-group">
+            <label class="field-label">Warna Tema</label>
+            <div class="color-grid">
+              <div class="color-swatch active" style="background: linear-gradient(135deg, #0f2647 50%, #c9a961 50%);" onclick="setTheme('default', this)" title="Navy & Gold"></div>
+              <div class="color-swatch" style="background: linear-gradient(135deg, #065f46 50%, #fbbf24 50%);" onclick="setTheme('green', this)" title="Emerald & Amber"></div>
+              <div class="color-swatch" style="background: linear-gradient(135deg, #881337 50%, #fde047 50%);" onclick="setTheme('rose', this)" title="Rose & Yellow"></div>
+              <div class="color-swatch" style="background: linear-gradient(135deg, #4c1d95 50%, #fbbf24 50%);" onclick="setTheme('purple', this)" title="Purple & Gold"></div>
+              <div class="color-swatch" style="background: linear-gradient(135deg, #1e293b 50%, #64748b 50%);" onclick="setTheme('default', this)" title="Slate (Coming Soon)" style="opacity: 0.4; cursor: not-allowed;"></div>
+              <div class="color-swatch" style="background: linear-gradient(135deg, #0c4a6e 50%, #38bdf8 50%);" onclick="setTheme('default', this)" title="Ocean (Coming Soon)" style="opacity: 0.4; cursor: not-allowed;"></div>
+            </div>
+            <div class="field-help">Aktif: <strong id="active-theme-name">Navy & Gold (Trustworthy Klasik)</strong></div>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Style Font</label>
+            <div class="font-grid">
+              <div class="font-option active" onclick="setFont('serif', this)">
+                <div class="font-preview serif">Aa</div>
+                <div class="font-name">Klasik (Serif)</div>
+              </div>
+              <div class="font-option" onclick="setFont('sans', this)">
+                <div class="font-preview sans">Aa</div>
+                <div class="font-name">Modern (Sans)</div>
+              </div>
+            </div>
+            <div class="field-help">Pengaruhi tampilan judul utama di mini-site.</div>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Layout</label>
+            <select class="field-select">
+              <option>Standard (recommended)</option>
+              <option>Compact (info padat)</option>
+              <option>Spacious (lega)</option>
+            </select>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ============================ -->
+      <!-- RIGHT: PREVIEW PANEL        -->
+      <!-- ============================ -->
+      <div class="preview-panel">
+
+        <div class="preview-frame theme-default font-serif" id="previewFrame">
+          <div class="preview-browser-bar">
+            <div class="browser-dots"><span></span><span></span><span></span></div>
+            <div class="browser-url">akpagenku.com/cristine</div>
+          </div>
+
+          <div class="preview-content">
+
+            <!-- Hero -->
+            <div class="preview-hero">
+              <div class="preview-avatar">C</div>
+              <h1 class="preview-headline" id="prev-headline">Keuangan Keluarga yang Lebih Tenang</h1>
+              <p class="preview-subheadline" id="prev-subheadline">Saya bantu keluarga muda Indonesia mengatur dana darurat, tabungan pendidikan anak, dan persiapan pensiun. Tanpa istilah ribet, tanpa pitch.</p>
+              <span class="preview-cta" id="prev-cta">Cek Skor Kesehatan Keuangan</span>
+            </div>
+
+            <!-- Lead Magnet -->
+            <div class="preview-section">
+              <div class="preview-magnet">
+                <div class="preview-magnet-title" id="prev-magnet-title">Skor Kesehatan Keuangan Anda</div>
+                <div class="preview-magnet-sub">8 pertanyaan singkat. Dapat skor + 3 area yang perlu diperhatikan.</div>
+                <span class="preview-magnet-btn">Mulai Cek (2 menit)</span>
+              </div>
+            </div>
+
+            <!-- Tentang -->
+            <div class="preview-section">
+              <div class="preview-section-title">Tentang Saya</div>
+              <p class="preview-bio" id="prev-bio">Cristine adalah agen asuransi dengan 8+ tahun pengalaman membantu keluarga muda merencanakan keuangan. Fokus pada edukasi finansial, bukan jualan produk.</p>
+              <div class="preview-credentials" id="prev-creds">
+                <span class="preview-cred-tag">AAJI Bersertifikat</span>
+                <span class="preview-cred-tag">MDRT Member 2024</span>
+                <span class="preview-cred-tag">Top Agent 2023</span>
+              </div>
+            </div>
+
+            <!-- Produk -->
+            <div class="preview-section">
+              <div class="preview-section-title">Topik yang Saya Bahas</div>
+              <div class="preview-product-grid" id="prev-products">
+                <div class="preview-product-card">
+                  <div class="preview-product-name">Asuransi Jiwa</div>
+                  <div class="preview-product-desc">Proteksi finansial keluarga</div>
+                </div>
+                <div class="preview-product-card">
+                  <div class="preview-product-name">Penyakit Kritis</div>
+                  <div class="preview-product-desc">Perlindungan saat sakit</div>
+                </div>
+                <div class="preview-product-card">
+                  <div class="preview-product-name">Kesehatan</div>
+                  <div class="preview-product-desc">Rawat inap & jalan</div>
+                </div>
+                <div class="preview-product-card">
+                  <div class="preview-product-name">Dana Pendidikan</div>
+                  <div class="preview-product-desc">Biaya kuliah anak</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Konten -->
+            <div class="preview-section" style="padding-bottom: 36px;">
+              <div class="preview-section-title">Artikel Edukasi</div>
+              <div class="preview-content-list">
+                <div class="preview-content-card">
+                  <div class="preview-content-icon"><i data-lucide="file-text"></i></div>
+                  <div class="preview-content-info">
+                    <div class="preview-content-title">Cara Hitung Dana Darurat Ideal untuk Keluarga Muda</div>
+                    <div class="preview-content-meta">5 menit baca</div>
+                  </div>
+                </div>
+                <div class="preview-content-card">
+                  <div class="preview-content-icon"><i data-lucide="file-text"></i></div>
+                  <div class="preview-content-info">
+                    <div class="preview-content-title">Biaya Kuliah Anak 18 Tahun Lagi, Berapa yang Harus Disiapkan?</div>
+                    <div class="preview-content-meta">7 menit baca</div>
+                  </div>
+                </div>
+                <div class="preview-content-card">
+                  <div class="preview-content-icon"><i data-lucide="file-text"></i></div>
+                  <div class="preview-content-info">
+                    <div class="preview-content-title">BPJS Saja Cukup? Mari Hitung Biaya Sakit Kritis</div>
+                    <div class="preview-content-meta">6 menit baca</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="preview-meta">
+          <span class="dot"></span>
+          Preview real-time · Perubahan langsung terlihat
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<script>
+// Tab switcher
+function switchTab(tabName, btn) {
+  // Pastikan btn adalah tab-btn, bukan anak elementnya (icon/svg)
+  if (btn && !btn.classList.contains('tab-btn')) {
+    btn = btn.closest('.tab-btn');
+  }
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  const target = document.getElementById('tab-' + tabName);
+  if (target) target.classList.add('active');
+  if (btn) btn.classList.add('active');
+}
+
+// Update preview real-time
+function updatePreview() {
+  const headline = document.getElementById('input-headline')?.value || '';
+  const subheadline = document.getElementById('input-subheadline')?.value || '';
+  const cta = document.getElementById('input-cta')?.value || '';
+  const bio = document.getElementById('input-bio')?.value || '';
+  const creds = document.getElementById('input-creds')?.value || '';
+  const magnet = document.getElementById('input-magnet')?.value || 'skor';
+
+  if (headline) document.getElementById('prev-headline').textContent = headline;
+  if (subheadline) document.getElementById('prev-subheadline').textContent = subheadline;
+  if (cta) document.getElementById('prev-cta').textContent = cta;
+  if (bio) document.getElementById('prev-bio').textContent = bio;
+
+  if (creds) {
+    const credsList = creds.split(',').map(c => c.trim()).filter(c => c);
+    document.getElementById('prev-creds').innerHTML = credsList
+      .map(c => `<span class="preview-cred-tag">${c}</span>`)
+      .join('');
+  }
+
+  // Update lead magnet title
+  const magnetTitles = {
+    skor: 'Skor Kesehatan Keuangan Anda',
+    pensiun: 'Kalkulator Dana Pensiun',
+    pendidikan: 'Kalkulator Dana Pendidikan',
+    darurat: 'Kalkulator Dana Darurat'
+  };
+  document.getElementById('prev-magnet-title').textContent = magnetTitles[magnet] || magnetTitles.skor;
+}
+
+// Toggle produk
+const productData = {
+  jiwa: { name: 'Asuransi Jiwa', desc: 'Proteksi finansial keluarga' },
+  kritis: { name: 'Penyakit Kritis', desc: 'Perlindungan saat sakit' },
+  kesehatan: { name: 'Kesehatan', desc: 'Rawat inap & jalan' },
+  pendidikan: { name: 'Dana Pendidikan', desc: 'Biaya kuliah anak' },
+  pensiun: { name: 'Dana Pensiun', desc: 'Persiapan masa tua' },
+  syariah: { name: 'Asuransi Syariah', desc: 'Berbasis syariah' }
+};
+
+function toggleCheck(el, productKey) {
+  el.classList.toggle('checked');
+  updateProductsPreview();
+}
+
+function updateProductsPreview() {
+  const checked = document.querySelectorAll('#tab-produk .check-item.checked');
+  const grid = document.getElementById('prev-products');
+
+  if (checked.length === 0) {
+    grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 20px; color: var(--gray-500); font-size: 11px;">Pilih minimal 1 produk</div>';
+    return;
+  }
+
+  let html = '';
+  checked.forEach(el => {
+    const title = el.querySelector('.check-title').textContent;
+    const desc = el.querySelector('.check-desc').textContent;
+    html += `
+      <div class="preview-product-card">
+        <div class="preview-product-name">${title}</div>
+        <div class="preview-product-desc">${desc}</div>
+      </div>`;
+  });
+  grid.innerHTML = html;
+}
+
+// Toggle artikel
+function toggleArticleCheck(el) {
+  el.classList.toggle('checked');
+}
+
+// Theme switcher
+function setTheme(theme, el) {
+  const frame = document.getElementById('previewFrame');
+  // Remove all theme classes
+  frame.classList.remove('theme-default', 'theme-green', 'theme-rose', 'theme-purple');
+  frame.classList.add('theme-' + theme);
+
+  // Update active swatch
+  document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+  el.classList.add('active');
+
+  // Update name
+  const names = {
+    default: 'Navy & Gold (Trustworthy Klasik)',
+    green: 'Emerald & Amber',
+    rose: 'Rose & Yellow',
+    purple: 'Purple & Gold'
+  };
+  document.getElementById('active-theme-name').textContent = names[theme] || names.default;
+}
+
+// Font switcher
+function setFont(font, el) {
+  const frame = document.getElementById('previewFrame');
+  frame.classList.remove('font-serif', 'font-sans');
+  frame.classList.add('font-' + font);
+
+  document.querySelectorAll('.font-option').forEach(o => o.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// Init Lucide icons
+window.addEventListener('DOMContentLoaded', () => {
+  if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
+  }
+});
+</script>
+
+</body>
+</html>
