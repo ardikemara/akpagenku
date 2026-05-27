@@ -1413,6 +1413,23 @@ function formatDate(date) {
 window.addEventListener('DOMContentLoaded', () => {
   if (typeof lucide !== 'undefined') lucide.createIcons();
 });
+
+// ===== EXPORT functions to window scope for onclick handlers =====
+// This is needed because top-level function declarations in <script> may not
+// always attach to window in all browser modes.
+window.checkLogin = checkLogin;
+window.logout = logout;
+window.loadAgents = loadAgents;
+window.setFilter = setFilter;
+window.openApproveModal = openApproveModal;
+window.confirmApprove = confirmApprove;
+window.openRejectModal = openRejectModal;
+window.confirmReject = confirmReject;
+window.extendActive = extendActive;
+window.restoreAgent = restoreAgent;
+window.closeModal = closeModal;
+
+console.log('[AKP Admin] All functions exported to window');
 </script>
 
 </body>
