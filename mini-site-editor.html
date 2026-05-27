@@ -239,17 +239,16 @@
   .editor-panel {
     background: var(--gray-50);
     border-right: 1px solid var(--gray-200);
-    overflow-y: auto;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
   }
   .tab-bar {
     display: flex;
     background: var(--white);
     border-bottom: 1px solid var(--gray-200);
     overflow-x: auto;
-    position: sticky;
-    top: 0;
+    flex-shrink: 0;
     z-index: 10;
   }
   .tab-btn {
@@ -269,6 +268,7 @@
     justify-content: center;
     gap: 6px;
     white-space: nowrap;
+    min-width: 80px;
   }
   .tab-btn [data-lucide] { width: 14px; height: 14px; }
   .tab-btn:hover { color: var(--navy); }
@@ -277,6 +277,10 @@
     border-bottom-color: var(--gold);
   }
 
+  .tab-content-wrap {
+    flex: 1;
+    overflow-y: auto;
+  }
   .tab-content {
     padding: 24px 26px;
     display: none;
@@ -787,8 +791,10 @@
     .layout { grid-template-columns: 1fr; height: auto; }
     .sidebar { display: none; }
     .topbar { flex-wrap: wrap; gap: 12px; }
-    .tab-btn { font-size: 11px; padding: 12px 8px; }
-    .tab-btn span:not([data-lucide]) { display: none; }
+    .editor-panel { overflow: visible; }
+    .tab-content-wrap { overflow: visible; }
+    .tab-btn { font-size: 10px; padding: 10px 4px; min-width: 60px; gap: 3px; }
+    .tab-btn [data-lucide] { width: 12px; height: 12px; }
   }
 </style>
 </head>
@@ -883,6 +889,8 @@
             <i data-lucide="paintbrush"></i> <span>Tema</span>
           </button>
         </div>
+
+        <div class="tab-content-wrap">
 
         <!-- TAB: HERO -->
         <div class="tab-content active" id="tab-hero">
@@ -1104,6 +1112,8 @@
             </select>
           </div>
         </div>
+
+        </div><!-- /tab-content-wrap -->
 
       </div>
 
