@@ -847,10 +847,10 @@
     </div>
 
     <div class="user-card">
-      <div class="user-avatar">C</div>
+      <div class="user-avatar" id="userAvatar">?</div>
       <div class="user-info">
-        <div class="user-name">Cristine L.</div>
-        <div class="user-plan">Paket Solo</div>
+        <div class="user-name" id="userName">Loading...</div>
+        <div class="user-plan" id="userPlan">-</div>
       </div>
     </div>
   </aside>
@@ -1273,6 +1273,40 @@
 
 </div>
 
+
+<!-- Supabase JS Library -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function() {
+  'use strict';
+  function init() {
+    let session;
+    try {
+      const sessionRaw = sessionStorage.getItem('akp_session');
+      if (!sessionRaw) { window.location.href = '/login.html'; return; }
+      session = JSON.parse(sessionRaw);
+    } catch (e) {
+      window.location.href = '/login.html'; return;
+    }
+    window.akpSession = session;
+    const name = session.nama_panggilan || session.nama_lengkap.split(' ')[0];
+    const fullName = session.nama_lengkap;
+    const lastNameInitial = fullName.split(' ').length > 1 ? fullName.split(' ').slice(-1)[0][0] + '.' : '';
+    const sidebarName = lastNameInitial ? name + ' ' + lastNameInitial : name;
+    document.getElementById('userName').textContent = sidebarName;
+    document.getElementById('userAvatar').textContent = name[0].toUpperCase();
+    const paketLabel = session.paket === 'team' ? (session.is_team_leader ? 'Paket Team (Leader)' : 'Paket Team') : 'Paket Solo';
+    document.getElementById('userPlan').textContent = paketLabel;
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+
 <script>
 // ===== FILTER =====
 let currentSource = 'all';
@@ -1436,7 +1470,8 @@ function emailLead() {
   window.location.href = 'mailto:' + currentLead.email;
 }
 function openWA(wa, name) {
-  const text = `Halo ${name}, ini Cristine. Saya lihat Anda baru saja isi tool gratis di mini-site saya. Mau saya bantu jelaskan hasilnya? 🙂`;
+  const senderName = (window.akpSession && window.akpSession.nama_panggilan) || (window.akpSession && window.akpSession.nama_lengkap && window.akpSession.nama_lengkap.split(' ')[0]) || 'saya';
+  const text = `Halo ${name}, ini ${senderName}. Saya lihat Anda baru saja isi tool gratis di mini-site saya. Mau saya bantu jelaskan hasilnya? 🙂`;
   window.open(`https://wa.me/62${wa.substring(1)}?text=${encodeURIComponent(text)}`, '_blank');
 }
 

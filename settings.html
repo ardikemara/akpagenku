@@ -820,10 +820,10 @@
     </div>
 
     <div class="user-card">
-      <div class="user-avatar">C</div>
+      <div class="user-avatar" id="userAvatar">?</div>
       <div class="user-info">
-        <div class="user-name">Cristine L.</div>
-        <div class="user-plan">Paket Solo</div>
+        <div class="user-name" id="userName">Loading...</div>
+        <div class="user-plan" id="userPlan">-</div>
       </div>
     </div>
   </aside>
@@ -867,9 +867,9 @@
             <div class="panel-card-sub">Foto ini akan tampil di mini-site publik Anda dan di dashboard.</div>
 
             <div class="avatar-uploader">
-              <div class="avatar-uploader-img">C</div>
+              <div class="avatar-uploader-img" id="avatarUploaderImg">?</div>
               <div class="avatar-uploader-info">
-                <div class="avatar-uploader-title">Cristine Lestari</div>
+                <div class="avatar-uploader-title" id="avatarUploaderTitle">Loading...</div>
                 <div class="avatar-uploader-sub">PNG atau JPG, maksimal 2MB. Ukuran rekomendasi 400×400px.</div>
                 <div class="avatar-uploader-actions">
                   <button class="btn btn-primary"><i data-lucide="upload"></i> Upload Foto Baru</button>
@@ -886,11 +886,11 @@
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label">Nama Lengkap</label>
-                <input type="text" class="form-input" value="Cristine Lestari">
+                <input type="text" class="form-input" id="settingsNamaLengkap" value="">
               </div>
               <div class="form-group">
                 <label class="form-label">Nama Panggilan</label>
-                <input type="text" class="form-input" value="Cristine">
+                <input type="text" class="form-input" id="settingsNamaPanggilan" value="">
                 <div class="form-help">Digunakan untuk sapaan di dashboard.</div>
               </div>
             </div>
@@ -899,7 +899,7 @@
               <label class="form-label">URL Mini-site Anda</label>
               <div class="input-with-prefix">
                 <span class="input-prefix">akpagenku.com/</span>
-                <input type="text" class="form-input" value="cristine">
+                <input type="text" class="form-input" id="settingsUsername" value="" readonly>
               </div>
               <div class="form-help">Link mini-site Anda. Hanya bisa diubah maksimal 1x per 30 hari.</div>
             </div>
@@ -907,7 +907,7 @@
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label">Email</label>
-                <input type="email" class="form-input" value="cristine.lestari@email.com">
+                <input type="email" class="form-input" id="settingsEmail" value="" readonly>
                 <div class="form-help">Email untuk login & notifikasi.</div>
               </div>
               <div class="form-group">
@@ -1047,7 +1047,7 @@
         <div class="settings-panel" id="panel-notifikasi">
           <div class="panel-card">
             <div class="panel-card-title">Notifikasi Email</div>
-            <div class="panel-card-sub">Email yang dikirim ke cristine.lestari@email.com</div>
+            <div class="panel-card-sub" id="notifEmailInfo">Email yang dikirim ke ...</div>
 
             <div class="toggle-row">
               <div class="toggle-info">
@@ -1308,6 +1308,62 @@
   <i data-lucide="check-circle-2"></i>
   <span id="toastMsg">Tersimpan</span>
 </div>
+
+
+<!-- Supabase JS Library -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function() {
+  'use strict';
+
+  function init() {
+    let session;
+    try {
+      const sessionRaw = sessionStorage.getItem('akp_session');
+      if (!sessionRaw) { window.location.href = '/login.html'; return; }
+      session = JSON.parse(sessionRaw);
+    } catch (e) {
+      window.location.href = '/login.html'; return;
+    }
+
+    const name = session.nama_panggilan || session.nama_lengkap.split(' ')[0];
+    const fullName = session.nama_lengkap;
+    const lastNameInitial = fullName.split(' ').length > 1 ? fullName.split(' ').slice(-1)[0][0] + '.' : '';
+    const sidebarName = lastNameInitial ? name + ' ' + lastNameInitial : name;
+    const firstInitial = name[0].toUpperCase();
+
+    // Sidebar
+    const set = (id, val) => { const e = document.getElementById(id); if (e) e.textContent = val; };
+    const setVal = (id, val) => { const e = document.getElementById(id); if (e) e.value = val; };
+
+    set('userName', sidebarName);
+    set('userAvatar', firstInitial);
+    const paketLabel = session.paket === 'team' ? (session.is_team_leader ? 'Paket Team (Leader)' : 'Paket Team') : 'Paket Solo';
+    set('userPlan', paketLabel);
+
+    // Avatar uploader
+    set('avatarUploaderImg', firstInitial);
+    set('avatarUploaderTitle', fullName);
+
+    // Form fields
+    setVal('settingsNamaLengkap', fullName);
+    setVal('settingsNamaPanggilan', name);
+    setVal('settingsUsername', session.username);
+    setVal('settingsEmail', session.email);
+
+    // Notification email info
+    set('notifEmailInfo', 'Email yang dikirim ke ' + session.email);
+
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
 
 <script>
 function switchTab(tab, btn) {

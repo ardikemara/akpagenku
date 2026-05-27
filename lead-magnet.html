@@ -533,10 +533,10 @@
     </div>
 
     <div class="user-card">
-      <div class="user-avatar">C</div>
+      <div class="user-avatar" id="userAvatar">?</div>
       <div class="user-info">
-        <div class="user-name">Cristine L.</div>
-        <div class="user-plan">Paket Solo</div>
+        <div class="user-name" id="userName">Loading...</div>
+        <div class="user-plan" id="userPlan">-</div>
       </div>
     </div>
   </aside>
@@ -1005,6 +1005,68 @@
   <i data-lucide="check-circle-2"></i>
   <span id="toastMsg">Link tersalin!</span>
 </div>
+
+
+<!-- Supabase JS Library -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function() {
+  'use strict';
+
+  function init() {
+    // 1. Check session
+    let session;
+    try {
+      const sessionRaw = sessionStorage.getItem('akp_session');
+      if (!sessionRaw) { window.location.href = '/login.html'; return; }
+      session = JSON.parse(sessionRaw);
+    } catch (e) {
+      window.location.href = '/login.html'; return;
+    }
+
+    // 2. Render user info
+    const name = session.nama_panggilan || session.nama_lengkap.split(' ')[0];
+    const fullName = session.nama_lengkap;
+    const lastNameInitial = fullName.split(' ').length > 1 ? fullName.split(' ').slice(-1)[0][0] + '.' : '';
+    const sidebarName = lastNameInitial ? name + ' ' + lastNameInitial : name;
+
+    document.getElementById('userName').textContent = sidebarName;
+    document.getElementById('userAvatar').textContent = name[0].toUpperCase();
+
+    const paketLabel = session.paket === 'team'
+      ? (session.is_team_leader ? 'Paket Team (Leader)' : 'Paket Team')
+      : 'Paket Solo';
+    document.getElementById('userPlan').textContent = paketLabel;
+
+    // 3. Replace all hardcoded "cristine" URLs with user's username
+    const username = session.username;
+    
+    // Replace text content in magnet link spans
+    document.querySelectorAll('.magnet-link-text').forEach(el => {
+      el.textContent = el.textContent.replace(/akpagenku\.com\/cristine/g, 'akpagenku.com/' + username);
+    });
+    
+    // Replace preview links
+    document.querySelectorAll('a[href*="cristine.html"]').forEach(a => {
+      a.href = a.href.replace(/cristine\.html/g, username + '.html');
+    });
+
+    // Replace inline onclick handlers (they capture the URL string)
+    document.querySelectorAll('button[onclick*="cristine"]').forEach(btn => {
+      const oldAttr = btn.getAttribute('onclick');
+      btn.setAttribute('onclick', oldAttr.replace(/cristine/g, username));
+    });
+
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
 
 <script>
 function copyLink(btn, link) {

@@ -948,10 +948,10 @@
     </div>
 
     <div class="user-card">
-      <div class="user-avatar">C</div>
+      <div class="user-avatar" id="userAvatar">?</div>
       <div class="user-info">
-        <div class="user-name">Cristine L.</div>
-        <div class="user-plan">Paket Solo</div>
+        <div class="user-name" id="userName">Loading...</div>
+        <div class="user-plan" id="userPlan">-</div>
       </div>
     </div>
   </aside>
@@ -964,16 +964,16 @@
       <div class="topbar-left">
         <div>
           <div class="topbar-title">Mini-site Editor</div>
-          <a href="/cristine.html" target="_blank" class="topbar-sub" style="display: inline-flex; align-items: center; gap: 4px; color: var(--gray-500); text-decoration: none;">
-            akpagenku.com/cristine
+          <a href="#" id="topbarUrlLink" target="_blank" class="topbar-sub" style="display: inline-flex; align-items: center; gap: 4px; color: var(--gray-500); text-decoration: none;">
+            <span id="topbarUrlText">akpagenku.com/...</span>
             <i data-lucide="external-link" style="width: 11px; height: 11px;"></i>
           </a>
         </div>
       </div>
       <div class="topbar-actions">
-        <a href="/cristine.html" target="_blank" class="btn btn-ghost" style="text-decoration: none;"><i data-lucide="eye"></i> Preview Penuh</a>
-        <button type="button" class="btn btn-primary"><i data-lucide="save"></i> Simpan Perubahan</button>
-        <button type="button" class="btn btn-gold"><i data-lucide="rocket"></i> Publish</button>
+        <a href="#" id="previewLink" target="_blank" class="btn btn-ghost" style="text-decoration: none;"><i data-lucide="eye"></i> Preview Penuh</a>
+        <button type="button" id="btnSave" class="btn btn-primary"><i data-lucide="save"></i> Simpan Perubahan</button>
+        <button type="button" id="btnPublish" class="btn btn-gold"><i data-lucide="rocket"></i> Publish</button>
       </div>
     </div>
 
@@ -1364,7 +1364,7 @@
         <div class="preview-frame theme-default font-serif" id="previewFrame">
           <div class="preview-browser-bar">
             <div class="browser-dots"><span></span><span></span><span></span></div>
-            <div class="browser-url">akpagenku.com/cristine</div>
+            <div class="browser-url" id="previewBrowserUrl">akpagenku.com/...</div>
           </div>
 
           <div class="preview-content">
@@ -1461,6 +1461,199 @@
   </main>
 </div>
 
+
+<!-- Supabase JS Library -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function() {
+  'use strict';
+
+  const SUPABASE_URL = 'https://bfydtsfekvueqzvuschp.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_3Xec3HYKViIiuX99hHxHqg_Ih8ABX_T';
+
+  let supabase = null;
+  let session = null;
+  let miniSiteData = null;
+  let miniSiteId = null;
+
+  function init() {
+    console.log('[AKP Editor] Init started');
+
+    // 1. Check session
+    try {
+      const sessionRaw = sessionStorage.getItem('akp_session');
+      if (!sessionRaw) {
+        window.location.href = '/login.html';
+        return;
+      }
+      session = JSON.parse(sessionRaw);
+    } catch (e) {
+      window.location.href = '/login.html';
+      return;
+    }
+
+    // 2. Init Supabase
+    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // 3. Render user info
+    renderUserInfo();
+
+    // 4. Load mini-site data
+    loadMiniSiteData();
+
+    // 5. Setup handlers (Save, Publish)
+    setupHandlers();
+
+    // 6. Lucide icons
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+
+    console.log('[AKP Editor] Init complete');
+  }
+
+  function renderUserInfo() {
+    const name = session.nama_panggilan || session.nama_lengkap.split(' ')[0];
+    const fullName = session.nama_lengkap;
+    const lastNameInitial = fullName.split(' ').length > 1 ? fullName.split(' ').slice(-1)[0][0] + '.' : '';
+    const sidebarName = lastNameInitial ? name + ' ' + lastNameInitial : name;
+
+    document.getElementById('userName').textContent = sidebarName;
+    document.getElementById('userAvatar').textContent = name[0].toUpperCase();
+
+    const paketLabel = session.paket === 'team'
+      ? (session.is_team_leader ? 'Paket Team (Leader)' : 'Paket Team')
+      : 'Paket Solo';
+    document.getElementById('userPlan').textContent = paketLabel;
+
+    // URLs
+    const url = 'akpagenku.com/' + session.username;
+    const previewHref = '/' + session.username + '.html';
+
+    document.getElementById('topbarUrlText').textContent = url;
+    document.getElementById('topbarUrlLink').href = previewHref;
+    document.getElementById('previewLink').href = previewHref;
+    document.getElementById('previewBrowserUrl').textContent = url;
+  }
+
+  async function loadMiniSiteData() {
+    try {
+      const { data, error } = await supabase
+        .from('mini_sites')
+        .select('*')
+        .eq('user_id', session.id)
+        .maybeSingle();
+
+      if (error) {
+        console.error('[AKP Editor] Load error:', error);
+        return;
+      }
+
+      if (data) {
+        miniSiteId = data.id;
+        miniSiteData = data;
+        populateFields(data);
+      } else {
+        console.log('[AKP Editor] No mini-site yet, will create on first save');
+        // Show defaults / empty
+        populateFields({
+          headline: '',
+          subheadline: '',
+          cta_text: '',
+          bio: '',
+          credentials: ''
+        });
+      }
+    } catch (err) {
+      console.error('[AKP Editor] Unexpected error:', err);
+    }
+  }
+
+  function populateFields(data) {
+    const setVal = (id, val) => {
+      const el = document.getElementById(id);
+      if (el) el.value = val || '';
+    };
+    setVal('input-headline', data.headline);
+    setVal('input-subheadline', data.subheadline);
+    setVal('input-cta', data.cta_text);
+    setVal('input-bio', data.bio);
+    setVal('input-creds', data.credentials);
+
+    // Update preview after populating
+    if (typeof updatePreview === 'function') updatePreview();
+  }
+
+  function setupHandlers() {
+    const btnSave = document.getElementById('btnSave');
+    const btnPublish = document.getElementById('btnPublish');
+
+    if (btnSave) {
+      btnSave.addEventListener('click', () => saveMiniSite(false));
+    }
+    if (btnPublish) {
+      btnPublish.addEventListener('click', () => saveMiniSite(true));
+    }
+  }
+
+  async function saveMiniSite(publish) {
+    const btnSave = document.getElementById('btnSave');
+    const btnPublish = document.getElementById('btnPublish');
+    btnSave.disabled = true;
+    btnPublish.disabled = true;
+
+    const payload = {
+      user_id: session.id,
+      headline: document.getElementById('input-headline')?.value || '',
+      subheadline: document.getElementById('input-subheadline')?.value || '',
+      cta_text: document.getElementById('input-cta')?.value || '',
+      bio: document.getElementById('input-bio')?.value || '',
+      credentials: document.getElementById('input-creds')?.value || '',
+      updated_at: new Date().toISOString()
+    };
+    if (publish) payload.is_published = true;
+
+    try {
+      let result;
+      if (miniSiteId) {
+        // Update existing
+        result = await supabase
+          .from('mini_sites')
+          .update(payload)
+          .eq('id', miniSiteId);
+      } else {
+        // Insert new
+        result = await supabase
+          .from('mini_sites')
+          .insert(payload)
+          .select()
+          .single();
+
+        if (result.data) miniSiteId = result.data.id;
+      }
+
+      if (result.error) {
+        alert('Gagal menyimpan: ' + result.error.message);
+      } else {
+        alert(publish ? 'Mini-site berhasil dipublish!' : 'Perubahan tersimpan!');
+      }
+    } catch (err) {
+      console.error('[AKP Editor] Save error:', err);
+      alert('Gagal menyimpan: ' + err.message);
+    } finally {
+      btnSave.disabled = false;
+      btnPublish.disabled = false;
+    }
+  }
+
+  // ===== INIT =====
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+
+<!-- Original UI script: switchTab, updatePreview, etc -->
 <script>
 // Tab switcher
 function switchTab(tabName, btn) {
