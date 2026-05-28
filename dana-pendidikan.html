@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kalkulator Dana Pendidikan | AKPAgenku</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0f2647;
+    --navy-dark: #081a33;
+    --gold: #c9a961;
+    --gold-light: #d9bd7f;
+    --cream: #faf8f3;
+    --gray-50: #fafafa;
+    --gray-100: #f5f5f5;
+    --gray-200: #e5e5e5;
+    --gray-300: #d4d4d4;
+    --gray-500: #737373;
+    --gray-700: #404040;
+    --gray-900: #171717;
+    --white: #ffffff;
+    --green: #059669;
+    --amber: #f59e0b;
+    --red: #dc2626;
+    --purple: #7c3aed;
+    --serif: 'Playfair Display', serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--cream);
+    color: var(--gray-900);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ===== HEADER ===== */
+  .quiz-header {
+    background: var(--navy);
+    color: var(--white);
+    padding: 16px 20px;
+  }
+  .quiz-header-inner {
+    max-width: 680px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .agent-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+  }
+  .agent-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--gold);
+    color: var(--navy);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  .agent-name { font-weight: 600; }
+  .agent-tag { color: var(--gold); font-size: 11px; letter-spacing: 1px; text-transform: uppercase; }
+  .logo {
+    font-family: var(--serif);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--white);
+    text-decoration: none;
+  }
+  .logo .accent { color: var(--gold); }
+
+  /* ===== MAIN ===== */
+  .container {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 32px 20px 80px;
+  }
+
+  .card {
+    background: var(--white);
+    border-radius: 16px;
+    border: 1px solid var(--gray-200);
+    box-shadow: 0 4px 14px rgba(15, 38, 71, 0.04);
+    overflow: hidden;
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+    overflow: hidden;
+  }
+  .hero-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(15,38,71,0.1) 0%, rgba(15,38,71,0.4) 100%);
+    z-index: 1;
+  }
+  .hero-icon {
+    position: absolute;
+    bottom: 16px;
+    left: 28px;
+    z-index: 2;
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    background: rgba(255,255,255,0.18);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    border: 1px solid rgba(255,255,255,0.25);
+  }
+  .body {
+    padding: 28px 28px 32px;
+  }
+  .title {
+    font-family: var(--serif);
+    font-size: 27px;
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+  .subtitle {
+    font-size: 15px;
+    color: var(--gray-700);
+    margin-bottom: 26px;
+  }
+
+  /* ===== FORM ===== */
+  .form-group {
+    margin-bottom: 22px;
+  }
+  .form-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 10px;
+  }
+  .form-label .hint {
+    font-weight: 400;
+    color: var(--gray-500);
+    font-size: 12px;
+  }
+
+  /* Slider */
+  .slider-wrap {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .slider {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--gray-200);
+    outline: none;
+  }
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--gold);
+    cursor: pointer;
+    border: 3px solid var(--white);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  }
+  .slider::-moz-range-thumb {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--gold);
+    cursor: pointer;
+    border: 3px solid var(--white);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  }
+  .slider-value {
+    min-width: 70px;
+    text-align: center;
+    font-family: var(--serif);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--navy);
+    background: var(--cream);
+    border-radius: 8px;
+    padding: 6px 4px;
+  }
+
+  /* Dropdown & inputs */
+  .form-select, .form-input {
+    width: 100%;
+    padding: 13px 14px;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 9px;
+    font-size: 14px;
+    font-family: inherit;
+    background: var(--white);
+    transition: border-color 0.2s;
+    color: var(--gray-900);
+  }
+  .form-select:focus, .form-input:focus {
+    outline: none;
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(201, 169, 97, 0.15);
+  }
+  .input-money {
+    position: relative;
+  }
+  .input-money .prefix {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--gray-500);
+    font-size: 14px;
+    font-weight: 600;
+    pointer-events: none;
+  }
+  .input-money .form-input {
+    padding-left: 38px;
+  }
+
+  /* Button */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 15px 24px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    font-family: inherit;
+    width: 100%;
+  }
+  .btn-primary {
+    background: var(--navy);
+    color: var(--white);
+  }
+  .btn-primary:hover { background: var(--navy-dark); transform: translateY(-1px); }
+  .btn-gold {
+    background: var(--gold);
+    color: var(--navy);
+  }
+  .btn-gold:hover { background: var(--gold-light); transform: translateY(-1px); box-shadow: 0 6px 16px rgba(201,169,97,0.25); }
+
+  /* ===== RESULT ===== */
+  .result-section { display: none; }
+  .result-section.show { display: block; animation: slideIn 0.5s; }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .result-hero {
+    text-align: center;
+    padding: 24px 0 20px;
+  }
+  .result-hero-label {
+    font-size: 13px;
+    color: var(--gray-700);
+    margin-bottom: 8px;
+  }
+  .result-hero-value {
+    font-family: var(--serif);
+    font-size: 44px;
+    font-weight: 700;
+    color: var(--purple);
+    line-height: 1.1;
+    margin-bottom: 4px;
+  }
+  .result-hero-sub {
+    font-size: 13px;
+    color: var(--gray-500);
+  }
+
+  .result-setoran {
+    background: var(--navy);
+    color: var(--white);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    margin: 20px 0;
+  }
+  .result-setoran-label {
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 6px;
+  }
+  .result-setoran-value {
+    font-family: var(--serif);
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--gold);
+  }
+  .result-setoran-sub {
+    font-size: 12px;
+    color: rgba(255,255,255,0.6);
+    margin-top: 4px;
+  }
+
+  /* Inflation bar */
+  .inflasi-block {
+    background: var(--gray-50);
+    border-radius: 12px;
+    padding: 18px;
+    margin: 20px 0;
+  }
+  .inflasi-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 14px;
+  }
+  .inflasi-row {
+    margin-bottom: 12px;
+  }
+  .inflasi-row-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    margin-bottom: 5px;
+    color: var(--gray-700);
+  }
+  .inflasi-row-label strong { color: var(--navy); font-family: var(--serif); font-size: 14px; }
+  .inflasi-bar {
+    height: 14px;
+    background: var(--gray-200);
+    border-radius: 7px;
+    overflow: hidden;
+  }
+  .inflasi-fill {
+    height: 100%;
+    border-radius: 7px;
+    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 0;
+  }
+  .inflasi-fill.now { background: var(--gray-300); }
+  .inflasi-fill.future { background: linear-gradient(90deg, var(--purple) 0%, #5b21b6 100%); }
+  .inflasi-note {
+    font-size: 12px;
+    color: var(--purple);
+    font-weight: 600;
+    margin-top: 6px;
+  }
+
+  /* Capture form */
+  .capture-block {
+    background: var(--cream);
+    border: 1.5px solid var(--gold);
+    border-radius: 12px;
+    padding: 22px;
+    margin-top: 22px;
+  }
+  .capture-title {
+    font-family: var(--serif);
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 6px;
+  }
+  .capture-sub {
+    font-size: 13px;
+    color: var(--gray-700);
+    margin-bottom: 16px;
+  }
+  .privacy-note {
+    margin-top: 12px;
+    font-size: 11px;
+    color: var(--gray-500);
+    text-align: center;
+    line-height: 1.5;
+  }
+  .form-error {
+    background: #fee2e2;
+    border: 1px solid #fca5a5;
+    color: #991b1b;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    margin: 12px 0;
+    display: none;
+  }
+  .form-error.show { display: block; }
+
+  /* Detail (after capture) */
+  .detail-section {
+    display: none;
+    margin-top: 22px;
+    padding-top: 22px;
+    border-top: 1px solid var(--gray-200);
+  }
+  .detail-section.show { display: block; animation: slideIn 0.5s; }
+  .insight-card {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-left: 4px solid var(--gold);
+    border-radius: 8px;
+    padding: 16px 18px;
+    margin-bottom: 12px;
+  }
+  .insight-card-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 6px;
+  }
+  .insight-card-text {
+    font-size: 13px;
+    color: var(--gray-700);
+    line-height: 1.6;
+  }
+  .insight-compare {
+    display: flex;
+    gap: 12px;
+    margin: 14px 0;
+  }
+  .compare-item {
+    flex: 1;
+    text-align: center;
+    padding: 14px 10px;
+    border-radius: 10px;
+    border: 1px solid var(--gray-200);
+  }
+  .compare-item.now { background: rgba(5,150,105,0.06); border-color: var(--green); }
+  .compare-item.late { background: rgba(220,38,38,0.05); border-color: var(--red); }
+  .compare-label { font-size: 11px; font-weight: 600; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+  .compare-value { font-family: var(--serif); font-size: 19px; font-weight: 700; }
+  .compare-item.now .compare-value { color: var(--green); }
+  .compare-item.late .compare-value { color: var(--red); }
+  .compare-sub { font-size: 11px; color: var(--gray-500); margin-top: 2px; }
+
+  .cta-block {
+    background: var(--navy);
+    color: var(--white);
+    border-radius: 12px;
+    padding: 22px;
+    margin-top: 20px;
+    text-align: center;
+  }
+  .cta-title {
+    font-family: var(--serif);
+    font-size: 19px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .cta-sub {
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 16px;
+  }
+  .cta-block .btn-gold { width: 100%; }
+
+  .disclaimer {
+    font-size: 11px;
+    color: var(--gray-500);
+    text-align: center;
+    margin-top: 20px;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 600px) {
+    .title { font-size: 23px; }
+    .result-hero-value { font-size: 36px; }
+    .result-setoran-value { font-size: 27px; }
+    .agent-info { display: none; }
+    .insight-compare { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="quiz-header">
+  <div class="quiz-header-inner">
+    <a href="#" class="logo">AKP<span class="accent">Agenku</span></a>
+    <div class="agent-info" id="agentInfo" style="display:none;">
+      <div class="agent-avatar" id="agentAvatar">?</div>
+      <div>
+        <div class="agent-tag">Kalkulator dari</div>
+        <div class="agent-name" id="agentName">-</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- MAIN -->
+<div class="container">
+  <div class="card">
+    <div class="hero">
+      <img class="hero-img" src="/img/magnet-pendidikan.png" alt="Dana Pendidikan" onerror="this.style.display='none'">
+      <div class="hero-icon">🎓</div>
+    </div>
+    <div class="body">
+
+      <!-- INPUT VIEW -->
+      <div id="inputView">
+        <h1 class="title">Kalkulator Dana Pendidikan Anak</h1>
+        <p class="subtitle">Cari tahu berapa biaya kuliah anak Anda nanti — dan berapa yang perlu ditabung mulai sekarang.</p>
+
+        <div class="form-group">
+          <label class="form-label">Usia anak sekarang <span class="hint">(tahun)</span></label>
+          <div class="slider-wrap">
+            <input type="range" class="slider" id="usiaAnak" min="0" max="17" value="5" oninput="updateSliderVal()">
+            <div class="slider-value" id="usiaAnakVal">5</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Target usia masuk kuliah</label>
+          <div class="slider-wrap">
+            <input type="range" class="slider" id="targetUsia" min="17" max="22" value="18" oninput="updateSliderVal()">
+            <div class="slider-value" id="targetUsiaVal">18</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Tujuan pendidikan</label>
+          <select class="form-select" id="tujuan" onchange="updateBiayaPreset()">
+            <option value="ptn" data-biaya="150000000">PTN Dalam Negeri (~Rp 150 jt)</option>
+            <option value="pts" data-biaya="300000000">PTS Dalam Negeri (~Rp 300 jt)</option>
+            <option value="ln_asia" data-biaya="800000000">Luar Negeri - Asia (~Rp 800 jt)</option>
+            <option value="ln_barat" data-biaya="2000000000">Luar Negeri - Eropa/US (~Rp 2 M)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Estimasi biaya kuliah saat ini <span class="hint">(bisa diubah)</span></label>
+          <div class="input-money">
+            <span class="prefix">Rp</span>
+            <input type="text" class="form-input" id="biayaSekarang" value="150.000.000" oninput="formatMoney(this)">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Dana yang sudah disiapkan <span class="hint">(opsional)</span></label>
+          <div class="input-money">
+            <span class="prefix">Rp</span>
+            <input type="text" class="form-input" id="danaAda" value="0" oninput="formatMoney(this)">
+          </div>
+        </div>
+
+        <button class="btn btn-primary" onclick="hitung()">Hitung Biaya Kuliah →</button>
+      </div>
+
+      <!-- RESULT VIEW -->
+      <div class="result-section" id="resultView">
+        <div class="result-hero">
+          <div class="result-hero-label">Biaya kuliah anak Anda <strong id="tahunLagi">13 tahun</strong> lagi:</div>
+          <div class="result-hero-value" id="biayaMasaDepan">Rp 0</div>
+          <div class="result-hero-sub">Sudah memperhitungkan inflasi pendidikan 10%/tahun</div>
+        </div>
+
+        <div class="inflasi-block">
+          <div class="inflasi-title">📈 Efek Inflasi Pendidikan</div>
+          <div class="inflasi-row">
+            <div class="inflasi-row-label"><span>Biaya sekarang</span><strong id="barNowLabel">Rp 150 jt</strong></div>
+            <div class="inflasi-bar"><div class="inflasi-fill now" id="barNow"></div></div>
+          </div>
+          <div class="inflasi-row">
+            <div class="inflasi-row-label"><span>Biaya saat anak kuliah</span><strong id="barFutureLabel">Rp 518 jt</strong></div>
+            <div class="inflasi-bar"><div class="inflasi-fill future" id="barFuture"></div></div>
+          </div>
+          <div class="inflasi-note" id="inflasiNote">↑ Naik 3.4x karena inflasi pendidikan</div>
+        </div>
+
+        <div class="result-setoran">
+          <div class="result-setoran-label">Untuk mencapainya, Anda perlu menabung:</div>
+          <div class="result-setoran-value" id="setoranBulanan">Rp 0</div>
+          <div class="result-setoran-sub">per bulan (asumsi imbal hasil investasi 8%/tahun)</div>
+        </div>
+
+        <!-- CAPTURE -->
+        <div class="capture-block" id="captureBlock">
+          <div class="capture-title">Mau strategi lengkap mencapai target ini?</div>
+          <div class="capture-sub">Masukkan kontak untuk lihat simulasi "mulai sekarang vs menunda" + konsultasi gratis dengan agen.</div>
+
+          <div class="form-group" style="margin-bottom:12px;">
+            <label class="form-label">Nama Lengkap *</label>
+            <input type="text" class="form-input" id="capNama" placeholder="Nama Anda">
+          </div>
+          <div class="form-group" style="margin-bottom:12px;">
+            <label class="form-label">Email *</label>
+            <input type="email" class="form-input" id="capEmail" placeholder="nama@email.com">
+          </div>
+          <div class="form-group" style="margin-bottom:12px;">
+            <label class="form-label">No. WhatsApp *</label>
+            <div class="input-money">
+              <span class="prefix">+62</span>
+              <input type="tel" class="form-input" id="capWA" placeholder="81234567890" style="padding-left:48px;">
+            </div>
+          </div>
+
+          <div class="form-error" id="formError"></div>
+
+          <button class="btn btn-gold" onclick="submitCapture()">Lihat Strategi Lengkap →</button>
+          <div class="privacy-note">🔒 Data Anda hanya digunakan oleh agen terkait untuk follow-up. Tidak dibagikan ke pihak ketiga.</div>
+        </div>
+
+        <!-- DETAIL (after capture) -->
+        <div class="detail-section" id="detailSection">
+          <div class="insight-card">
+            <div class="insight-card-title">⏰ Makin Cepat Mulai, Makin Ringan</div>
+            <div class="insight-card-text">Karena efek compounding, menunda beberapa tahun bikin setoran bulanan jauh lebih berat. Lihat perbandingannya:</div>
+            <div class="insight-compare">
+              <div class="compare-item now">
+                <div class="compare-label">Mulai Sekarang</div>
+                <div class="compare-value" id="setoranNow">Rp 1.8jt</div>
+                <div class="compare-sub">/bulan</div>
+              </div>
+              <div class="compare-item late">
+                <div class="compare-label">Menunda 5 Tahun</div>
+                <div class="compare-value" id="setoranLate">Rp 3.5jt</div>
+                <div class="compare-sub">/bulan</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="insight-card">
+            <div class="insight-card-title">💡 Strategi yang Disarankan</div>
+            <div class="insight-card-text" id="strategiText">Dengan jangka waktu yang panjang, instrumen investasi berbasis equity bisa membantu mengejar target dengan setoran lebih ringan dibanding tabungan biasa.</div>
+          </div>
+
+          <div class="cta-block">
+            <div class="cta-title">Mau bantuan menyusun rencananya?</div>
+            <div class="cta-sub">Agen <strong id="ctaAgentName">Anda</strong> akan bantu pilih instrumen yang sesuai dengan budget & target Anda. Gratis konsultasi, tanpa hardsell.</div>
+            <button class="btn btn-gold" onclick="contactAgent()">Konsultasi via WhatsApp</button>
+          </div>
+        </div>
+
+        <div class="disclaimer">
+          *Hasil ini estimasi berdasarkan asumsi inflasi pendidikan 10%/tahun dan imbal hasil investasi 8%/tahun. Angka aktual dapat berbeda. Bukan merupakan janji imbal hasil atau saran finansial yang mengikat.
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function() {
+  'use strict';
+
+  const SUPABASE_URL = 'https://bfydtsfekvueqzvuschp.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_3Xec3HYKViIiuX99hHxHqg_Ih8ABX_T';
+
+  let supabase = null;
+  let agentData = null;
+  let calcResult = null;
+  let leadId = null;
+
+  // ===== UTIL =====
+  function parseMoney(str) {
+    return parseInt(String(str).replace(/[^0-9]/g, ''), 10) || 0;
+  }
+  function fmtMoney(num) {
+    return 'Rp ' + Math.round(num).toLocaleString('id-ID');
+  }
+  function fmtShort(num) {
+    if (num >= 1000000000) return 'Rp ' + (num / 1000000000).toFixed(num % 1000000000 === 0 ? 0 : 1) + ' M';
+    if (num >= 1000000) return 'Rp ' + Math.round(num / 1000000) + ' jt';
+    if (num >= 1000) return 'Rp ' + Math.round(num / 1000) + ' rb';
+    return 'Rp ' + num;
+  }
+  function fmtShortSetoran(num) {
+    if (num >= 1000000) return 'Rp ' + (num / 1000000).toFixed(1) + 'jt';
+    if (num >= 1000) return 'Rp ' + Math.round(num / 1000) + 'rb';
+    return 'Rp ' + Math.round(num);
+  }
+
+  window.updateSliderVal = function() {
+    document.getElementById('usiaAnakVal').textContent = document.getElementById('usiaAnak').value;
+    document.getElementById('targetUsiaVal').textContent = document.getElementById('targetUsia').value;
+  };
+
+  window.updateBiayaPreset = function() {
+    const sel = document.getElementById('tujuan');
+    const biaya = sel.options[sel.selectedIndex].getAttribute('data-biaya');
+    document.getElementById('biayaSekarang').value = parseInt(biaya, 10).toLocaleString('id-ID');
+  };
+
+  window.formatMoney = function(input) {
+    const val = parseMoney(input.value);
+    input.value = val ? val.toLocaleString('id-ID') : '';
+  };
+
+  // ===== CALCULATION =====
+  function calculate() {
+    const usiaAnak = parseInt(document.getElementById('usiaAnak').value, 10);
+    const targetUsia = parseInt(document.getElementById('targetUsia').value, 10);
+    const tujuan = document.getElementById('tujuan').value;
+    const biayaSekarang = parseMoney(document.getElementById('biayaSekarang').value);
+    const danaAda = parseMoney(document.getElementById('danaAda').value);
+
+    const INFLASI = 0.10;
+    const RETURN = 0.08;
+
+    let tahunTersisa = targetUsia - usiaAnak;
+    if (tahunTersisa < 1) tahunTersisa = 1;
+
+    // Biaya masa depan
+    const biayaMasaDepan = biayaSekarang * Math.pow(1 + INFLASI, tahunTersisa);
+    const kebutuhanBersih = Math.max(0, biayaMasaDepan - danaAda * Math.pow(1 + RETURN, tahunTersisa));
+
+    // Setoran bulanan (FV annuity inverted)
+    function calcSetoran(years, target) {
+      const months = years * 12;
+      const r = RETURN / 12;
+      if (months <= 0) return target;
+      const factor = (Math.pow(1 + r, months) - 1) / r;
+      return target / factor;
+    }
+
+    const setoranNow = calcSetoran(tahunTersisa, kebutuhanBersih);
+    // Menunda 5 tahun (atau setengah waktu kalau < 10 thn)
+    const delayYears = Math.min(5, Math.max(1, Math.floor(tahunTersisa / 2)));
+    const tahunSetelahTunda = Math.max(1, tahunTersisa - delayYears);
+    const setoranLate = calcSetoran(tahunSetelahTunda, kebutuhanBersih);
+
+    const multiplier = biayaMasaDepan / biayaSekarang;
+
+    return {
+      usiaAnak, targetUsia, tujuan, biayaSekarang, danaAda,
+      tahunTersisa,
+      biayaMasaDepan: Math.round(biayaMasaDepan),
+      kebutuhanBersih: Math.round(kebutuhanBersih),
+      setoranNow: Math.round(setoranNow),
+      setoranLate: Math.round(setoranLate),
+      delayYears,
+      multiplier: parseFloat(multiplier.toFixed(1))
+    };
+  }
+
+  window.hitung = function() {
+    calcResult = calculate();
+
+    // Hide input, show result
+    document.getElementById('inputView').style.display = 'none';
+    document.getElementById('resultView').classList.add('show');
+
+    // Render hero
+    document.getElementById('tahunLagi').textContent = calcResult.tahunTersisa + ' tahun';
+    document.getElementById('biayaMasaDepan').textContent = fmtMoney(calcResult.biayaMasaDepan);
+    document.getElementById('setoranBulanan').textContent = fmtMoney(calcResult.setoranNow);
+
+    // Inflation bars
+    document.getElementById('barNowLabel').textContent = fmtShort(calcResult.biayaSekarang);
+    document.getElementById('barFutureLabel').textContent = fmtShort(calcResult.biayaMasaDepan);
+    document.getElementById('inflasiNote').textContent = '↑ Naik ' + calcResult.multiplier + 'x karena inflasi pendidikan';
+
+    // Animate bars (now relative to future = 100%)
+    const nowPct = (calcResult.biayaSekarang / calcResult.biayaMasaDepan) * 100;
+    setTimeout(() => {
+      document.getElementById('barNow').style.width = nowPct + '%';
+      document.getElementById('barFuture').style.width = '100%';
+    }, 200);
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // ===== AGENT LOAD =====
+  async function loadAgent(username) {
+    try {
+      const { data } = await supabase
+        .from('users')
+        .select('id, nama_lengkap, nama_panggilan, username, whatsapp')
+        .eq('username', username)
+        .eq('subscription_status', 'active')
+        .maybeSingle();
+      if (data) {
+        agentData = data;
+        const name = data.nama_panggilan || data.nama_lengkap.split(' ')[0];
+        document.getElementById('agentInfo').style.display = 'flex';
+        document.getElementById('agentName').textContent = name;
+        document.getElementById('agentAvatar').textContent = name[0].toUpperCase();
+        document.getElementById('ctaAgentName').textContent = name;
+      }
+    } catch (e) { console.warn('Agent load failed:', e); }
+  }
+
+  // ===== SUBMIT CAPTURE =====
+  window.submitCapture = async function() {
+    const nama = document.getElementById('capNama').value.trim();
+    const email = document.getElementById('capEmail').value.trim();
+    const wa = document.getElementById('capWA').value.trim();
+    const errEl = document.getElementById('formError');
+    errEl.classList.remove('show');
+
+    if (!nama || !email || !wa) {
+      errEl.textContent = 'Mohon lengkapi semua field.';
+      errEl.classList.add('show'); return;
+    }
+    if (!email.includes('@')) {
+      errEl.textContent = 'Email tidak valid.';
+      errEl.classList.add('show'); return;
+    }
+    if (wa.length < 9) {
+      errEl.textContent = 'No. WhatsApp tidak valid.';
+      errEl.classList.add('show'); return;
+    }
+
+    // Save lead
+    if (agentData) {
+      try {
+        const { data: leadData, error: leadError } = await supabase
+          .from('leads')
+          .insert({
+            owner_id: agentData.id,
+            nama: nama,
+            email: email,
+            whatsapp: wa,
+            stage: 'new',
+            source_magnet: 'pendidikan',
+            score: Math.round(calcResult.setoranNow / 1000),
+            result_json: calcResult
+          })
+          .select()
+          .single();
+
+        if (!leadError && leadData) {
+          leadId = leadData.id;
+          await supabase.from('lead_magnet_responses').insert({
+            lead_id: leadId,
+            magnet_slug: 'dana-pendidikan',
+            raw_answers: {
+              usia_anak: calcResult.usiaAnak,
+              target_usia: calcResult.targetUsia,
+              tujuan: calcResult.tujuan,
+              biaya_sekarang: calcResult.biayaSekarang,
+              dana_ada: calcResult.danaAda
+            },
+            scores: {
+              biaya_masa_depan: calcResult.biayaMasaDepan,
+              setoran_bulanan: calcResult.setoranNow,
+              tahun_tersisa: calcResult.tahunTersisa,
+              multiplier_inflasi: calcResult.multiplier
+            },
+            priority_areas: ['dana-pendidikan']
+          });
+        } else if (leadError) {
+          console.error('Lead insert error:', leadError);
+        }
+      } catch (e) { console.warn('Save failed:', e); }
+    }
+
+    // Show detail
+    document.getElementById('captureBlock').style.display = 'none';
+    showDetail();
+  };
+
+  function showDetail() {
+    document.getElementById('setoranNow').textContent = fmtShortSetoran(calcResult.setoranNow);
+    document.getElementById('setoranLate').textContent = fmtShortSetoran(calcResult.setoranLate);
+
+    // Strategy text by jangka waktu
+    let strategi;
+    if (calcResult.tahunTersisa > 10) {
+      strategi = 'Karena jangka waktu Anda masih panjang (' + calcResult.tahunTersisa + ' tahun), instrumen berbasis equity (saham) cocok untuk mengejar pertumbuhan optimal. Risiko jangka pendek bisa "diredam" oleh waktu yang panjang.';
+    } else if (calcResult.tahunTersisa >= 5) {
+      strategi = 'Dengan jangka waktu menengah (' + calcResult.tahunTersisa + ' tahun), kombinasi instrumen balanced (campuran saham & obligasi) memberi keseimbangan antara pertumbuhan dan keamanan.';
+    } else {
+      strategi = 'Karena waktu Anda relatif singkat (' + calcResult.tahunTersisa + ' tahun), instrumen yang lebih konservatif (fixed income) lebih aman untuk melindungi dana mendekati waktu kuliah.';
+    }
+    document.getElementById('strategiText').textContent = strategi;
+
+    document.getElementById('detailSection').classList.add('show');
+    window.scrollTo({ top: document.getElementById('detailSection').offsetTop - 20, behavior: 'smooth' });
+  }
+
+  window.contactAgent = function() {
+    if (!agentData || !agentData.whatsapp) {
+      alert('Agen akan menghubungi Anda dalam 24 jam. Terima kasih!');
+      return;
+    }
+    const nama = document.getElementById('capNama').value.trim() || 'Saya';
+    const text = encodeURIComponent('Halo ' + (agentData.nama_panggilan || agentData.nama_lengkap.split(' ')[0]) + ', saya ' + nama + '. Saya baru pakai kalkulator dana pendidikan di mini-site Anda — butuh sekitar ' + fmtMoney(calcResult.biayaMasaDepan) + ' untuk kuliah anak ' + calcResult.tahunTersisa + ' tahun lagi. Mau diskusi strateginya?');
+    const phone = '62' + agentData.whatsapp.replace(/^0/, '').replace(/^62/, '');
+    window.open('https://wa.me/' + phone + '?text=' + text, '_blank');
+  };
+
+  // ===== INIT =====
+  async function init() {
+    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const urlParams = new URLSearchParams(window.location.search);
+    const ref = urlParams.get('ref');
+    if (ref) await loadAgent(ref);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+
+</body>
+</html>

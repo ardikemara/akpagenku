@@ -741,20 +741,50 @@
         </div>
       </div>
 
-      <!-- ===== COMING SOON: Kalkulator Dana Pendidikan ===== -->
-      <div class="magnet-item coming-soon">
-        <div class="magnet-thumb cs">
-          <img class="magnet-thumb-img" src="/img/magnet-pendidikan.jpg" alt="Kalkulator Dana Pendidikan" onerror="this.style.display='none'" style="filter:grayscale(0.4) opacity(0.85);">
-          <span class="magnet-badge-soon"><i data-lucide="clock" style="width:10px;height:10px;display:inline;margin-right:2px;"></i> COMING SOON</span>
+      <!-- ===== MAGNET #2: KALKULATOR DANA PENDIDIKAN (AKTIF) ===== -->
+      <div class="magnet-item">
+        <div class="magnet-thumb pendidikan">
+          <img class="magnet-thumb-img" src="/img/magnet-pendidikan.png" alt="Kalkulator Dana Pendidikan" onerror="this.style.display='none'">
+          <span class="magnet-badge-primary"><i data-lucide="check-circle-2" style="width:10px;height:10px;display:inline;margin-right:2px;"></i> AKTIF</span>
           <span class="magnet-badge-type">KALKULATOR</span>
           <div class="magnet-thumb-icon"><i data-lucide="graduation-cap"></i></div>
         </div>
         <div class="magnet-body">
           <div class="magnet-name">Kalkulator Dana Pendidikan</div>
-          <div class="magnet-desc">"Berapa biaya kuliah anak saya nanti?" Prospek input usia anak & target universitas, dapat estimasi total kebutuhan + setoran bulanan.</div>
+          <div class="magnet-desc">"Berapa biaya kuliah anak saya nanti?" Prospek input usia anak & target universitas, dapat estimasi total kebutuhan + setoran bulanan. Lead masuk ke CRM dengan rekomendasi produk &amp; script WhatsApp.</div>
 
-          <div class="cs-overlay">
-            <span class="cs-badge-text"><i data-lucide="hammer"></i> Sedang dikembangkan</span>
+          <div class="magnet-stats-row">
+            <div class="magnet-stat-item">
+              <div class="magnet-stat-icon"><i data-lucide="mouse-pointer-click"></i></div>
+              <div class="magnet-stat-text">
+                <div class="magnet-stat-value" id="pendidikanKlik">0</div>
+                <div class="magnet-stat-label">KLIK</div>
+              </div>
+            </div>
+            <div class="magnet-stat-item">
+              <div class="magnet-stat-icon"><i data-lucide="users"></i></div>
+              <div class="magnet-stat-text">
+                <div class="magnet-stat-value" id="pendidikanLead">0</div>
+                <div class="magnet-stat-label">LEAD</div>
+              </div>
+            </div>
+            <div class="magnet-stat-item">
+              <div class="magnet-stat-icon"><i data-lucide="percent"></i></div>
+              <div class="magnet-stat-text">
+                <div class="magnet-stat-value">—</div>
+                <div class="magnet-stat-label">KONVERSI</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="magnet-link-row">
+            <span class="magnet-link-text">akpagenku.com/dana-pendidikan?ref=cristine</span>
+            <button class="magnet-copy-btn" onclick="copyLink(this, 'akpagenku.com/dana-pendidikan?ref=cristine')"><i data-lucide="copy"></i> Salin</button>
+          </div>
+
+          <div class="magnet-actions">
+            <a href="/dana-pendidikan.html?ref=cristine" target="_blank" class="magnet-btn ghost"><i data-lucide="eye"></i> Preview</a>
+            <button class="magnet-btn primary" onclick="shareWA('Kalkulator Dana Pendidikan', 'akpagenku.com/dana-pendidikan?ref=cristine')"><i data-lucide="message-circle"></i> Share ke WhatsApp</button>
           </div>
         </div>
       </div>
@@ -961,11 +991,20 @@
         }
       };
 
-      // Total lead masuk (real)
-      setVal('statLead', totalLead, true);
+      // Count pendidikan leads
+      const { data: pendLeads } = await supabaseClient
+        .from('leads')
+        .select('id')
+        .eq('owner_id', session.id)
+        .eq('source_magnet', 'pendidikan');
+      const totalPend = (pendLeads || []).length;
 
-      // Per-magnet card stat (Skor)
+      // Total lead masuk (real) - all magnets
+      setVal('statLead', totalLead + totalPend, true);
+
+      // Per-magnet card stat
       setVal('skorLead', totalLead, false);
+      setVal('pendidikanLead', totalPend, false);
 
       // Magnet paling laku (kalau ada lead, Skor yang aktif)
       if (totalLead > 0) {
