@@ -771,7 +771,7 @@
             <div class="magnet-stat-item">
               <div class="magnet-stat-icon"><i data-lucide="percent"></i></div>
               <div class="magnet-stat-text">
-                <div class="magnet-stat-value">—</div>
+                <div class="magnet-stat-value" id="pendidikanKonv">—</div>
                 <div class="magnet-stat-label">KONVERSI</div>
               </div>
             </div>
@@ -819,7 +819,7 @@
             <div class="magnet-stat-item">
               <div class="magnet-stat-icon"><i data-lucide="percent"></i></div>
               <div class="magnet-stat-text">
-                <div class="magnet-stat-value">—</div>
+                <div class="magnet-stat-value" id="pensiunKonv">—</div>
                 <div class="magnet-stat-label">KONVERSI</div>
               </div>
             </div>
@@ -994,25 +994,6 @@
   async function loadRealStats(session) {
     if (!supabaseClient || !session.id) return;
     try {
-      // Count leads from 'skor' magnet for this agent
-      const { data: skorLeads, error: skorErr } = await supabaseClient
-        .from('leads')
-        .select('id, created_at, source_magnet')
-        .eq('owner_id', session.id)
-        .eq('source_magnet', 'skor');
-
-      if (skorErr) { console.warn('Stats fetch error:', skorErr); return; }
-
-      const leads = skorLeads || [];
-      const totalLead = leads.length;
-
-      // Leads this month
-      const now = new Date();
-      const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-      const leadsThisMonth = leads.filter(l => new Date(l.created_at) >= monthStart).length;
-
-      // Update overall stats
-      // NOTE: Klik tracking belum diimplementasi, jadi tetap 0 / "—"
       const setVal = (id, val, unmute) => {
         const el = document.getElementById(id);
         if (el) {
@@ -1021,37 +1002,67 @@
         }
       };
 
-      // Count pendidikan leads
-      const { data: pendLeads } = await supabaseClient
+      // ===== LEADS per magnet =====
+      const { data: allLeads, error: leadErr } = await supabaseClient
         .from('leads')
-        .select('id')
-        .eq('owner_id', session.id)
-        .eq('source_magnet', 'pendidikan');
-      const totalPend = (pendLeads || []).length;
+        .select('id, created_at, source_magnet')
+        .eq('owner_id', session.id);
+      if (leadErr) { console.warn('Lead fetch error:', leadErr); }
+      const leads = allLeads || [];
 
-      // Count pensiun leads
-      const { data: pensiunLeads } = await supabaseClient
-        .from('leads')
-        .select('id')
-        .eq('owner_id', session.id)
-        .eq('source_magnet', 'pensiun');
-      const totalPensiun = (pensiunLeads || []).length;
+      const now = new Date();
+      const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
 
-      // Total lead masuk (real) - all magnets
-      setVal('statLead', totalLead + totalPend + totalPensiun, true);
+      const leadSkor = leads.filter(l => l.source_magnet === 'skor').length;
+      const leadPend = leads.filter(l => l.source_magnet === 'pendidikan').length;
+      const leadPensiun = leads.filter(l => l.source_magnet === 'pensiun').length;
+      const totalLeadAll = leadSkor + leadPend + leadPensiun;
 
-      // Per-magnet card stat
-      setVal('skorLead', totalLead, false);
-      setVal('pendidikanLead', totalPend, false);
-      setVal('pensiunLead', totalPensiun, false);
+      // ===== CLICKS per magnet (magnet_slug pakai slug panjang) =====
+      const { data: allClicks, error: clickErr } = await supabaseClient
+        .from('magnet_clicks')
+        .select('id, magnet_slug, clicked_at')
+        .eq('user_id', session.id);
+      if (clickErr) { console.warn('Click fetch error:', clickErr); }
+      const clicks = allClicks || [];
 
-      // Magnet paling laku (kalau ada lead, Skor yang aktif)
-      if (totalLead > 0) {
-        setVal('statTop', 'Skor', true);
-      }
+      const klikSkor = clicks.filter(c => c.magnet_slug === 'skor-kesehatan-keuangan').length;
+      const klikPend = clicks.filter(c => c.magnet_slug === 'dana-pendidikan').length;
+      const klikPensiun = clicks.filter(c => c.magnet_slug === 'dana-pensiun').length;
+      const totalKlikAll = klikSkor + klikPend + klikPensiun;
+      const klikThisMonth = clicks.filter(c => new Date(c.clicked_at) >= monthStart).length;
 
-      // Conversion & klik tetap "—" / 0 karena klik tracking belum ada
-      // (akan diisi saat magnet_clicks tracking diimplementasi)
+      // ===== Helper: konversi =====
+      const konv = (lead, klik) => {
+        if (!klik || klik === 0) return '—';
+        return Math.round((lead / klik) * 100) + '%';
+      };
+
+      // ===== TOP STATS =====
+      setVal('statKlik', klikThisMonth, true);
+      setVal('statLead', totalLeadAll, true);
+      setVal('statKonv', konv(totalLeadAll, totalKlikAll), true);
+
+      // Magnet paling laku (by lead count)
+      const ranking = [
+        { name: 'Skor', n: leadSkor },
+        { name: 'Pendidikan', n: leadPend },
+        { name: 'Pensiun', n: leadPensiun }
+      ].sort((a, b) => b.n - a.n);
+      if (ranking[0].n > 0) setVal('statTop', ranking[0].name, true);
+
+      // ===== PER-MAGNET CARD STATS =====
+      setVal('skorKlik', klikSkor, false);
+      setVal('skorLead', leadSkor, false);
+      setVal('skorKonv', konv(leadSkor, klikSkor), false);
+
+      setVal('pendidikanKlik', klikPend, false);
+      setVal('pendidikanLead', leadPend, false);
+      setVal('pendidikanKonv', konv(leadPend, klikPend), false);
+
+      setVal('pensiunKlik', klikPensiun, false);
+      setVal('pensiunLead', leadPensiun, false);
+      setVal('pensiunKonv', konv(leadPensiun, klikPensiun), false);
 
     } catch (e) {
       console.warn('loadRealStats failed:', e);

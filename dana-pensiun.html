@@ -471,8 +471,24 @@
         document.getElementById('agentName').textContent = name;
         document.getElementById('agentAvatar').textContent = name[0].toUpperCase();
         document.getElementById('ctaAgentName').textContent = name;
+        trackClick();
       }
     } catch (e) { console.warn('Agent load failed:', e); }
+  }
+
+  // Catat klik/buka halaman (fire-and-forget)
+  function trackClick() {
+    if (!agentData) return;
+    try {
+      const params = new URLSearchParams(window.location.search);
+      supabase.from('magnet_clicks').insert({
+        user_id: agentData.id,
+        magnet_slug: 'dana-pensiun',
+        referrer: document.referrer || null,
+        user_agent: navigator.userAgent || null,
+        utm_source: params.get('utm_source') || null
+      }).then(() => {}).catch(err => console.warn('Click track failed:', err));
+    } catch (e) { console.warn('Click track error:', e); }
   }
 
   window.submitCapture = async function() {
