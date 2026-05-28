@@ -944,199 +944,89 @@
           <div class="plan-card">
             <div class="plan-card-head">
               <div>
-                <div class="plan-name">Paket Solo</div>
-                <div class="plan-price">Rp 600.000 / bulan</div>
+                <div class="plan-name" id="planName">Paket Solo</div>
+                <div class="plan-price" id="planPrice">Rp 600.000 / bulan</div>
               </div>
-              <span class="plan-badge">AKTIF</span>
+              <span class="plan-badge" id="planBadge">AKTIF</span>
             </div>
 
             <div class="plan-meta">
               <div class="plan-meta-item">
-                <div class="label">Tagihan Berikutnya</div>
-                <div class="value">27 Juni 2026</div>
+                <div class="label">Masa Aktif Sampai</div>
+                <div class="value" id="planMasaAktif">-</div>
               </div>
               <div class="plan-meta-item">
-                <div class="label">Total Berikutnya</div>
-                <div class="value">Rp 666.000 (incl PPN)</div>
+                <div class="label">Status</div>
+                <div class="value" id="planStatus">Aktif</div>
               </div>
             </div>
 
             <div class="plan-actions">
-              <button class="btn btn-primary"><i data-lucide="trending-up"></i> Upgrade ke Team</button>
-              <button class="btn btn-ghost">Lihat Detail Paket</button>
+              <button class="btn btn-primary" id="btnUpgrade"><i data-lucide="message-circle"></i> Hubungi Admin untuk Upgrade</button>
             </div>
           </div>
 
-          <!-- Payment Method -->
+          <!-- Info Pembayaran -->
           <div class="panel-card">
-            <div class="panel-card-title">Metode Pembayaran</div>
-            <div class="panel-card-sub">Metode pembayaran yang akan digunakan untuk tagihan berikutnya.</div>
+            <div class="panel-card-title">Informasi Pembayaran</div>
+            <div class="panel-card-sub">Perpanjangan & pembayaran langganan dikelola langsung oleh tim AKPAgenku.</div>
 
             <div class="payment-method">
-              <div class="payment-method-icon">G</div>
+              <div class="payment-method-icon"><i data-lucide="info"></i></div>
               <div class="payment-method-info">
-                <div class="payment-method-name">GoPay</div>
-                <div class="payment-method-meta">+62 812-3456-7890</div>
+                <div class="payment-method-name">Pembayaran via Admin</div>
+                <div class="payment-method-meta">Hubungi admin untuk perpanjangan, upgrade paket, atau pertanyaan tagihan.</div>
               </div>
-              <span class="payment-method-badge">Default</span>
-              <button class="btn btn-ghost" style="margin-left: 10px;"><i data-lucide="edit-3"></i> Ubah</button>
             </div>
 
-            <button class="btn btn-ghost" style="margin-top: 10px;"><i data-lucide="plus"></i> Tambah Metode Pembayaran</button>
+            <button class="btn btn-primary" id="btnKontakBilling" style="margin-top: 12px;"><i data-lucide="message-circle"></i> Hubungi Admin via WhatsApp</button>
           </div>
 
-          <!-- Invoice History -->
-          <div class="panel-card">
-            <div class="panel-card-title">Riwayat Pembayaran</div>
-            <div class="panel-card-sub">Riwayat tagihan 6 bulan terakhir.</div>
-
-            <div class="invoice-row head">
-              <div>Tanggal</div>
-              <div>Deskripsi</div>
-              <div>Metode</div>
-              <div>Nominal</div>
-              <div>Status</div>
-            </div>
-
-            <div class="invoice-row">
-              <div class="invoice-date">27 Mei 2026</div>
-              <div class="invoice-desc">Paket Solo · Mei</div>
-              <div class="invoice-date">GoPay</div>
-              <div class="invoice-amount">Rp 666.000</div>
-              <div><span class="invoice-status paid">Lunas</span></div>
-            </div>
-
-            <div class="invoice-row">
-              <div class="invoice-date">27 Apr 2026</div>
-              <div class="invoice-desc">Paket Solo · Apr</div>
-              <div class="invoice-date">GoPay</div>
-              <div class="invoice-amount">Rp 666.000</div>
-              <div><span class="invoice-status paid">Lunas</span></div>
-            </div>
-
-            <div class="invoice-row">
-              <div class="invoice-date">27 Mar 2026</div>
-              <div class="invoice-desc">Paket Solo · Mar</div>
-              <div class="invoice-date">BCA VA</div>
-              <div class="invoice-amount">Rp 666.000</div>
-              <div><span class="invoice-status paid">Lunas</span></div>
-            </div>
-
-            <div class="invoice-row">
-              <div class="invoice-date">27 Feb 2026</div>
-              <div class="invoice-desc">Paket Solo · Feb</div>
-              <div class="invoice-date">BCA VA</div>
-              <div class="invoice-amount">Rp 666.000</div>
-              <div><span class="invoice-status paid">Lunas</span></div>
-            </div>
-
-            <div class="save-bar">
-              <button class="btn btn-ghost"><i data-lucide="download"></i> Download Semua Invoice</button>
-            </div>
-          </div>
-
-          <!-- Cancel Subscription -->
+          <!-- Berhenti Langganan -->
           <div class="panel-card danger-zone">
             <div class="panel-card-title">Berhenti Langganan</div>
-            <div class="panel-card-sub">Jika berhenti, mini-site Anda akan offline & data lead akan terhapus 30 hari setelah pembatalan.</div>
-            <button class="btn btn-danger"><i data-lucide="x-circle"></i> Berhenti Langganan</button>
+            <div class="panel-card-sub">Jika ingin berhenti, hubungi admin. Mini-site akan offline & data lead disimpan 30 hari setelah pembatalan.</div>
+            <button class="btn btn-danger" id="btnBerhenti"><i data-lucide="message-circle"></i> Hubungi Admin untuk Berhenti</button>
           </div>
         </div>
 
         <!-- ===== TAB 3: NOTIFIKASI ===== -->
         <div class="settings-panel" id="panel-notifikasi">
           <div class="panel-card">
-            <div class="panel-card-title">Notifikasi Email</div>
-            <div class="panel-card-sub" id="notifEmailInfo">Email yang dikirim ke ...</div>
+            <div class="panel-card-title">Pengaturan Notifikasi</div>
+            <div class="panel-card-sub">Atur kapan & lewat mana Anda ingin dapat pemberitahuan. Fitur ini sedang kami siapkan.</div>
 
-            <div class="toggle-row">
-              <div class="toggle-info">
-                <div class="toggle-title">Lead baru masuk</div>
-                <div class="toggle-desc">Dapat email instan saat ada prospek isi kuis/kalkulator Anda.</div>
+            <div class="integration-card">
+              <div class="integration-icon"><i data-lucide="mail"></i></div>
+              <div class="integration-body">
+                <div class="integration-title">
+                  Notifikasi Email
+                  <span class="integration-status soon">COMING SOON</span>
+                </div>
+                <div class="integration-desc">Email instan saat ada lead baru, ringkasan harian, & reminder follow-up.</div>
               </div>
-              <div class="toggle-switch on" onclick="toggleSwitch(this)"></div>
             </div>
 
-            <div class="toggle-row">
-              <div class="toggle-info">
-                <div class="toggle-title">Ringkasan harian</div>
-                <div class="toggle-desc">Email setiap pagi jam 7 berisi summary lead & performa kemarin.</div>
+            <div class="integration-card">
+              <div class="integration-icon wa"><i data-lucide="message-circle"></i></div>
+              <div class="integration-body">
+                <div class="integration-title">
+                  Notifikasi WhatsApp
+                  <span class="integration-status soon">COMING SOON</span>
+                </div>
+                <div class="integration-desc">Notif WA untuk lead prioritas, reminder follow-up, & tagihan jatuh tempo.</div>
               </div>
-              <div class="toggle-switch on" onclick="toggleSwitch(this)"></div>
             </div>
 
-            <div class="toggle-row">
-              <div class="toggle-info">
-                <div class="toggle-title">Lead belum di-followup</div>
-                <div class="toggle-desc">Reminder lead di kolom "Prospek Baru" yang sudah lebih dari 3 hari.</div>
+            <div class="integration-card">
+              <div class="integration-icon"><i data-lucide="bell"></i></div>
+              <div class="integration-body">
+                <div class="integration-title">
+                  Notifikasi Sistem
+                  <span class="integration-status soon">COMING SOON</span>
+                </div>
+                <div class="integration-desc">Update fitur baru, info maintenance, & newsletter tips lead generation.</div>
               </div>
-              <div class="toggle-switch on" onclick="toggleSwitch(this)"></div>
-            </div>
-
-            <div class="toggle-row">
-              <div class="toggle-info">
-                <div class="toggle-title">Konten baru dari admin</div>
-                <div class="toggle-desc">Notifikasi saat admin upload konten baru ke Konten Library.</div>
-              </div>
-              <div class="toggle-switch" onclick="toggleSwitch(this)"></div>
-            </div>
-          </div>
-
-          <div class="panel-card">
-            <div class="panel-card-title">Notifikasi WhatsApp</div>
-            <div class="panel-card-sub">Pesan WhatsApp ke +62 812-3456-7890</div>
-
-            <div class="toggle-row">
-              <div class="toggle-info">
-                <div class="toggle-title">Lead hot (high priority)</div>
-                <div class="toggle-desc">Notif WA saat ada lead dengan skor rendah (butuh follow-up cepat).</div>
-              </div>
-              <div class="toggle-switch on" onclick="toggleSwitch(this)"></div>
-            </div>
-
-            <div class="toggle-row">
-              <div class="toggle-info">
-                <div class="toggle-title">Reminder follow-up</div>
-                <div class="toggle-desc">Pengingat WA pukul 09:00 untuk lead yang perlu dihubungi hari ini.</div>
-              </div>
-              <div class="toggle-switch on" onclick="toggleSwitch(this)"></div>
-            </div>
-
-            <div class="toggle-row">
-              <div class="toggle-info">
-                <div class="toggle-title">Tagihan jatuh tempo</div>
-                <div class="toggle-desc">Pengingat WA 3 hari sebelum tagihan jatuh tempo.</div>
-              </div>
-              <div class="toggle-switch on" onclick="toggleSwitch(this)"></div>
-            </div>
-          </div>
-
-          <div class="panel-card">
-            <div class="panel-card-title">Notifikasi Sistem</div>
-            <div class="panel-card-sub">Update & pengumuman platform AKPAgenku</div>
-
-            <div class="toggle-row">
-              <div class="toggle-info">
-                <div class="toggle-title">Update fitur baru</div>
-                <div class="toggle-desc">Email saat ada fitur baru yang dirilis.</div>
-              </div>
-              <div class="toggle-switch on" onclick="toggleSwitch(this)"></div>
-            </div>
-
-            <div class="toggle-row">
-              <div class="toggle-info">
-                <div class="toggle-title">Maintenance & downtime</div>
-                <div class="toggle-desc">Pemberitahuan saat ada maintenance terjadwal.</div>
-              </div>
-              <div class="toggle-switch on" onclick="toggleSwitch(this)"></div>
-            </div>
-
-            <div class="toggle-row">
-              <div class="toggle-info">
-                <div class="toggle-title">Newsletter mingguan</div>
-                <div class="toggle-desc">Tips & best practice lead generation untuk agen asuransi.</div>
-              </div>
-              <div class="toggle-switch" onclick="toggleSwitch(this)"></div>
             </div>
           </div>
         </div>
@@ -1144,43 +1034,44 @@
         <!-- ===== TAB 4: INTEGRASI ===== -->
         <div class="settings-panel" id="panel-integrasi">
           <div class="panel-card">
-            <div class="panel-card-title">Integrasi Aktif</div>
-            <div class="panel-card-sub">Hubungkan AKPAgenku dengan tool yang Anda gunakan sehari-hari.</div>
+            <div class="panel-card-title">Integrasi</div>
+            <div class="panel-card-sub">Integrasi dengan tool favorit Anda sedang kami siapkan. Berikut yang akan segera hadir.</div>
 
             <div class="integration-card">
               <div class="integration-icon wa"><i data-lucide="message-circle"></i></div>
               <div class="integration-body">
                 <div class="integration-title">
                   WhatsApp Business API
-                  <span class="integration-status connected">CONNECTED</span>
+                  <span class="integration-status soon">COMING SOON</span>
                 </div>
-                <div class="integration-desc">Kirim pesan otomatis ke lead langsung dari dashboard. Tersambung sejak 12 Feb 2026.</div>
+                <div class="integration-desc">Kirim pesan otomatis ke lead langsung dari dashboard.</div>
               </div>
-              <button class="btn btn-ghost"><i data-lucide="settings"></i> Kelola</button>
+              <button class="btn btn-ghost" disabled style="opacity: 0.5; cursor: not-allowed;"><i data-lucide="bell"></i> Notify Saya</button>
             </div>
 
             <div class="integration-card">
               <div class="integration-icon gcal"><i data-lucide="calendar"></i></div>
               <div class="integration-body">
-                <div class="integration-title">Google Calendar</div>
+                <div class="integration-title">
+                  Google Calendar
+                  <span class="integration-status soon">COMING SOON</span>
+                </div>
                 <div class="integration-desc">Sync meeting dengan lead langsung ke kalender Anda. Reminder otomatis.</div>
               </div>
-              <button class="btn btn-primary"><i data-lucide="plug"></i> Sambungkan</button>
+              <button class="btn btn-ghost" disabled style="opacity: 0.5; cursor: not-allowed;"><i data-lucide="bell"></i> Notify Saya</button>
             </div>
 
             <div class="integration-card">
               <div class="integration-icon webhook"><i data-lucide="webhook"></i></div>
               <div class="integration-body">
-                <div class="integration-title">Webhook Custom</div>
+                <div class="integration-title">
+                  Webhook Custom
+                  <span class="integration-status soon">COMING SOON</span>
+                </div>
                 <div class="integration-desc">Untuk developer: kirim event lead ke endpoint Anda sendiri. Cocok untuk Zapier, n8n, dll.</div>
               </div>
-              <button class="btn btn-ghost"><i data-lucide="code"></i> Setup</button>
+              <button class="btn btn-ghost" disabled style="opacity: 0.5; cursor: not-allowed;"><i data-lucide="bell"></i> Notify Saya</button>
             </div>
-          </div>
-
-          <div class="panel-card">
-            <div class="panel-card-title">Akan Datang</div>
-            <div class="panel-card-sub">Integrasi yang sedang kami siapkan.</div>
 
             <div class="integration-card">
               <div class="integration-icon mailchimp"><i data-lucide="mail"></i></div>
@@ -1321,6 +1212,8 @@
 
   const SUPABASE_URL = 'https://bfydtsfekvueqzvuschp.supabase.co';
   const SUPABASE_ANON_KEY = 'sb_publishable_3Xec3HYKViIiuX99hHxHqg_Ih8ABX_T';
+  // GANTI dengan nomor WhatsApp admin AKPAgenku (format internasional tanpa +, contoh: 628123456789)
+  const ADMIN_WA = '628123456789';
   let supabase = null;
   let currentSession = null;
 
@@ -1371,6 +1264,38 @@
 
     // Notification email info
     set('notifEmailInfo', 'Email yang dikirim ke ' + session.email);
+
+    // ===== Tab Akun: isi info paket dari session (data asli) =====
+    const PAKET_INFO = {
+      solo: { label: 'Paket Solo', harga: 'Rp 600.000 / bulan' },
+      team: { label: 'Paket Team', harga: 'Hubungi admin' }
+    };
+    const pk = (session.paket === 'team') ? PAKET_INFO.team : PAKET_INFO.solo;
+    const pkLabel = session.paket === 'team'
+      ? (session.is_team_leader ? 'Paket Team (Leader)' : 'Paket Team')
+      : 'Paket Solo';
+    set('planName', pkLabel);
+    set('planPrice', pk.harga);
+    set('planStatus', 'Aktif');
+    // Masa aktif (kalau ada di session)
+    if (session.masa_aktif_sampai) {
+      try {
+        const d = new Date(session.masa_aktif_sampai);
+        set('planMasaAktif', d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }));
+      } catch (e) { set('planMasaAktif', String(session.masa_aktif_sampai)); }
+    } else {
+      set('planMasaAktif', 'Tidak terbatas');
+    }
+
+    // Wire tombol kontak admin (Akun & Tagihan)
+    const adminMsg = encodeURIComponent('Halo Admin AKPAgenku, saya ' + (session.nama_lengkap || session.username) + ' (username: ' + session.username + '). Saya ingin bertanya soal ');
+    const wireWA = (id, topik) => {
+      const el = document.getElementById(id);
+      if (el) el.onclick = () => window.open('https://wa.me/' + ADMIN_WA + '?text=' + adminMsg + encodeURIComponent(topik), '_blank');
+    };
+    wireWA('btnUpgrade', 'upgrade paket.');
+    wireWA('btnKontakBilling', 'tagihan / perpanjangan langganan.');
+    wireWA('btnBerhenti', 'pemberhentian langganan.');
 
     // Update sidebar CRM badge (leads needing follow-up)
     updateNavBadge(session);
