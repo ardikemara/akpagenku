@@ -1530,12 +1530,12 @@ function openModal(lead) {
 
   document.getElementById('modalName').textContent = lead.name;
   document.getElementById('modalSource').textContent = 'via ' + lead.source;
-  document.getElementById('modalWA').textContent = '+62 ' + lead.wa.substring(1).replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
-  document.getElementById('modalEmail').textContent = lead.email;
-  document.getElementById('modalCity').textContent = lead.city;
-  document.getElementById('modalAge').textContent = lead.age + ' tahun';
-  document.getElementById('modalIncome').textContent = lead.income + '/bulan';
-  document.getElementById('modalTime').textContent = lead.time;
+  document.getElementById('modalWA').textContent = lead.wa ? ('+62 ' + lead.wa.substring(1).replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3')) : '-';
+  document.getElementById('modalEmail').textContent = lead.email || '-';
+  document.getElementById('modalCity').textContent = lead.city || '-';
+  document.getElementById('modalAge').textContent = lead.age ? (lead.age + ' tahun') : '-';
+  document.getElementById('modalIncome').textContent = lead.income ? (lead.income + '/bulan') : '-';
+  document.getElementById('modalTime').textContent = lead.time || '-';
 
   // Status badge
   const statusBadge = document.getElementById('modalStatus');
@@ -1554,7 +1554,7 @@ function openModal(lead) {
     document.getElementById('scoreSection').style.display = '';
     document.getElementById('scoreLabel').textContent = 'Skor Kesehatan Keuangan';
     document.getElementById('scoreValue').textContent = lead.score;
-    document.getElementById('scoreGrade').textContent = lead.grade.toUpperCase();
+    document.getElementById('scoreGrade').textContent = (lead.grade || '').toUpperCase();
   } else if (lead.result) {
     document.getElementById('scoreSection').style.display = '';
     document.getElementById('scoreLabel').textContent = 'Hasil Kalkulator';
