@@ -1876,7 +1876,7 @@ async function renderRecommendations(lead) {
   document.getElementById('scriptSection').style.display = 'none';
 
   // Only proceed if lead has score from magnet
-  if (!lead.id || !lead.source_magnet) return;
+  if (!lead.id || !lead.sourceTag) return;
 
   // Fetch lead_magnet_response
   let magnetResponse = null;
