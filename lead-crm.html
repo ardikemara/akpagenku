@@ -874,6 +874,60 @@
   }
 
   /* Modal footer actions */
+  .dropped-toggle-btn {
+    display: inline-flex; align-items: center; gap: 7px; padding: 9px 16px;
+    border: 1.5px solid var(--gray-200); border-radius: 9px; background: #fff;
+    font-size: 13px; font-weight: 600; font-family: inherit; color: var(--gray-700);
+    cursor: pointer; transition: all 0.15s;
+  }
+  .dropped-toggle-btn:hover { border-color: var(--gray-300); background: var(--gray-50); }
+  .dropped-toggle-btn.active { border-color: #dc2626; background: #fef2f2; color: #991b1b; }
+  .dropped-toggle-btn [data-lucide] { width: 15px; height: 15px; }
+  #droppedCount { background: #dc2626; color: #fff; border-radius: 999px; padding: 1px 7px; font-size: 11px; }
+  .dropped-view { display: none; margin-top: 8px; }
+  .dropped-view.show { display: block; }
+  .dropped-item {
+    display: flex; align-items: center; gap: 14px; padding: 14px 18px;
+    background: #fff; border: 1px solid var(--gray-200); border-radius: 10px; margin-bottom: 8px;
+  }
+  .dropped-item-avatar { width: 38px; height: 38px; border-radius: 50%; background: var(--gray-200); color: var(--gray-700); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0; }
+  .dropped-item-info { flex: 1; min-width: 0; }
+  .dropped-item-name { font-weight: 600; color: var(--navy); font-size: 14px; }
+  .dropped-item-meta { font-size: 12px; color: var(--gray-500); margin-top: 2px; }
+  .dropped-reason-tag { font-size: 11px; background: #fee2e2; color: #991b1b; padding: 2px 9px; border-radius: 999px; font-weight: 600; }
+  .restore-btn {
+    display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px;
+    border: 1.5px solid var(--green); border-radius: 8px; background: #fff;
+    color: var(--green); font-size: 12px; font-weight: 600; font-family: inherit; cursor: pointer; transition: all 0.15s; flex-shrink: 0;
+  }
+  .restore-btn:hover { background: #ecfdf5; }
+  .restore-btn [data-lucide] { width: 14px; height: 14px; }
+  .dropped-empty { text-align: center; padding: 40px 20px; color: var(--gray-500); font-size: 14px; }
+  .modal-btn.danger { color: #dc2626; }
+  .modal-btn.danger:hover { background: #fee2e2; border-color: #fca5a5; }
+  .modal-btn.danger-solid { background: #dc2626; color: #fff; border: none; }
+  .modal-btn.danger-solid:hover { background: #b91c1c; }
+  .modal-btn.danger-solid:disabled { background: #e5e5e5; color: #a3a3a3; cursor: not-allowed; }
+  .drop-panel {
+    display: none;
+    padding: 20px 24px;
+    border-top: 1px solid var(--gray-200);
+    background: #fef2f2;
+  }
+  .drop-panel.show { display: block; }
+  .drop-panel-title { font-size: 15px; font-weight: 700; color: #991b1b; display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .drop-panel-title [data-lucide] { width: 18px; height: 18px; }
+  .drop-panel-sub { font-size: 12px; color: var(--gray-700); line-height: 1.5; margin-bottom: 14px; }
+  .drop-reason-label { font-size: 12px; font-weight: 600; color: var(--gray-700); margin-bottom: 8px; }
+  .drop-reasons { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+  .drop-reason-btn {
+    text-align: left; padding: 10px 14px; border: 1.5px solid var(--gray-200);
+    border-radius: 8px; background: #fff; font-size: 13px; font-family: inherit;
+    color: var(--gray-700); cursor: pointer; transition: all 0.15s;
+  }
+  .drop-reason-btn:hover { border-color: #dc2626; }
+  .drop-reason-btn.selected { border-color: #dc2626; background: #fee2e2; color: #991b1b; font-weight: 600; }
+  .drop-panel-actions { display: flex; gap: 10px; justify-content: flex-end; }
   .modal-footer {
     padding: 18px 26px;
     border-top: 1px solid var(--gray-200);
@@ -1025,7 +1079,10 @@
         <h1 class="page-title">Lead & CRM Pipeline</h1>
         <p class="page-sub">Kelola lead dari prospek baru sampai closing. Klik card untuk lihat detail.</p>
       </div>
-      <button class="add-lead-btn" id="addLeadBtn"><i data-lucide="plus"></i> Tambah Lead Manual</button>
+      <div style="display:flex;gap:10px;align-items:center;">
+        <button class="dropped-toggle-btn" id="droppedToggleBtn" onclick="toggleDroppedView()"><i data-lucide="archive"></i> Prospek Di-drop <span id="droppedCount" style="display:none;"></span></button>
+        <button class="add-lead-btn" id="addLeadBtn"><i data-lucide="plus"></i> Tambah Lead Manual</button>
+      </div>
     </div>
 
     <!-- FILTER BAR -->
@@ -1052,6 +1109,11 @@
     </div>
 
     <!-- KANBAN -->
+    <!-- DROPPED LEADS VIEW -->
+    <div class="dropped-view" id="droppedView">
+      <div id="droppedList"></div>
+    </div>
+
     <div class="kanban-wrap">
       <div class="kanban">
 
@@ -1334,8 +1396,27 @@
   </div>
 
   <div class="modal-footer">
+    <button class="modal-btn ghost danger" onclick="openDropPanel()"><i data-lucide="user-x"></i> Drop</button>
     <button class="modal-btn ghost" onclick="emailLead()"><i data-lucide="mail"></i> Email</button>
     <button class="modal-btn wa" onclick="waCurrentLead()"><i data-lucide="message-circle"></i> Chat WhatsApp</button>
+  </div>
+
+  <!-- Drop panel (pilih alasan) -->
+  <div class="drop-panel" id="dropPanel">
+    <div class="drop-panel-title"><i data-lucide="user-x"></i> Drop prospek ini?</div>
+    <div class="drop-panel-sub">Prospek akan disembunyikan dari pipeline. Datanya tetap tersimpan &mdash; bisa dipulihkan nanti dari menu Prospek Di-drop.</div>
+    <div class="drop-reason-label">Pilih alasan:</div>
+    <div class="drop-reasons">
+      <button class="drop-reason-btn" data-reason="tidak_minat" onclick="selectDropReason(this)">Tidak berminat</button>
+      <button class="drop-reason-btn" data-reason="salah_nomor" onclick="selectDropReason(this)">Salah nomor / kontak tidak valid</button>
+      <button class="drop-reason-btn" data-reason="sudah_punya" onclick="selectDropReason(this)">Sudah punya proteksi</button>
+      <button class="drop-reason-btn" data-reason="tidak_responsif" onclick="selectDropReason(this)">Tidak responsif</button>
+      <button class="drop-reason-btn" data-reason="lainnya" onclick="selectDropReason(this)">Lainnya</button>
+    </div>
+    <div class="drop-panel-actions">
+      <button class="modal-btn ghost" onclick="closeDropPanel()">Batal</button>
+      <button class="modal-btn danger-solid" id="confirmDropBtn" onclick="confirmDrop()" disabled>Drop Prospek</button>
+    </div>
   </div>
 
 </div>
@@ -1516,6 +1597,7 @@
         .from('leads')
         .select('*')
         .eq('owner_id', session.id)
+        .or('dropped.is.null,dropped.eq.false')
         .order('created_at', { ascending: false });
 
       if (error) {
@@ -2642,6 +2724,148 @@ function sendScriptWA() {
   const phone = '62' + lead.wa.replace(/^0/, '').replace(/^62/, '');
   window.open(`https://wa.me/${phone}?text=${encodeURIComponent(script)}`, '_blank');
 }
+
+let droppedViewOpen = false;
+
+window.toggleDroppedView = async function() {
+  droppedViewOpen = !droppedViewOpen;
+  const btn = document.getElementById('droppedToggleBtn');
+  const view = document.getElementById('droppedView');
+  const kanban = document.querySelector('.kanban-wrap');
+  if (droppedViewOpen) {
+    btn.classList.add('active');
+    view.classList.add('show');
+    if (kanban) kanban.style.display = 'none';
+    await loadDroppedLeads();
+  } else {
+    btn.classList.remove('active');
+    view.classList.remove('show');
+    if (kanban) kanban.style.display = '';
+  }
+};
+
+async function loadDroppedLeads() {
+  const list = document.getElementById('droppedList');
+  list.innerHTML = '<div class="dropped-empty">Memuat...</div>';
+  try {
+    const sess = JSON.parse(sessionStorage.getItem('akp_session') || '{}');
+    const supabaseClient = window.supabase.createClient(
+      'https://bfydtsfekvueqzvuschp.supabase.co',
+      'sb_publishable_3Xec3HYKViIiuX99hHxHqg_Ih8ABX_T'
+    );
+    const { data, error } = await supabaseClient
+      .from('leads')
+      .select('*')
+      .eq('owner_id', sess.id)
+      .eq('dropped', true)
+      .order('dropped_at', { ascending: false });
+    if (error) { list.innerHTML = '<div class="dropped-empty">Gagal memuat: ' + error.message + '</div>'; return; }
+
+    const reasonLabels = {
+      tidak_minat: 'Tidak berminat', salah_nomor: 'Salah nomor', sudah_punya: 'Sudah punya proteksi',
+      tidak_responsif: 'Tidak responsif', lainnya: 'Lainnya'
+    };
+    if (!data || data.length === 0) {
+      list.innerHTML = '<div class="dropped-empty">Belum ada prospek yang di-drop. \ud83d\udc4d</div>';
+    } else {
+      list.innerHTML = data.map(l => {
+        const initials = (l.nama || '?').trim().split(/\s+/).map(p => p[0]).slice(0,2).join('').toUpperCase();
+        const reason = reasonLabels[l.dropped_reason] || l.dropped_reason || '-';
+        const dt = l.dropped_at ? new Date(l.dropped_at).toLocaleDateString('id-ID', {day:'numeric',month:'short',year:'numeric'}) : '';
+        return '<div class="dropped-item">' +
+          '<div class="dropped-item-avatar">' + initials + '</div>' +
+          '<div class="dropped-item-info">' +
+            '<div class="dropped-item-name">' + (l.nama || '-') + '</div>' +
+            '<div class="dropped-item-meta">' + (l.whatsapp ? '+62 ' + l.whatsapp + ' \u00b7 ' : '') + 'Di-drop ' + dt + '</div>' +
+          '</div>' +
+          '<span class="dropped-reason-tag">' + reason + '</span>' +
+          '<button class="restore-btn" onclick="restoreLead(\'' + l.id + '\')"><i data-lucide="rotate-ccw"></i> Pulihkan</button>' +
+        '</div>';
+      }).join('');
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+    // update count badge
+    const cnt = document.getElementById('droppedCount');
+    if (data && data.length > 0) { cnt.textContent = data.length; cnt.style.display = ''; }
+    else { cnt.style.display = 'none'; }
+  } catch (err) {
+    list.innerHTML = '<div class="dropped-empty">Gagal memuat: ' + err.message + '</div>';
+  }
+}
+
+window.restoreLead = async function(id) {
+  try {
+    const supabaseClient = window.supabase.createClient(
+      'https://bfydtsfekvueqzvuschp.supabase.co',
+      'sb_publishable_3Xec3HYKViIiuX99hHxHqg_Ih8ABX_T'
+    );
+    const { error } = await supabaseClient
+      .from('leads')
+      .update({ dropped: false, dropped_reason: null, dropped_at: null, updated_at: new Date().toISOString() })
+      .eq('id', id);
+    if (error) { alert('Gagal pulihkan: ' + error.message); return; }
+    await loadDroppedLeads();
+    if (typeof window.akpReloadLeads === 'function') await window.akpReloadLeads();
+  } catch (err) { alert('Gagal pulihkan: ' + err.message); }
+};
+
+let selectedDropReason = null;
+
+window.openDropPanel = function() {
+  selectedDropReason = null;
+  document.querySelectorAll('.drop-reason-btn').forEach(b => b.classList.remove('selected'));
+  document.getElementById('confirmDropBtn').disabled = true;
+  document.getElementById('dropPanel').classList.add('show');
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+};
+
+window.closeDropPanel = function() {
+  document.getElementById('dropPanel').classList.remove('show');
+};
+
+window.selectDropReason = function(btn) {
+  document.querySelectorAll('.drop-reason-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedDropReason = btn.getAttribute('data-reason');
+  document.getElementById('confirmDropBtn').disabled = false;
+};
+
+window.confirmDrop = async function() {
+  if (!currentLead || !currentLead.id || !selectedDropReason) return;
+  const btn = document.getElementById('confirmDropBtn');
+  btn.disabled = true;
+  btn.textContent = 'Memproses...';
+  try {
+    const supabaseClient = window.supabase.createClient(
+      'https://bfydtsfekvueqzvuschp.supabase.co',
+      'sb_publishable_3Xec3HYKViIiuX99hHxHqg_Ih8ABX_T'
+    );
+    const { error } = await supabaseClient
+      .from('leads')
+      .update({
+        dropped: true,
+        dropped_reason: selectedDropReason,
+        dropped_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', currentLead.id);
+    if (error) {
+      console.error('[AKP CRM] drop error:', error);
+      alert('Gagal drop prospek: ' + error.message);
+      btn.disabled = false;
+      btn.textContent = 'Drop Prospek';
+      return;
+    }
+    closeDropPanel();
+    closeModal();
+    if (typeof window.akpReloadLeads === 'function') await window.akpReloadLeads();
+  } catch (err) {
+    console.error('[AKP CRM] drop unexpected:', err);
+    alert('Gagal drop prospek: ' + err.message);
+    btn.disabled = false;
+    btn.textContent = 'Drop Prospek';
+  }
+};
 
 function closeModal() {
   document.getElementById('modalOverlay').classList.remove('show');
