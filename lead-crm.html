@@ -1316,6 +1316,9 @@
     }
   }
 
+  // Expose for external callers (setStage)
+  window.akpReloadLeads = async function() { return loadLeads(); };
+
   async function loadLeads() {
     try {
       const { data, error } = await supabase
@@ -1390,6 +1393,7 @@
     
     // Build modal data for click
     const modalData = {
+      id: lead.id,
       name: lead.nama,
       initial: initials,
       stage: lead.stage,
@@ -1600,7 +1604,8 @@ function closeModal() {
   currentLead = null;
 }
 
-function setStage(stage, btn) {
+async function setStage(stage, btn) {
+  // Update UI immediately for responsiveness
   document.querySelectorAll('.stage-option').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
 
@@ -1608,6 +1613,58 @@ function setStage(stage, btn) {
   const statusLabels = { new: 'Prospek Baru', engaged: 'Engaged', closing: 'Closing', closed: 'Closed' };
   statusBadge.textContent = statusLabels[stage];
   statusBadge.className = 'modal-status-badge ' + (stage === 'new' ? '' : stage);
+
+  // Save to Supabase
+  if (!currentLead || !currentLead.id) {
+    console.warn('[AKP CRM] setStage: no current lead id');
+    return;
+  }
+  if (currentLead.stage === stage) {
+    return; // No change
+  }
+  
+  const oldStage = currentLead.stage;
+  btn.disabled = true;
+  
+  try {
+    const supabaseClient = window.supabase.createClient(
+      'https://bfydtsfekvueqzvuschp.supabase.co',
+      'sb_publishable_3Xec3HYKViIiuX99hHxHqg_Ih8ABX_T'
+    );
+    
+    const { error } = await supabaseClient
+      .from('leads')
+      .update({ 
+        stage: stage,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', currentLead.id);
+    
+    if (error) {
+      console.error('[AKP CRM] setStage error:', error);
+      alert('Gagal pindah stage: ' + error.message);
+      // Revert UI
+      document.querySelectorAll('.stage-option').forEach(b => b.classList.remove('active'));
+      const oldBtn = document.querySelector('.stage-option[onclick*="' + oldStage + '"]');
+      if (oldBtn) oldBtn.classList.add('active');
+      statusBadge.textContent = statusLabels[oldStage];
+      statusBadge.className = 'modal-status-badge ' + (oldStage === 'new' ? '' : oldStage);
+    } else {
+      // Success - update current lead stage
+      currentLead.stage = stage;
+      console.log('[AKP CRM] Stage updated to:', stage);
+      
+      // Refresh the kanban board after a short delay
+      if (typeof window.akpReloadLeads === 'function') {
+        await window.akpReloadLeads();
+      }
+    }
+  } catch (err) {
+    console.error('[AKP CRM] setStage unexpected error:', err);
+    alert('Gagal pindah stage: ' + err.message);
+  } finally {
+    btn.disabled = false;
+  }
 }
 
 function addNote() {
