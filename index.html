@@ -913,6 +913,167 @@
     .re-goals-grid { grid-template-columns: 1fr; }
     .re-killer { padding: 32px 26px; }
   }
+
+  /* ===== IMAGE PLACEHOLDER ===== */
+  .img-ph {
+    background: var(--gray-100, #f1f1ee);
+    border: 1.5px dashed var(--gray-300, #cfcdc6);
+    border-radius: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: var(--gray-500, #8a887f);
+    text-align: center;
+    padding: 24px;
+  }
+  .img-ph svg { width: 34px; height: 34px; opacity: 0.6; }
+  .img-ph .ph-label { font-size: 13px; font-weight: 600; letter-spacing: 0.02em; }
+  .img-ph .ph-hint { font-size: 11px; opacity: 0.75; }
+  .img-ph.ph-wide { aspect-ratio: 16/7; width: 100%; margin-top: 40px; }
+  .img-ph.ph-step { aspect-ratio: 16/9; width: 100%; margin-bottom: 18px; }
+  .section-navy .img-ph {
+    background: rgba(255,255,255,0.05);
+    border-color: rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.6);
+  }
+
+  /* ===== COST COMPARISON (Hitung Sendiri) ===== */
+  .cost-wrap {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+  .cost-stack {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 18px;
+    padding: 14px 28px;
+  }
+  .cost-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 20px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .cost-row:last-child { border-bottom: none; }
+  .cost-row-label {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .cost-row-icon {
+    width: 42px; height: 42px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    background: rgba(201,169,97,0.15);
+    color: var(--gold-light);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .cost-row-icon i, .cost-row-icon svg { width: 20px; height: 20px; }
+  .cost-row-text h4 {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px; font-weight: 600;
+    color: var(--white);
+    margin: 0 0 2px;
+  }
+  .cost-row-text p {
+    font-size: 13px;
+    color: rgba(255,255,255,0.55);
+    margin: 0;
+  }
+  .cost-row-price {
+    font-family: 'Inter', sans-serif;
+    font-size: 17px; font-weight: 700;
+    color: rgba(255,255,255,0.92);
+    white-space: nowrap;
+  }
+  .cost-row-price span { font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.5); display: block; text-align: right; }
+  .cost-total {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 18px;
+    padding: 22px 28px;
+    background: rgba(255,255,255,0.06);
+    border: 1px dashed rgba(255,255,255,0.25);
+    border-radius: 14px;
+  }
+  .cost-total .lbl {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px; font-weight: 600; color: rgba(255,255,255,0.85);
+  }
+  .cost-total .amt {
+    font-family: 'Playfair Display', serif;
+    font-size: 30px; font-weight: 700; color: var(--white);
+    white-space: nowrap;
+  }
+  .cost-verdict {
+    text-align: center;
+    margin-top: 38px;
+  }
+  .cost-arrow {
+    font-size: 14px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    font-weight: 600;
+    margin-bottom: 18px;
+  }
+  .cost-akp {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+    color: var(--navy-dark);
+    padding: 28px 56px;
+    border-radius: 16px;
+    box-shadow: 0 18px 40px rgba(201,169,97,0.28);
+  }
+  .cost-akp .strike {
+    font-size: 15px;
+    color: rgba(8,26,51,0.6);
+    text-decoration: line-through;
+    font-weight: 600;
+  }
+  .cost-akp .big {
+    font-family: 'Playfair Display', serif;
+    font-size: 40px; font-weight: 700;
+    line-height: 1;
+  }
+  .cost-akp .big small { font-size: 17px; font-weight: 600; }
+  .cost-akp .tag {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px; font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 4px;
+  }
+  .cost-save {
+    margin-top: 26px;
+    font-size: 17px;
+    color: rgba(255,255,255,0.85);
+  }
+  .cost-save b { color: var(--gold-light); font-weight: 700; }
+  .cost-note {
+    margin-top: 14px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.45);
+    font-style: italic;
+  }
+  @media (max-width: 640px) {
+    .cost-stack { padding: 8px 18px; }
+    .cost-row { padding: 16px 0; flex-wrap: wrap; }
+    .cost-row-text p { display: none; }
+    .cost-total { padding: 18px 20px; flex-direction: column; align-items: flex-start; gap: 6px; }
+    .cost-total .amt { font-size: 26px; }
+    .cost-akp { padding: 24px 32px; width: 100%; }
+    .cost-akp .big { font-size: 34px; }
+  }
 </style>
 </head>
 <body>
@@ -1078,6 +1239,12 @@
         </div>
       </div>
     </div>
+
+    <div class="img-ph ph-wide">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+      <div class="ph-label">Screenshot Dashboard Agen</div>
+      <div class="ph-hint">Ganti dengan tangkapan layar dashboard / mini-site (rasio 16:7)</div>
+    </div>
   </div>
 </section>
 
@@ -1199,16 +1366,28 @@
 
     <div class="step-grid">
       <div class="step-card">
+        <div class="img-ph ph-step">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+          <div class="ph-label">Gambar Langkah 1</div>
+        </div>
         <div class="step-num">1</div>
         <h3>Daftar & Bayar</h3>
         <p>Pilih paket Solo atau Team. Bayar, langsung dapat akses dashboard agen.</p>
       </div>
       <div class="step-card">
+        <div class="img-ph ph-step">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+          <div class="ph-label">Gambar Langkah 2</div>
+        </div>
         <div class="step-num">2</div>
         <h3>Setup Mini-site</h3>
         <p>Pilih artikel, produk, dan lead magnet yang cocok dengan target Anda. Mini-site otomatis jadi.</p>
       </div>
       <div class="step-card">
+        <div class="img-ph ph-step">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+          <div class="ph-label">Gambar Langkah 3</div>
+        </div>
         <div class="step-num">3</div>
         <h3>Sebarkan, Terima Lead</h3>
         <p>Share link mini-site ke WA, Instagram, Facebook. Lead masuk otomatis ke dashboard.</p>
@@ -1263,6 +1442,83 @@
         <div class="col col-feature">Fitur Team</div>
         <div class="col col-them">Tidak ada</div>
         <div class="col col-us">Leader dashboard</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== HITUNG SENDIRI (Cost Comparison) ===== -->
+<section class="section section-navy" id="hitung-sendiri">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Bandingkan Sendiri</span>
+      <h2 class="section-title">Kalau Dikerjakan Sendiri,<br>Berapa Biayanya?</h2>
+      <p class="section-sub">
+        Untuk dapat hasil yang sama, ini yang biasanya harus Anda sewa & bayar setiap bulan.
+      </p>
+    </div>
+
+    <div class="cost-wrap">
+      <div class="cost-stack">
+        <div class="cost-row">
+          <div class="cost-row-label">
+            <div class="cost-row-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="1.5"/><circle cx="17.5" cy="10.5" r="1.5"/><circle cx="8.5" cy="7.5" r="1.5"/><circle cx="6.5" cy="12.5" r="1.5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996C18.343 15.281 22 13.5 22 9.5 22 5.36 17.5 2 12 2z"/></svg></div>
+            <div class="cost-row-text">
+              <h4>Desainer Grafis</h4>
+              <p>Konten carousel, materi promosi, feed yang rapi & konsisten</p>
+            </div>
+          </div>
+          <div class="cost-row-price">Rp 1.500.000<span>/ bulan</span></div>
+        </div>
+
+        <div class="cost-row">
+          <div class="cost-row-label">
+            <div class="cost-row-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
+            <div class="cost-row-text">
+              <h4>Web Developer</h4>
+              <p>Bikin mini-site, hosting, domain, maintenance bulanan</p>
+            </div>
+          </div>
+          <div class="cost-row-price">Rp 2.000.000<span>/ bulan</span></div>
+        </div>
+
+        <div class="cost-row">
+          <div class="cost-row-label">
+            <div class="cost-row-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v7a6 6 0 0 0 12 0V3"/><line x1="3" y1="3" x2="9" y2="3"/><line x1="15" y1="3" x2="21" y2="3"/><line x1="6" y1="10" x2="9" y2="10"/><line x1="15" y1="10" x2="18" y2="10"/></svg></div>
+            <div class="cost-row-text">
+              <h4>Lead Magnet & Copywriter</h4>
+              <p>Kuis & kalkulator interaktif + naskah edukasi yang menjual</p>
+            </div>
+          </div>
+          <div class="cost-row-price">Rp 1.500.000<span>/ bulan</span></div>
+        </div>
+
+        <div class="cost-row">
+          <div class="cost-row-label">
+            <div class="cost-row-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="20" x2="21" y2="20"/><rect x="5" y="11" width="3.5" height="6"/><rect x="10.25" y="7" width="3.5" height="10"/><rect x="15.5" y="13" width="3.5" height="4"/></svg></div>
+            <div class="cost-row-text">
+              <h4>Tools Analytics & CRM</h4>
+              <p>Lacak lead, funnel prospek, & laporan performa</p>
+            </div>
+          </div>
+          <div class="cost-row-price">Rp 500.000<span>/ bulan</span></div>
+        </div>
+      </div>
+
+      <div class="cost-total">
+        <div class="lbl">Total kalau dikerjakan terpisah</div>
+        <div class="amt">Rp 5.500.000 <span style="font-size:15px;font-weight:500;color:rgba(255,255,255,0.5);">/ bulan</span></div>
+      </div>
+
+      <div class="cost-verdict">
+        <div class="cost-arrow">Atau, cukup dengan AKPAgenku ↓</div>
+        <div class="cost-akp">
+          <div class="strike">Rp 5.500.000 / bulan</div>
+          <div class="big">Rp 600<small>rb</small> <small>/ bulan</small></div>
+          <div class="tag">Semua Sudah Termasuk</div>
+        </div>
+        <div class="cost-save">Anda hemat <b>~Rp 4.900.000 setiap bulan</b> (sekitar 89%).</div>
+        <p class="cost-note">*Estimasi biaya sewa freelance/tools di pasaran Indonesia. Belum termasuk waktu & tenaga untuk mengelola semuanya sendiri.</p>
       </div>
     </div>
   </div>
