@@ -68,6 +68,10 @@
     color: var(--gold-dark); font-size: 12px; font-weight: 700;
     letter-spacing: 1px; text-transform: uppercase; margin-bottom: 14px;
   }
+  .article-cover {
+    width: 100%; aspect-ratio: 16 / 9; object-fit: cover;
+    border-radius: 16px; margin-bottom: 28px; background: #eee;
+  }
   .article-title {
     font-family: 'Playfair Display', serif; font-weight: 700;
     font-size: 38px; line-height: 1.2; color: var(--navy); margin-bottom: 16px;
@@ -257,6 +261,7 @@
       '<div class="article-wrap"><div class="container">' +
         '<a class="back-link" href="' + homeHref + '"><i data-lucide="arrow-left"></i> ' + (agen ? 'Kembali ke halaman ' + esc(nama) : 'Kembali') + '</a>' +
         '<div class="article-eyebrow">Artikel Edukasi</div>' +
+        (article.cover_url ? '<img class="article-cover" src="' + article.cover_url + '" alt="">' : '') +
         '<h1 class="article-title">' + esc(article.title) + '</h1>' +
         '<div class="article-meta">' +
           '<span><i data-lucide="clock"></i> ' + esc(article.read_minutes) + ' menit baca</span>' +

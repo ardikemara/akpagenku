@@ -1104,6 +1104,15 @@
         <input type="text" class="form-input" id="artikelExcerpt" placeholder="1 kalimat ringkas untuk preview">
       </div>
       <div class="form-field">
+        <label class="form-label">Gambar Cover (opsional)</label>
+        <div style="font-size:11px;color:#737373;margin-bottom:8px;">Rasio 16:9 disarankan (mis. 1200×675 px), maks 2MB. Tampil sebagai cover di halaman baca & thumbnail di mini-site.</div>
+        <input type="file" class="form-input" id="artikelCoverFile" accept="image/png,image/jpeg,image/webp" onchange="previewArtikelCover(event)">
+        <div id="artikelCoverPreview" style="margin-top:10px;display:none;">
+          <img id="artikelCoverImg" src="" alt="" style="width:100%;max-width:320px;aspect-ratio:16/9;object-fit:cover;border-radius:10px;border:1px solid #e5e5e5;">
+          <button type="button" onclick="clearArtikelCover()" style="display:block;margin-top:6px;background:none;border:none;color:#dc2626;font-size:12px;cursor:pointer;">Hapus gambar</button>
+        </div>
+      </div>
+      <div class="form-field">
         <label class="form-label">Isi Artikel *</label>
         <textarea class="form-input" id="artikelBody" rows="12" placeholder="Tulis isi artikel di sini. Pisahkan paragraf dengan baris kosong. Untuk subjudul, awali baris dengan ## (contoh: ## Kenapa ini penting)" style="resize:vertical;line-height:1.6;font-family:inherit;"></textarea>
         <div style="font-size:11px;color:#737373;margin-top:4px;">Tips: baris kosong = paragraf baru. Awali baris dengan <strong>##</strong> untuk subjudul. Awali dengan <strong>-</strong> untuk poin/list.</div>
@@ -1447,6 +1456,28 @@ function articleHtmlToText(html) {
   return t.replace(/\n{3,}/g, '\n\n').trim();
 }
 
+let artikelCoverFile = null;      // file baru yang dipilih
+let artikelExistingCover = '';    // url cover lama (saat edit)
+
+function previewArtikelCover(e) {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+  if (file.size > 2 * 1024 * 1024) { alert('Ukuran gambar maksimal 2MB.'); e.target.value = ''; return; }
+  artikelCoverFile = file;
+  const img = document.getElementById('artikelCoverImg');
+  img.src = URL.createObjectURL(file);
+  document.getElementById('artikelCoverPreview').style.display = 'block';
+}
+function clearArtikelCover() {
+  artikelCoverFile = null;
+  artikelExistingCover = '';
+  document.getElementById('artikelCoverFile').value = '';
+  document.getElementById('artikelCoverPreview').style.display = 'none';
+  document.getElementById('artikelCoverImg').src = '';
+}
+window.previewArtikelCover = previewArtikelCover;
+window.clearArtikelCover = clearArtikelCover;
+
 async function loadArtikelAdmin() {
   const list = document.getElementById('artikelAdminList');
   list.innerHTML = '<div class="loading">Loading...</div>';
@@ -1463,6 +1494,7 @@ async function loadArtikelAdmin() {
   const magnetNames = { skor:'Skor Kesehatan', pendidikan:'Dana Pendidikan', pensiun:'Dana Pensiun', darurat:'Dana Darurat', kritis:'Risiko Kritis', up:'Uang Pertanggungan', kesehatan:'Coverage Kesehatan' };
   list.innerHTML = ARTIKEL_CACHE.map(a =>
     '<div style="background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:16px 18px;margin-bottom:12px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;">' +
+      (a.cover_url ? '<img src="' + a.cover_url + '" alt="" style="width:96px;aspect-ratio:16/9;object-fit:cover;border-radius:8px;flex-shrink:0;">' : '') +
       '<div style="flex:1;min-width:0;">' +
         '<div style="font-weight:600;color:#0f2647;font-size:15px;margin-bottom:4px;">' + escapeHtml(a.title) + '</div>' +
         '<div style="font-size:12px;color:#737373;margin-bottom:8px;">' + escapeHtml(a.excerpt || '') + '</div>' +
@@ -1489,6 +1521,7 @@ function openArtikelForm() {
   document.getElementById('artikelBody').value = '';
   document.getElementById('artikelMagnet').value = 'skor';
   document.getElementById('artikelMenit').value = 5;
+  clearArtikelCover();
   document.getElementById('artikelFormModal').classList.add('show');
 }
 function closeArtikelForm() {
@@ -1504,6 +1537,17 @@ function editArtikel(id) {
   document.getElementById('artikelBody').value = articleHtmlToText(a.body);
   document.getElementById('artikelMagnet').value = a.related_magnet || 'skor';
   document.getElementById('artikelMenit').value = a.read_minutes || 5;
+  // cover lama
+  artikelCoverFile = null;
+  artikelExistingCover = a.cover_url || '';
+  if (artikelExistingCover) {
+    document.getElementById('artikelCoverImg').src = artikelExistingCover;
+    document.getElementById('artikelCoverPreview').style.display = 'block';
+  } else {
+    document.getElementById('artikelCoverPreview').style.display = 'none';
+    document.getElementById('artikelCoverImg').src = '';
+  }
+  document.getElementById('artikelCoverFile').value = '';
   document.getElementById('artikelFormModal').classList.add('show');
 }
 
@@ -1520,11 +1564,29 @@ async function saveArtikel() {
   btn.disabled = true;
   const bodyHtml = articleTextToHtml(rawBody);
 
+  // Upload cover bila ada file baru
+  let coverUrl = artikelExistingCover || null;
+  try {
+    if (artikelCoverFile) {
+      const ext = (artikelCoverFile.name.split('.').pop() || 'jpg').toLowerCase();
+      const path = 'artikel/' + Date.now() + '_' + Math.random().toString(36).slice(2,8) + '.' + ext;
+      const { error: upErr } = await supabase.storage.from('konten').upload(path, artikelCoverFile, { cacheControl: '3600', upsert: false });
+      if (upErr) throw new Error('Upload gambar gagal: ' + upErr.message);
+      const { data: pub } = supabase.storage.from('konten').getPublicUrl(path);
+      coverUrl = pub.publicUrl;
+    }
+  } catch (e) {
+    btn.disabled = false;
+    alert(e.message || 'Gagal upload gambar.');
+    return;
+  }
+
   let result;
   if (id) {
     // Update (slug tidak diubah agar link lama tetap valid)
     result = await supabase.from('articles').update({
-      title, excerpt, body: bodyHtml, related_magnet: magnet, read_minutes: menit, updated_at: new Date().toISOString()
+      title, excerpt, body: bodyHtml, related_magnet: magnet, read_minutes: menit,
+      cover_url: coverUrl, updated_at: new Date().toISOString()
     }).eq('id', id);
   } else {
     // Insert baru: buat slug unik
@@ -1534,7 +1596,7 @@ async function saveArtikel() {
     const maxOrder = ARTIKEL_CACHE.reduce((m, a) => Math.max(m, a.sort_order || 0), 0);
     result = await supabase.from('articles').insert({
       slug, title, excerpt, body: bodyHtml, related_magnet: magnet, read_minutes: menit,
-      icon: 'file-text', is_published: true, sort_order: maxOrder + 1
+      cover_url: coverUrl, icon: 'file-text', is_published: true, sort_order: maxOrder + 1
     });
   }
   btn.disabled = false;

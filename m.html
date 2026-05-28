@@ -953,6 +953,17 @@
     flex-direction: column;
     gap: 16px;
   }
+  .article-card.has-thumb { padding: 0 0 24px; overflow: hidden; }
+  .article-thumb {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    display: block;
+    background: var(--cream);
+  }
+  .article-card.has-thumb .article-title,
+  .article-card.has-thumb .article-meta { padding-left: 24px; padding-right: 24px; }
+  .article-card.has-thumb .article-title { margin-top: 18px; }
   .article-card:hover {
     border-color: var(--gold);
     transform: translateY(-4px);
@@ -1602,19 +1613,22 @@ window.addEventListener('DOMContentLoaded', () => {
         const slugs = Array.isArray(site.articles_aktif) ? site.articles_aktif.filter(Boolean) : [];
         if (slugs.length) {
           const { data: arts } = await supabase
-            .from('articles').select('slug,title,icon,read_minutes')
+            .from('articles').select('slug,title,icon,read_minutes,cover_url')
             .in('slug', slugs).eq('is_published', true);
           if (arts && arts.length) {
             // Urutkan sesuai urutan pilihan agen
             const order = {}; slugs.forEach((s, i) => order[s] = i);
             arts.sort((a, b) => (order[a.slug] ?? 99) - (order[b.slug] ?? 99));
-            artGrid.innerHTML = arts.map(a =>
-              '<a href="/artikel/' + a.slug + '?ref=' + encodeURIComponent(username) + '" class="article-card">' +
-              '<div class="article-icon"><i data-lucide="' + (a.icon || 'file-text') + '"></i></div>' +
-              '<div class="article-title">' + a.title + '</div>' +
-              '<div class="article-meta"><i data-lucide="clock"></i> ' + (a.read_minutes || 5) + ' menit baca' +
-              '<span class="article-arrow"><i data-lucide="arrow-right"></i></span></div></a>'
-            ).join('');
+            artGrid.innerHTML = arts.map(a => {
+              const head = a.cover_url
+                ? '<img class="article-thumb" src="' + a.cover_url + '" alt="" loading="lazy">'
+                : '<div class="article-icon"><i data-lucide="' + (a.icon || 'file-text') + '"></i></div>';
+              return '<a href="/artikel/' + a.slug + '?ref=' + encodeURIComponent(username) + '" class="article-card' + (a.cover_url ? ' has-thumb' : '') + '">' +
+                head +
+                '<div class="article-title">' + a.title + '</div>' +
+                '<div class="article-meta"><i data-lucide="clock"></i> ' + (a.read_minutes || 5) + ' menit baca' +
+                '<span class="article-arrow"><i data-lucide="arrow-right"></i></span></div></a>';
+            }).join('');
           } else if (artSection) {
             artSection.style.display = 'none';
           }
