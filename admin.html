@@ -828,6 +828,40 @@
     .search-box { max-width: none; }
     .navbar { padding: 12px 16px; }
   }
+
+  /* === Konten Library admin styles === */
+  .form-field { margin-bottom: 16px; }
+  .form-label { display:block; font-size:13px; font-weight:600; color:#0f2647; margin-bottom:6px; }
+  .form-input { width:100%; padding:10px 12px; border:1.5px solid #e5e5e5; border-radius:8px; font-size:14px; font-family:inherit; color:#171717; background:#fff; box-sizing:border-box; }
+  .form-input:focus { outline:none; border-color:#c9a961; box-shadow:0 0 0 3px rgba(201,169,97,0.15); }
+  textarea.form-input { resize:vertical; }
+  .btn-primary { display:inline-flex; align-items:center; gap:7px; padding:10px 18px; background:#0f2647; color:#fff; border:none; border-radius:8px; font-size:14px; font-weight:600; font-family:inherit; cursor:pointer; transition:all .15s; }
+  .btn-primary:hover { background:#081a33; }
+  .btn-primary:disabled { background:#cbd5e1; cursor:not-allowed; }
+  .btn-primary [data-lucide] { width:16px; height:16px; }
+  .btn-ghost { padding:10px 18px; background:#fff; color:#404040; border:1.5px solid #e5e5e5; border-radius:8px; font-size:14px; font-weight:600; font-family:inherit; cursor:pointer; }
+  .btn-ghost:hover { background:#f5f5f5; }
+  .form-error { background:#fee2e2; border:1px solid #fca5a5; color:#991b1b; padding:10px 12px; border-radius:8px; font-size:13px; margin-top:8px; }
+  .filter-tabs { display:flex; gap:6px; flex-wrap:wrap; }
+  .tipe-radio { flex:1; display:flex; align-items:center; gap:6px; padding:11px 14px; border:1.5px solid #e5e5e5; border-radius:8px; cursor:pointer; font-size:13px; font-weight:600; color:#404040; transition:all .15s; }
+  .tipe-radio.active { border-color:#c9a961; background:rgba(201,169,97,0.08); color:#0f2647; }
+  .tipe-radio [data-lucide] { width:15px; height:15px; }
+  .konten-admin-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:16px; }
+  .konten-admin-card { background:#fff; border:1px solid #e5e5e5; border-radius:12px; overflow:hidden; }
+  .konten-admin-thumb { position:relative; width:100%; aspect-ratio:4/5; background:#f5f5f5; overflow:hidden; }
+  .konten-admin-thumb img { width:100%; height:100%; object-fit:cover; }
+  .konten-admin-thumb.story { aspect-ratio:9/16; }
+  .konten-carousel-count { position:absolute; top:8px; right:8px; background:rgba(15,38,71,0.85); color:#fff; font-size:11px; font-weight:600; padding:3px 8px; border-radius:999px; display:inline-flex; align-items:center; gap:3px; }
+  .konten-carousel-count [data-lucide] { width:11px; height:11px; }
+  .konten-admin-type { position:absolute; top:8px; left:8px; background:rgba(255,255,255,0.92); color:#0f2647; font-size:10px; font-weight:700; padding:3px 8px; border-radius:999px; text-transform:uppercase; }
+  .konten-admin-body { padding:12px 14px; }
+  .konten-admin-title { font-size:13px; font-weight:600; color:#0f2647; line-height:1.3; margin-bottom:6px; }
+  .konten-admin-meta { display:flex; align-items:center; justify-content:space-between; }
+  .konten-admin-kat { font-size:10px; background:#f5f5f5; color:#737373; padding:2px 8px; border-radius:999px; font-weight:600; }
+  .konten-del-btn { background:none; border:none; color:#dc2626; cursor:pointer; padding:4px; font-size:12px; }
+  .konten-del-btn:hover { color:#991b1b; }
+  .file-preview-item { position:relative; width:60px; height:60px; border-radius:6px; overflow:hidden; border:1px solid #e5e5e5; }
+  .file-preview-item img { width:100%; height:100%; object-fit:cover; }
 </style>
 </head>
 <body>
@@ -866,6 +900,11 @@
         <i data-lucide="users"></i>
         <span>Data Agen</span>
         <span class="sidebar-count" id="sidebarCountActive">0</span>
+      </button>
+      <button class="sidebar-item" data-view="konten" onclick="setView('konten')">
+        <i data-lucide="layout-grid"></i>
+        <span>Konten Library</span>
+        <span class="sidebar-count" id="sidebarCountKonten">0</span>
       </button>
     </nav>
 
@@ -986,6 +1025,87 @@
       </div>
     </div>
 
+    <!-- ===== VIEW: KONTEN LIBRARY ===== -->
+    <div class="view" id="viewKonten">
+      <div class="view-header">
+        <h1 class="view-title">Konten Library</h1>
+        <p class="view-sub">Upload konten siap pakai (Story 9:16 &amp; Feed carousel 4:5) untuk agen. Dikategorikan per 7 kategori produk.</p>
+      </div>
+
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap;">
+        <div class="filter-tabs" id="kontenKatFilter">
+          <button class="tab active" data-kat="all" onclick="filterKontenAdmin('all', event)">Semua</button>
+          <button class="tab" data-kat="term_life" onclick="filterKontenAdmin('term_life', event)">Term Life</button>
+          <button class="tab" data-kat="whole_life" onclick="filterKontenAdmin('whole_life', event)">Whole Life</button>
+          <button class="tab" data-kat="unit_link" onclick="filterKontenAdmin('unit_link', event)">Unit Link</button>
+          <button class="tab" data-kat="endowment" onclick="filterKontenAdmin('endowment', event)">Endowment</button>
+          <button class="tab" data-kat="kesehatan" onclick="filterKontenAdmin('kesehatan', event)">Kesehatan</button>
+          <button class="tab" data-kat="penyakit_kritis" onclick="filterKontenAdmin('penyakit_kritis', event)">Penyakit Kritis</button>
+          <button class="tab" data-kat="syariah" onclick="filterKontenAdmin('syariah', event)">Syariah</button>
+        </div>
+        <button class="btn-primary" onclick="openKontenUpload()"><i data-lucide="upload"></i> Upload Konten</button>
+      </div>
+
+      <div id="kontenAdminList">
+        <div class="loading">Loading...</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== KONTEN UPLOAD MODAL ===== -->
+<div class="modal-overlay" id="kontenUploadModal">
+  <div class="modal" style="max-width:520px;">
+    <div class="modal-header">
+      <div class="modal-title">Upload Konten Baru</div>
+      <button class="modal-close" onclick="closeKontenUpload()"><i data-lucide="x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-field">
+        <label class="form-label">Judul Konten *</label>
+        <input type="text" class="form-input" id="kontenJudul" placeholder="Contoh: 3 Alasan Butuh Term Life">
+      </div>
+      <div class="form-field">
+        <label class="form-label">Kategori *</label>
+        <select class="form-input" id="kontenKategori">
+          <option value="term_life">Term Life</option>
+          <option value="whole_life">Whole Life</option>
+          <option value="unit_link">Unit Link</option>
+          <option value="endowment">Endowment/Saving</option>
+          <option value="kesehatan">Kesehatan</option>
+          <option value="penyakit_kritis">Penyakit Kritis</option>
+          <option value="syariah">Syariah</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Tipe *</label>
+        <div style="display:flex;gap:10px;">
+          <label class="tipe-radio active" id="tipeStoryLabel" onclick="setKontenTipe('story')">
+            <input type="radio" name="kontenTipe" value="story" checked style="display:none;">
+            <i data-lucide="zap"></i> Story <span style="color:#999;font-size:12px;">(9:16, 1 gambar)</span>
+          </label>
+          <label class="tipe-radio" id="tipeFeedLabel" onclick="setKontenTipe('feed')">
+            <input type="radio" name="kontenTipe" value="feed" style="display:none;">
+            <i data-lucide="square"></i> Feed <span style="color:#999;font-size:12px;">(4:5, carousel)</span>
+          </label>
+        </div>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Deskripsi</label>
+        <textarea class="form-input" id="kontenDeskripsi" rows="2" placeholder="Deskripsi singkat konten (opsional)"></textarea>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Gambar * <span id="kontenImgHint" style="color:#999;font-size:12px;font-weight:400;">(Story: 1 gambar. Feed: bisa banyak untuk carousel)</span></label>
+        <input type="file" class="form-input" id="kontenFiles" accept="image/png,image/jpeg,image/webp" multiple>
+        <div id="kontenFilePreview" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;"></div>
+      </div>
+      <div class="form-error" id="kontenUploadError" style="display:none;"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeKontenUpload()">Batal</button>
+      <button class="btn-primary" id="kontenUploadBtn" onclick="submitKontenUpload()"><i data-lucide="upload"></i> Upload</button>
+    </div>
   </div>
 </div>
 
@@ -1208,6 +1328,11 @@ function setView(view) {
   } else if (view === 'data-agen') {
     document.getElementById('viewDataAgen').classList.add('active');
     currentFilter = window.currentSubFilter || 'active';
+  } else if (view === 'konten') {
+    document.getElementById('viewKonten').classList.add('active');
+    loadKontenAdmin();
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+    return;
   }
   renderAgents();
   if (typeof lucide !== 'undefined') lucide.createIcons();
@@ -1722,6 +1847,196 @@ window.confirmReject = confirmReject;
 window.extendActive = extendActive;
 window.restoreAgent = restoreAgent;
 window.closeModal = closeModal;
+// ============ KONTEN LIBRARY ADMIN ============
+let allKontenAdmin = [];
+let currentKontenKat = 'all';
+let selectedKontenFiles = [];
+let currentKontenTipe = 'story';
+
+const KAT_LABEL_ADMIN = {
+  term_life:'Term Life', whole_life:'Whole Life', unit_link:'Unit Link',
+  endowment:'Endowment', kesehatan:'Kesehatan', penyakit_kritis:'Penyakit Kritis', syariah:'Syariah'
+};
+
+async function loadKontenAdmin() {
+  const list = document.getElementById('kontenAdminList');
+  list.innerHTML = '<div class="loading">Loading...</div>';
+  try {
+    const { data, error } = await supabase
+      .from('konten_library')
+      .select('*')
+      .order('created_at', { ascending: false });
+    if (error) { list.innerHTML = '<div class="loading">Gagal memuat: ' + error.message + '</div>'; return; }
+    allKontenAdmin = data || [];
+    const badge = document.getElementById('sidebarCountKonten');
+    if (badge) { badge.textContent = allKontenAdmin.length; }
+    renderKontenAdmin();
+  } catch (err) {
+    list.innerHTML = '<div class="loading">Gagal memuat: ' + err.message + '</div>';
+  }
+}
+
+function kontenImgs(k) {
+  let imgs = [];
+  if (Array.isArray(k.image_urls)) imgs = k.image_urls;
+  else if (typeof k.image_urls === 'string') { try { imgs = JSON.parse(k.image_urls); } catch(e){} }
+  if ((!imgs || imgs.length===0) && k.file_url) imgs = [k.file_url];
+  return imgs || [];
+}
+
+function renderKontenAdmin() {
+  const list = document.getElementById('kontenAdminList');
+  const filtered = allKontenAdmin.filter(k => currentKontenKat === 'all' || k.kategori === currentKontenKat);
+  if (filtered.length === 0) {
+    list.innerHTML = '<div class="loading">Belum ada konten' + (currentKontenKat!=='all'?' di kategori ini':'') + '. Klik Upload Konten untuk menambah.</div>';
+    return;
+  }
+  list.innerHTML = '<div class="konten-admin-grid">' + filtered.map(k => {
+    const imgs = kontenImgs(k);
+    const cover = imgs[0] || '';
+    const isCarousel = k.tipe === 'feed' && imgs.length > 1;
+    const thumbCls = k.tipe === 'story' ? 'story' : '';
+    return '<div class="konten-admin-card">' +
+      '<div class="konten-admin-thumb ' + thumbCls + '">' +
+        (cover ? '<img src="' + cover + '" alt="" onerror="this.style.display=\'none\'">' : '') +
+        '<span class="konten-admin-type">' + (k.tipe==='story'?'Story':'Feed') + '</span>' +
+        (isCarousel ? '<span class="konten-carousel-count"><i data-lucide="layers"></i> ' + imgs.length + '</span>' : '') +
+      '</div>' +
+      '<div class="konten-admin-body">' +
+        '<div class="konten-admin-title">' + (k.judul||'-') + '</div>' +
+        '<div class="konten-admin-meta">' +
+          '<span class="konten-admin-kat">' + (KAT_LABEL_ADMIN[k.kategori]||k.kategori||'-') + '</span>' +
+          '<button class="konten-del-btn" onclick="deleteKonten(\'' + k.id + '\')" title="Hapus"><i data-lucide="trash-2"></i></button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }).join('') + '</div>';
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+
+window.filterKontenAdmin = function(kat, event) {
+  currentKontenKat = kat;
+  document.querySelectorAll('#kontenKatFilter .tab').forEach(t => t.classList.remove('active'));
+  if (event && event.currentTarget) event.currentTarget.classList.add('active');
+  renderKontenAdmin();
+};
+
+window.openKontenUpload = function() {
+  document.getElementById('kontenJudul').value = '';
+  document.getElementById('kontenDeskripsi').value = '';
+  document.getElementById('kontenKategori').value = 'term_life';
+  document.getElementById('kontenFiles').value = '';
+  document.getElementById('kontenFilePreview').innerHTML = '';
+  document.getElementById('kontenUploadError').style.display = 'none';
+  selectedKontenFiles = [];
+  setKontenTipe('story');
+  document.getElementById('kontenUploadModal').classList.add('show');
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+};
+
+window.closeKontenUpload = function() {
+  document.getElementById('kontenUploadModal').classList.remove('show');
+};
+
+window.setKontenTipe = function(tipe) {
+  currentKontenTipe = tipe;
+  document.getElementById('tipeStoryLabel').classList.toggle('active', tipe === 'story');
+  document.getElementById('tipeFeedLabel').classList.toggle('active', tipe === 'feed');
+  document.querySelector('input[name="kontenTipe"][value="' + tipe + '"]').checked = true;
+  const fileInput = document.getElementById('kontenFiles');
+  const hint = document.getElementById('kontenImgHint');
+  if (tipe === 'story') {
+    fileInput.removeAttribute('multiple');
+    hint.textContent = '(Story: 1 gambar vertikal 9:16)';
+  } else {
+    fileInput.setAttribute('multiple', 'multiple');
+    hint.textContent = '(Feed: bisa banyak gambar untuk carousel, urutan sesuai pilih)';
+  }
+};
+
+document.getElementById('kontenFiles').addEventListener('change', function(e) {
+  selectedKontenFiles = Array.from(e.target.files);
+  const preview = document.getElementById('kontenFilePreview');
+  preview.innerHTML = '';
+  selectedKontenFiles.forEach(file => {
+    const url = URL.createObjectURL(file);
+    const div = document.createElement('div');
+    div.className = 'file-preview-item';
+    div.innerHTML = '<img src="' + url + '" alt="">';
+    preview.appendChild(div);
+  });
+});
+
+window.submitKontenUpload = async function() {
+  const judul = document.getElementById('kontenJudul').value.trim();
+  const kategori = document.getElementById('kontenKategori').value;
+  const deskripsi = document.getElementById('kontenDeskripsi').value.trim();
+  const errEl = document.getElementById('kontenUploadError');
+  errEl.style.display = 'none';
+
+  if (!judul) { errEl.textContent = 'Judul wajib diisi.'; errEl.style.display = 'block'; return; }
+  if (selectedKontenFiles.length === 0) { errEl.textContent = 'Pilih minimal 1 gambar.'; errEl.style.display = 'block'; return; }
+  if (currentKontenTipe === 'story' && selectedKontenFiles.length > 1) { errEl.textContent = 'Story hanya boleh 1 gambar. Pilih tipe Feed untuk carousel.'; errEl.style.display = 'block'; return; }
+
+  const btn = document.getElementById('kontenUploadBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<i data-lucide="loader"></i> Mengupload...';
+
+  try {
+    const imageUrls = [];
+    for (let i = 0; i < selectedKontenFiles.length; i++) {
+      const file = selectedKontenFiles[i];
+      const ext = (file.name.split('.').pop() || 'png').toLowerCase();
+      const path = kategori + '/' + Date.now() + '_' + i + '_' + Math.random().toString(36).slice(2,8) + '.' + ext;
+      const { error: upErr } = await supabase.storage.from('konten').upload(path, file, { cacheControl: '3600', upsert: false });
+      if (upErr) throw new Error('Upload gambar gagal: ' + upErr.message);
+      const { data: pub } = supabase.storage.from('konten').getPublicUrl(path);
+      imageUrls.push(pub.publicUrl);
+    }
+
+    const { error: insErr } = await supabase.from('konten_library').insert({
+      judul: judul,
+      tipe: currentKontenTipe,
+      kategori: kategori,
+      deskripsi: deskripsi || null,
+      image_urls: imageUrls,
+      file_url: imageUrls[0],
+      thumbnail_url: imageUrls[0],
+      is_active: true
+    });
+    if (insErr) throw new Error('Simpan data gagal: ' + insErr.message);
+
+    closeKontenUpload();
+    await loadKontenAdmin();
+  } catch (err) {
+    errEl.textContent = err.message;
+    errEl.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i data-lucide="upload"></i> Upload';
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }
+};
+
+window.deleteKonten = async function(id) {
+  if (!confirm('Hapus konten ini? Gambar juga akan dihapus permanen.')) return;
+  try {
+    const k = allKontenAdmin.find(x => x.id === id);
+    // Hapus file dari storage
+    if (k) {
+      const imgs = kontenImgs(k);
+      const paths = imgs.map(u => {
+        const idx = u.indexOf('/konten/');
+        return idx >= 0 ? u.slice(idx + 8) : null;
+      }).filter(Boolean);
+      if (paths.length) { await supabase.storage.from('konten').remove(paths); }
+    }
+    const { error } = await supabase.from('konten_library').delete().eq('id', id);
+    if (error) { alert('Gagal hapus: ' + error.message); return; }
+    await loadKontenAdmin();
+  } catch (err) { alert('Gagal hapus: ' + err.message); }
+};
+
 window.setView = setView;
 window.setSubFilter = setSubFilter;
 

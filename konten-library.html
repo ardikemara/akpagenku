@@ -353,7 +353,7 @@
   }
   /* Aspect ratios per type */
   .card-thumb.story { aspect-ratio: 9/16; }
-  .card-thumb.feed { aspect-ratio: 1/1; }
+  .card-thumb.feed { aspect-ratio: 4/5; }
 
   /* Gradient styles for thumbnails (placeholder for real images) */
   .grad-1 { background: linear-gradient(135deg, #0f2647 0%, #1e3a5f 100%); }
@@ -599,6 +599,47 @@
     .search-input { width: 100%; }
     .masonry { column-count: 1; }
   }
+
+  /* Carousel badge di thumbnail feed */
+  .carousel-badge {
+    position: absolute; top: 12px; right: 12px; z-index: 3;
+    background: rgba(15,38,71,0.85); color: #fff; font-size: 11px; font-weight: 600;
+    padding: 4px 9px; border-radius: 999px; display: inline-flex; align-items: center; gap: 4px;
+    backdrop-filter: blur(4px);
+  }
+  .carousel-badge [data-lucide] { width: 12px; height: 12px; }
+  .card-thumb-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+
+  /* Modal viewer (preview + carousel) */
+  .konten-modal-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(15,38,71,0.75);
+    z-index: 1000; backdrop-filter: blur(3px);
+  }
+  .konten-modal-overlay.show { display: block; }
+  .konten-modal {
+    display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%);
+    z-index: 1001; background: #fff; border-radius: 16px; width: min(92vw, 520px);
+    max-height: 90vh; overflow: hidden; flex-direction: column;
+  }
+  .konten-modal.show { display: flex; }
+  .konten-modal-head { padding: 16px 20px; border-bottom: 1px solid var(--gray-200); display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .konten-modal-title { font-size: 15px; font-weight: 700; color: var(--navy); }
+  .konten-modal-close { background: none; border: none; cursor: pointer; color: var(--gray-500); padding: 4px; }
+  .konten-modal-body { padding: 20px; overflow-y: auto; }
+  .carousel-stage { position: relative; background: var(--gray-100); border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+  .carousel-stage.story { aspect-ratio: 9/16; max-height: 60vh; }
+  .carousel-stage.feed { aspect-ratio: 4/5; }
+  .carousel-stage img { width: 100%; height: 100%; object-fit: contain; }
+  .carousel-nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.9); border: none; width: 38px; height: 38px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--navy); box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+  .carousel-nav:disabled { opacity: 0.3; cursor: not-allowed; }
+  .carousel-nav.prev { left: 10px; }
+  .carousel-nav.next { right: 10px; }
+  .carousel-dots { display: flex; gap: 6px; justify-content: center; margin-top: 14px; }
+  .carousel-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gray-300); cursor: pointer; transition: all 0.15s; }
+  .carousel-dot.active { background: var(--gold); width: 22px; border-radius: 999px; }
+  .carousel-counter { text-align: center; font-size: 12px; color: var(--gray-500); margin-top: 8px; }
+  .konten-modal-foot { padding: 16px 20px; border-top: 1px solid var(--gray-200); display: flex; gap: 10px; }
+  .konten-modal-foot .download-btn { flex: 1; justify-content: center; padding: 12px; font-size: 14px; }
 </style>
 </head>
 <body>
@@ -707,12 +748,15 @@
       </div>
 
       <div class="filter-group">
-        <span class="filter-label">Topik:</span>
-        <button class="filter-pill active" onclick="filterByTopic('all', this)">Semua</button>
-        <button class="filter-pill" onclick="filterByTopic('jiwa', this)">Asuransi Jiwa</button>
-        <button class="filter-pill" onclick="filterByTopic('kritis', this)">Penyakit Kritis</button>
-        <button class="filter-pill" onclick="filterByTopic('pendidikan', this)">Pendidikan</button>
-        <button class="filter-pill" onclick="filterByTopic('kesehatan', this)">Kesehatan</button>
+        <span class="filter-label">Kategori:</span>
+        <button class="filter-pill active" onclick="filterByKategori('all', this)">Semua</button>
+        <button class="filter-pill" onclick="filterByKategori('term_life', this)">Term Life</button>
+        <button class="filter-pill" onclick="filterByKategori('whole_life', this)">Whole Life</button>
+        <button class="filter-pill" onclick="filterByKategori('unit_link', this)">Unit Link</button>
+        <button class="filter-pill" onclick="filterByKategori('endowment', this)">Endowment/Saving</button>
+        <button class="filter-pill" onclick="filterByKategori('kesehatan', this)">Kesehatan</button>
+        <button class="filter-pill" onclick="filterByKategori('penyakit_kritis', this)">Penyakit Kritis</button>
+        <button class="filter-pill" onclick="filterByKategori('syariah', this)">Syariah</button>
       </div>
 
       <div class="search-box">
@@ -723,344 +767,13 @@
 
     <!-- MASONRY GRID -->
     <div class="masonry" id="masonryGrid">
-
-      <!-- STORY 1 -->
-      <div class="masonry-item" data-type="story" data-topic="jiwa">
-        <div class="content-card">
-          <div class="card-thumb story grad-1">
-            <span class="thumb-tag-label">EDUKASI</span>
-            <span class="thumb-type-badge"><i data-lucide="zap"></i> Story</span>
-            <div>
-              <div class="thumb-icon"><i data-lucide="heart-pulse"></i></div>
-              <div class="thumb-quote">3 Alasan Keluarga Muda Butuh Asuransi Jiwa</div>
-              <div class="thumb-author">— SWIPE UP</div>
-            </div>
-            <div class="card-overlay">
-              <div class="overlay-actions">
-                <button class="overlay-btn" title="Preview"><i data-lucide="eye"></i></button>
-                <button class="overlay-btn" title="Download"><i data-lucide="download"></i></button>
-              </div>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="card-title">3 Alasan Keluarga Muda Butuh Asuransi Jiwa</div>
-            <div class="card-meta">
-              <span class="card-tag">ASURANSI JIWA</span>
-              <button class="download-btn" onclick="downloadContent(this)"><i data-lucide="download"></i> Download</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- FEED 1 -->
-      <div class="masonry-item" data-type="feed" data-topic="pendidikan">
-        <div class="content-card">
-          <div class="card-thumb feed grad-2">
-            <span class="thumb-tag-label">FAKTA</span>
-            <span class="thumb-type-badge"><i data-lucide="square"></i> Feed</span>
-            <div>
-              <div class="thumb-stat-value">Rp 450jt</div>
-              <div class="thumb-stat-label">Biaya kuliah 18 tahun lagi<br>(estimasi univ. swasta)</div>
-            </div>
-            <div class="card-overlay">
-              <div class="overlay-actions">
-                <button class="overlay-btn" title="Preview"><i data-lucide="eye"></i></button>
-                <button class="overlay-btn" title="Download"><i data-lucide="download"></i></button>
-              </div>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="card-title">Biaya Kuliah 18 Tahun Lagi: Apakah Sudah Anda Hitung?</div>
-            <div class="card-meta">
-              <span class="card-tag">PENDIDIKAN</span>
-              <button class="download-btn" onclick="downloadContent(this)"><i data-lucide="download"></i> Download</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- STORY 2 -->
-      <div class="masonry-item" data-type="story" data-topic="kritis">
-        <div class="content-card">
-          <div class="card-thumb story grad-3">
-            <span class="thumb-tag-label">FAKTA SEHAT</span>
-            <span class="thumb-type-badge"><i data-lucide="zap"></i> Story</span>
-            <div>
-              <div class="thumb-stat-value">1 dari 4</div>
-              <div class="thumb-stat-label">Orang Indonesia akan kena<br>penyakit kritis seumur hidup</div>
-              <div class="thumb-cta">Cek faktor risiko Anda →</div>
-            </div>
-            <div class="card-overlay">
-              <div class="overlay-actions">
-                <button class="overlay-btn" title="Preview"><i data-lucide="eye"></i></button>
-                <button class="overlay-btn" title="Download"><i data-lucide="download"></i></button>
-              </div>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="card-title">Statistik Penyakit Kritis di Indonesia</div>
-            <div class="card-meta">
-              <span class="card-tag">PENYAKIT KRITIS</span>
-              <button class="download-btn" onclick="downloadContent(this)"><i data-lucide="download"></i> Download</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- FEED 2 (cream/quote) -->
-      <div class="masonry-item" data-type="feed" data-topic="jiwa">
-        <div class="content-card">
-          <div class="card-thumb feed grad-cream">
-            <span class="thumb-tag-label">QUOTE</span>
-            <span class="thumb-type-badge"><i data-lucide="square"></i> Feed</span>
-            <div>
-              <div class="thumb-quote big">"Asuransi bukan untuk yang sudah meninggal, tapi untuk yang masih hidup."</div>
-              <div class="thumb-author">— Cristine Lestari</div>
-            </div>
-            <div class="card-overlay">
-              <div class="overlay-actions">
-                <button class="overlay-btn" title="Preview"><i data-lucide="eye"></i></button>
-                <button class="overlay-btn" title="Download"><i data-lucide="download"></i></button>
-              </div>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="card-title">Quote Edukasi: Tujuan Sebenarnya Asuransi</div>
-            <div class="card-meta">
-              <span class="card-tag">QUOTE</span>
-              <button class="download-btn" onclick="downloadContent(this)"><i data-lucide="download"></i> Download</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- STORY 3 -->
-      <div class="masonry-item" data-type="story" data-topic="kesehatan">
-        <div class="content-card">
-          <div class="card-thumb story grad-5">
-            <span class="thumb-tag-label">TIPS HARI INI</span>
-            <span class="thumb-type-badge"><i data-lucide="zap"></i> Story</span>
-            <div>
-              <div class="thumb-icon"><i data-lucide="stethoscope"></i></div>
-              <div class="thumb-quote">5 Hal yang BPJS Tidak Cover</div>
-              <div class="thumb-author">— GESER UNTUK CEK →</div>
-            </div>
-            <div class="card-overlay">
-              <div class="overlay-actions">
-                <button class="overlay-btn" title="Preview"><i data-lucide="eye"></i></button>
-                <button class="overlay-btn" title="Download"><i data-lucide="download"></i></button>
-              </div>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="card-title">5 Hal yang BPJS Tidak Cover (Wajib Tahu)</div>
-            <div class="card-meta">
-              <span class="card-tag">KESEHATAN</span>
-              <button class="download-btn" onclick="downloadContent(this)"><i data-lucide="download"></i> Download</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- FEED 3 (carousel hint) -->
-      <div class="masonry-item" data-type="feed" data-topic="kesehatan">
-        <div class="content-card">
-          <div class="card-thumb feed grad-4">
-            <span class="thumb-tag-label">CAROUSEL · 5 SLIDE</span>
-            <span class="thumb-type-badge"><i data-lucide="square"></i> Feed</span>
-            <div>
-              <div class="thumb-icon"><i data-lucide="layers"></i></div>
-              <div class="thumb-quote">7 Mitos Asuransi yang Masih Banyak Dipercaya</div>
-              <div class="thumb-cta">Geser ke kiri →</div>
-            </div>
-            <div class="card-overlay">
-              <div class="overlay-actions">
-                <button class="overlay-btn" title="Preview"><i data-lucide="eye"></i></button>
-                <button class="overlay-btn" title="Download"><i data-lucide="download"></i></button>
-              </div>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="card-title">7 Mitos Asuransi yang Masih Banyak Dipercaya</div>
-            <div class="card-meta">
-              <span class="card-tag">EDUKASI</span>
-              <button class="download-btn" onclick="downloadContent(this)"><i data-lucide="download"></i> Download</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- STORY 4 -->
-      <div class="masonry-item" data-type="story" data-topic="pendidikan">
-        <div class="content-card">
-          <div class="card-thumb story grad-6">
-            <span class="thumb-tag-label">KALKULATOR</span>
-            <span class="thumb-type-badge"><i data-lucide="zap"></i> Story</span>
-            <div>
-              <div class="thumb-icon"><i data-lucide="calculator"></i></div>
-              <div class="thumb-quote">Hitung Dana Pendidikan Anak Anda</div>
-              <div class="thumb-author">— GRATIS · 1 MENIT</div>
-              <div class="thumb-cta">Coba sekarang →</div>
-            </div>
-            <div class="card-overlay">
-              <div class="overlay-actions">
-                <button class="overlay-btn" title="Preview"><i data-lucide="eye"></i></button>
-                <button class="overlay-btn" title="Download"><i data-lucide="download"></i></button>
-              </div>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="card-title">Promosi: Kalkulator Dana Pendidikan</div>
-            <div class="card-meta">
-              <span class="card-tag">LEAD MAGNET</span>
-              <button class="download-btn" onclick="downloadContent(this)"><i data-lucide="download"></i> Download</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- FEED 4 -->
-      <div class="masonry-item" data-type="feed" data-topic="kritis">
-        <div class="content-card">
-          <div class="card-thumb feed grad-7">
-            <span class="thumb-tag-label">STUDI KASUS</span>
-            <span class="thumb-type-badge"><i data-lucide="square"></i> Feed</span>
-            <div>
-              <div class="thumb-stat-value">Rp 380jt</div>
-              <div class="thumb-stat-label">Biaya pengobatan kanker stadium 2<br>(rata-rata di RS swasta)</div>
-            </div>
-            <div class="card-overlay">
-              <div class="overlay-actions">
-                <button class="overlay-btn" title="Preview"><i data-lucide="eye"></i></button>
-                <button class="overlay-btn" title="Download"><i data-lucide="download"></i></button>
-              </div>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="card-title">Berapa Biaya Pengobatan Kanker Sebenarnya?</div>
-            <div class="card-meta">
-              <span class="card-tag">PENYAKIT KRITIS</span>
-              <button class="download-btn" onclick="downloadContent(this)"><i data-lucide="download"></i> Download</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- STORY 5 -->
-      <div class="masonry-item" data-type="story" data-topic="jiwa">
-        <div class="content-card">
-          <div class="card-thumb story grad-8">
-            <span class="thumb-tag-label">CEKLIS</span>
-            <span class="thumb-type-badge"><i data-lucide="zap"></i> Story</span>
-            <div>
-              <div class="thumb-icon"><i data-lucide="check-circle-2"></i></div>
-              <div class="thumb-quote">Cek Skor Kesehatan Keuangan Anda</div>
-              <div class="thumb-author">— GRATIS, TANPA DAFTAR</div>
-              <div class="thumb-cta">Mulai cek →</div>
-            </div>
-            <div class="card-overlay">
-              <div class="overlay-actions">
-                <button class="overlay-btn" title="Preview"><i data-lucide="eye"></i></button>
-                <button class="overlay-btn" title="Download"><i data-lucide="download"></i></button>
-              </div>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="card-title">Promosi: Kuis Skor Kesehatan Keuangan</div>
-            <div class="card-meta">
-              <span class="card-tag">LEAD MAGNET</span>
-              <button class="download-btn" onclick="downloadContent(this)"><i data-lucide="download"></i> Download</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- FEED 5 -->
-      <div class="masonry-item" data-type="feed" data-topic="kesehatan">
-        <div class="content-card">
-          <div class="card-thumb feed grad-cream">
-            <span class="thumb-tag-label">QUOTE</span>
-            <span class="thumb-type-badge"><i data-lucide="square"></i> Feed</span>
-            <div>
-              <div class="thumb-quote big">"Kesehatan adalah harta yang paling sering kita lupakan—sampai kita harus membayar untuk menjaganya."</div>
-              <div class="thumb-author">— ANONYMOUS</div>
-            </div>
-            <div class="card-overlay">
-              <div class="overlay-actions">
-                <button class="overlay-btn" title="Preview"><i data-lucide="eye"></i></button>
-                <button class="overlay-btn" title="Download"><i data-lucide="download"></i></button>
-              </div>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="card-title">Quote Refleksi tentang Kesehatan</div>
-            <div class="card-meta">
-              <span class="card-tag">QUOTE</span>
-              <button class="download-btn" onclick="downloadContent(this)"><i data-lucide="download"></i> Download</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- STORY 6 -->
-      <div class="masonry-item" data-type="story" data-topic="pendidikan">
-        <div class="content-card">
-          <div class="card-thumb story grad-3">
-            <span class="thumb-tag-label">DID YOU KNOW</span>
-            <span class="thumb-type-badge"><i data-lucide="zap"></i> Story</span>
-            <div>
-              <div class="thumb-icon"><i data-lucide="graduation-cap"></i></div>
-              <div class="thumb-quote">Inflasi pendidikan di Indonesia mencapai 10-15% per tahun</div>
-              <div class="thumb-author">— SUMBER: BPS 2024</div>
-            </div>
-            <div class="card-overlay">
-              <div class="overlay-actions">
-                <button class="overlay-btn" title="Preview"><i data-lucide="eye"></i></button>
-                <button class="overlay-btn" title="Download"><i data-lucide="download"></i></button>
-              </div>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="card-title">Fakta: Inflasi Biaya Pendidikan Indonesia</div>
-            <div class="card-meta">
-              <span class="card-tag">PENDIDIKAN</span>
-              <button class="download-btn" onclick="downloadContent(this)"><i data-lucide="download"></i> Download</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- FEED 6 -->
-      <div class="masonry-item" data-type="feed" data-topic="jiwa">
-        <div class="content-card">
-          <div class="card-thumb feed grad-5">
-            <span class="thumb-tag-label">CHECKLIST</span>
-            <span class="thumb-type-badge"><i data-lucide="square"></i> Feed</span>
-            <div>
-              <div class="thumb-icon"><i data-lucide="list-checks"></i></div>
-              <div class="thumb-quote">5 Tanda Anda Sudah Siap Punya Asuransi Jiwa</div>
-              <div class="thumb-cta">Cek apakah Anda termasuk →</div>
-            </div>
-            <div class="card-overlay">
-              <div class="overlay-actions">
-                <button class="overlay-btn" title="Preview"><i data-lucide="eye"></i></button>
-                <button class="overlay-btn" title="Download"><i data-lucide="download"></i></button>
-              </div>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="card-title">5 Tanda Anda Siap Punya Asuransi Jiwa</div>
-            <div class="card-meta">
-              <span class="card-tag">CHECKLIST</span>
-              <button class="download-btn" onclick="downloadContent(this)"><i data-lucide="download"></i> Download</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
+      <!-- Konten di-render dari database via JS -->
     </div>
 
-  </main>
+    <div id="kontenLoading" style="text-align:center;padding:60px 20px;color:var(--gray-500);font-size:14px;">Memuat konten...</div>
+    <div id="kontenEmpty" style="display:none;text-align:center;padding:60px 20px;color:var(--gray-500);font-size:14px;">Belum ada konten di kategori ini.</div>
+
+    </main>
 </div>
 
 <!-- ===== TOAST ===== -->
@@ -1113,75 +826,219 @@
 </script>
 
 <script>
-// ===== Filter by Type =====
-let currentType = 'all';
-let currentTopic = 'all';
+(function() {
+  'use strict';
+  const SUPABASE_URL = 'https://bfydtsfekvueqzvuschp.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_3Xec3HYKViIiuX99hHxHqg_Ih8ABX_T';
+  let supabase = null;
+  let allKonten = [];
+  let currentType = 'all';
+  let currentKategori = 'all';
+  let currentSearch = '';
 
-function filterByType(type, btn) {
-  currentType = type;
-  document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  applyFilters();
-}
+  const KATEGORI_LABEL = {
+    term_life: 'Term Life', whole_life: 'Whole Life', unit_link: 'Unit Link',
+    endowment: 'Endowment/Saving', kesehatan: 'Kesehatan',
+    penyakit_kritis: 'Penyakit Kritis', syariah: 'Syariah'
+  };
+  const GRAD_BY_KATEGORI = {
+    term_life: 'grad-1', whole_life: 'grad-8', unit_link: 'grad-4',
+    endowment: 'grad-7', kesehatan: 'grad-6', penyakit_kritis: 'grad-3', syariah: 'grad-5'
+  };
 
-function filterByTopic(topic, btn) {
-  currentTopic = topic;
-  document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  applyFilters();
-}
-
-function applyFilters() {
-  const items = document.querySelectorAll('.masonry-item');
-  items.forEach(item => {
-    const type = item.dataset.type;
-    const topic = item.dataset.topic;
-    const typeMatch = currentType === 'all' || type === currentType;
-    const topicMatch = currentTopic === 'all' || topic === currentTopic;
-    item.style.display = (typeMatch && topicMatch) ? '' : 'none';
-  });
-}
-
-// ===== Search =====
-document.querySelector('.search-input').addEventListener('input', (e) => {
-  const query = e.target.value.toLowerCase();
-  document.querySelectorAll('.masonry-item').forEach(item => {
-    const title = item.querySelector('.card-title').textContent.toLowerCase();
-    item.style.display = title.includes(query) ? '' : 'none';
-  });
-});
-
-// ===== Download =====
-function downloadContent(btn) {
-  // Simulate download
-  btn.innerHTML = '<i data-lucide="check"></i> Tersimpan';
-  btn.classList.add('downloaded');
-  if (typeof lucide !== 'undefined') lucide.createIcons();
-
-  // Show toast
-  showToast('Konten berhasil di-download ke perangkat Anda');
-
-  setTimeout(() => {
-    btn.innerHTML = '<i data-lucide="download"></i> Download';
-    btn.classList.remove('downloaded');
-    if (typeof lucide !== 'undefined') lucide.createIcons();
-  }, 2400);
-}
-
-function showToast(msg) {
-  const toast = document.getElementById('toast');
-  document.getElementById('toastMsg').textContent = msg;
-  toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 2400);
-}
-
-// Init Lucide icons
-window.addEventListener('DOMContentLoaded', () => {
-  if (typeof lucide !== 'undefined') {
-    lucide.createIcons();
+  function escapeHtml(t) {
+    if (t == null) return '';
+    return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
   }
-});
+
+  function getImages(k) {
+    let imgs = [];
+    if (Array.isArray(k.image_urls)) imgs = k.image_urls;
+    else if (typeof k.image_urls === 'string') { try { imgs = JSON.parse(k.image_urls); } catch(e){ imgs = []; } }
+    if ((!imgs || imgs.length === 0) && k.file_url) imgs = [k.file_url];
+    return imgs || [];
+  }
+
+  async function loadKonten() {
+    try {
+      const { data, error } = await supabase
+        .from('konten_library')
+        .select('*')
+        .eq('is_active', true)
+        .order('created_at', { ascending: false });
+      const loadingEl = document.getElementById('kontenLoading');
+      if (error) { loadingEl.textContent = 'Gagal memuat konten: ' + error.message; return; }
+      allKonten = data || [];
+      loadingEl.style.display = 'none';
+      renderKonten();
+    } catch (err) {
+      document.getElementById('kontenLoading').textContent = 'Gagal memuat: ' + err.message;
+    }
+  }
+
+  function renderKonten() {
+    const grid = document.getElementById('masonryGrid');
+    const emptyEl = document.getElementById('kontenEmpty');
+    const filtered = allKonten.filter(k => {
+      const typeMatch = currentType === 'all' || k.tipe === currentType;
+      const katMatch = currentKategori === 'all' || k.kategori === currentKategori;
+      const searchMatch = !currentSearch || (k.judul || '').toLowerCase().includes(currentSearch);
+      return typeMatch && katMatch && searchMatch;
+    });
+
+    if (filtered.length === 0) { grid.innerHTML = ''; emptyEl.style.display = 'block'; return; }
+    emptyEl.style.display = 'none';
+
+    grid.innerHTML = filtered.map((k, idx) => {
+      const imgs = getImages(k);
+      const isCarousel = k.tipe === 'feed' && imgs.length > 1;
+      const grad = GRAD_BY_KATEGORI[k.kategori] || 'grad-1';
+      const thumbClass = k.tipe === 'story' ? 'story' : 'feed';
+      const katLabel = KATEGORI_LABEL[k.kategori] || k.kategori || '';
+      const cover = imgs[0] || '';
+      const realIdx = allKonten.indexOf(k);
+      return '<div class="masonry-item" data-type="' + escapeHtml(k.tipe) + '" data-kategori="' + escapeHtml(k.kategori||'') + '">' +
+        '<div class="content-card">' +
+          '<div class="card-thumb ' + thumbClass + ' ' + grad + '" onclick="openKontenModal(' + realIdx + ')" style="cursor:pointer;">' +
+            (cover ? '<img class="card-thumb-img" src="' + escapeHtml(cover) + '" alt="' + escapeHtml(k.judul) + '" onerror="this.style.display=\'none\'">' : '') +
+            (isCarousel ? '<span class="carousel-badge"><i data-lucide="layers"></i> ' + imgs.length + '</span>' : '') +
+            '<span class="thumb-type-badge"><i data-lucide="' + (k.tipe==='story'?'zap':'square') + '"></i> ' + (k.tipe==='story'?'Story':'Feed') + '</span>' +
+            '<div class="card-overlay"><div class="overlay-actions">' +
+              '<button class="overlay-btn" title="Preview"><i data-lucide="eye"></i></button>' +
+            '</div></div>' +
+          '</div>' +
+          '<div class="card-body">' +
+            '<div class="card-title">' + escapeHtml(k.judul) + '</div>' +
+            '<div class="card-meta">' +
+              '<span class="card-tag">' + escapeHtml(katLabel) + '</span>' +
+              '<button class="download-btn" onclick="openKontenModal(' + realIdx + ')"><i data-lucide="eye"></i> Lihat</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }
+
+  // ===== Filters =====
+  window.filterByType = function(type, btn) {
+    currentType = type;
+    document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderKonten();
+  };
+  window.filterByKategori = function(kat, btn) {
+    currentKategori = kat;
+    document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderKonten();
+  };
+
+  // ===== Carousel modal =====
+  let carouselImgs = [];
+  let carouselIdx = 0;
+  let carouselType = 'feed';
+
+  window.openKontenModal = function(realIdx) {
+    const k = allKonten[realIdx];
+    if (!k) return;
+    carouselImgs = getImages(k);
+    carouselIdx = 0;
+    carouselType = k.tipe === 'story' ? 'story' : 'feed';
+    document.getElementById('kontenModalTitle').textContent = k.judul || 'Konten';
+    const stage = document.getElementById('carouselStage');
+    stage.className = 'carousel-stage ' + carouselType;
+    renderCarousel();
+    document.getElementById('kontenModalOverlay').classList.add('show');
+    document.getElementById('kontenModal').classList.add('show');
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  };
+
+  window.closeKontenModal = function() {
+    document.getElementById('kontenModalOverlay').classList.remove('show');
+    document.getElementById('kontenModal').classList.remove('show');
+  };
+
+  function renderCarousel() {
+    const img = document.getElementById('carouselImg');
+    img.src = carouselImgs[carouselIdx] || '';
+    const single = carouselImgs.length <= 1;
+    document.getElementById('carouselPrev').style.display = single ? 'none' : '';
+    document.getElementById('carouselNext').style.display = single ? 'none' : '';
+    document.getElementById('carouselPrev').disabled = carouselIdx === 0;
+    document.getElementById('carouselNext').disabled = carouselIdx === carouselImgs.length - 1;
+    // dots
+    const dots = document.getElementById('carouselDots');
+    if (single) { dots.innerHTML = ''; document.getElementById('carouselCounter').textContent = ''; }
+    else {
+      dots.innerHTML = carouselImgs.map((_, i) => '<div class="carousel-dot ' + (i===carouselIdx?'active':'') + '" onclick="carouselGo(' + i + ')"></div>').join('');
+      document.getElementById('carouselCounter').textContent = 'Gambar ' + (carouselIdx+1) + ' dari ' + carouselImgs.length;
+    }
+  }
+
+  window.carouselMove = function(dir) {
+    carouselIdx = Math.max(0, Math.min(carouselImgs.length - 1, carouselIdx + dir));
+    renderCarousel();
+  };
+  window.carouselGo = function(i) { carouselIdx = i; renderCarousel(); };
+
+  window.downloadCurrent = function() {
+    carouselImgs.forEach((url, i) => {
+      const a = document.createElement('a');
+      a.href = url; a.download = 'konten-' + (i+1); a.target = '_blank';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    });
+    showToast(carouselImgs.length > 1 ? carouselImgs.length + ' gambar dibuka untuk di-download' : 'Gambar dibuka untuk di-download');
+  };
+
+  window.showToast = function(msg) {
+    const toast = document.getElementById('toast');
+    if (!toast) return;
+    document.getElementById('toastMsg').textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2400);
+  };
+
+  // ===== Search =====
+  function bindSearch() {
+    const si = document.querySelector('.search-input');
+    if (si) si.addEventListener('input', (e) => { currentSearch = e.target.value.toLowerCase(); renderKonten(); });
+  }
+
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeKontenModal(); });
+
+  function start() {
+    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    bindSearch();
+    loadKonten();
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
+  else start();
+})();
 </script>
+
+<!-- KONTEN MODAL VIEWER -->
+<div class="konten-modal-overlay" id="kontenModalOverlay" onclick="closeKontenModal()"></div>
+<div class="konten-modal" id="kontenModal">
+  <div class="konten-modal-head">
+    <div class="konten-modal-title" id="kontenModalTitle">Judul</div>
+    <button class="konten-modal-close" onclick="closeKontenModal()"><i data-lucide="x"></i></button>
+  </div>
+  <div class="konten-modal-body">
+    <div class="carousel-stage" id="carouselStage">
+      <button class="carousel-nav prev" id="carouselPrev" onclick="carouselMove(-1)"><i data-lucide="chevron-left"></i></button>
+      <img id="carouselImg" src="" alt="">
+      <button class="carousel-nav next" id="carouselNext" onclick="carouselMove(1)"><i data-lucide="chevron-right"></i></button>
+    </div>
+    <div class="carousel-dots" id="carouselDots"></div>
+    <div class="carousel-counter" id="carouselCounter"></div>
+  </div>
+  <div class="konten-modal-foot">
+    <button class="download-btn" onclick="downloadCurrent()"><i data-lucide="download"></i> Download Semua Gambar</button>
+  </div>
+</div>
 
 </body>
 </html>
