@@ -807,7 +807,7 @@
       </a>
       <a href="/lead-crm.html" class="nav-item">
         <i data-lucide="users"></i> <span>Lead & CRM</span>
-        <span class="badge">12</span>
+        <span class="badge" id="navBadgeCRM" style="display:none;">0</span>
       </a>
 
       <div class="nav-label">Pengaturan</div>
@@ -1354,7 +1354,39 @@
     // Notification email info
     set('notifEmailInfo', 'Email yang dikirim ke ' + session.email);
 
+    // Update sidebar CRM badge (leads needing follow-up)
+    updateNavBadge(session);
+
     if (typeof lucide !== 'undefined') lucide.createIcons();
+  }
+
+  async function updateNavBadge(session) {
+    try {
+      const supabase = window.supabase.createClient(
+        'https://bfydtsfekvueqzvuschp.supabase.co',
+        'sb_publishable_3Xec3HYKViIiuX99hHxHqg_Ih8ABX_T'
+      );
+      const { data, error } = await supabase
+        .from('leads')
+        .select('stage')
+        .eq('owner_id', session.id)
+        .in('stage', ['new', 'engaged']);
+      
+      if (error) return;
+      
+      const badge = document.getElementById('navBadgeCRM');
+      if (badge) {
+        const count = (data || []).length;
+        if (count > 0) {
+          badge.textContent = count;
+          badge.style.display = '';
+        } else {
+          badge.style.display = 'none';
+        }
+      }
+    } catch (e) {
+      console.warn('Badge update failed:', e);
+    }
   }
 
   if (document.readyState === 'loading') {
