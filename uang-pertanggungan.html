@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kalkulator Uang Pertanggungan | AKPAgenku</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0f2647;
+    --navy-dark: #081a33;
+    --gold: #c9a961;
+    --gold-light: #d9bd7f;
+    --gold-dark: #a88a45;
+    --cream: #faf8f3;
+    --gray-50: #fafafa;
+    --gray-100: #f5f5f5;
+    --gray-200: #e5e5e5;
+    --gray-300: #d4d4d4;
+    --gray-500: #737373;
+    --gray-700: #404040;
+    --gray-900: #171717;
+    --white: #ffffff;
+    --green: #059669;
+    --amber: #f59e0b;
+    --red: #dc2626;
+    --blue: #2563eb;
+    --blue-dark: #1d4ed8;
+    --serif: 'Playfair Display', serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--cream);
+    color: var(--gray-900);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ===== HEADER ===== */
+  .quiz-header { background: var(--navy); color: var(--white); padding: 16px 20px; }
+  .quiz-header-inner { max-width: 680px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .agent-info { display: flex; align-items: center; gap: 10px; font-size: 13px; }
+  .agent-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--gold); color: var(--navy); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink: 0; }
+  .agent-name { font-weight: 600; }
+  .agent-tag { color: var(--gold); font-size: 11px; letter-spacing: 1px; text-transform: uppercase; }
+  .logo { font-family: var(--serif); font-size: 18px; font-weight: 700; color: var(--white); text-decoration: none; }
+  .logo .accent { color: var(--gold); }
+
+  /* ===== MAIN ===== */
+  .container { max-width: 680px; margin: 0 auto; padding: 32px 20px 80px; }
+  .card { background: var(--white); border-radius: 16px; border: 1px solid var(--gray-200); box-shadow: 0 4px 14px rgba(15, 38, 71, 0.04); overflow: hidden; }
+
+  /* ===== HERO ===== */
+  .hero { position: relative; width: 100%; aspect-ratio: 16 / 9; background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dark) 100%); overflow: hidden; }
+  .hero-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(15,38,71,0.1) 0%, rgba(15,38,71,0.4) 100%); z-index: 1; }
+  .hero-icon { position: absolute; bottom: 16px; left: 28px; z-index: 2; width: 56px; height: 56px; border-radius: 14px; background: rgba(255,255,255,0.18); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; font-size: 28px; border: 1px solid rgba(255,255,255,0.25); }
+  .body { padding: 28px 28px 32px; }
+  .title { font-family: var(--serif); font-size: 27px; font-weight: 700; color: var(--navy); line-height: 1.2; margin-bottom: 10px; }
+  .subtitle { font-size: 15px; color: var(--gray-700); margin-bottom: 26px; }
+
+  /* ===== FORM ===== */
+  .form-group { margin-bottom: 22px; }
+  .form-label { display: block; font-size: 14px; font-weight: 600; color: var(--navy); margin-bottom: 10px; }
+  .form-label .hint { font-weight: 400; color: var(--gray-500); font-size: 12px; }
+
+  .form-input { width: 100%; padding: 13px 14px; border: 1.5px solid var(--gray-200); border-radius: 9px; font-size: 14px; font-family: inherit; background: var(--white); transition: border-color 0.2s; color: var(--gray-900); }
+  .form-input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12); }
+  .input-money { position: relative; }
+  .input-money .prefix { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--gray-500); font-size: 14px; font-weight: 600; pointer-events: none; }
+  .input-money .form-input { padding-left: 38px; }
+
+  /* Slider */
+  .slider-wrap { padding: 4px 0; }
+  .slider-value { font-family: var(--serif); font-size: 22px; font-weight: 700; color: var(--blue); text-align: center; margin-bottom: 8px; }
+  input[type=range] { width: 100%; -webkit-appearance: none; height: 6px; border-radius: 3px; background: var(--gray-200); outline: none; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%; background: var(--blue); cursor: pointer; border: 3px solid var(--white); box-shadow: 0 2px 6px rgba(37,99,235,0.4); }
+  input[type=range]::-moz-range-thumb { width: 22px; height: 22px; border-radius: 50%; background: var(--blue); cursor: pointer; border: 3px solid var(--white); }
+  .slider-minmax { display: flex; justify-content: space-between; font-size: 11px; color: var(--gray-500); margin-top: 6px; }
+
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 15px 24px; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; font-family: inherit; width: 100%; }
+  .btn-primary { background: var(--navy); color: var(--white); }
+  .btn-primary:hover { background: var(--navy-dark); transform: translateY(-1px); }
+  .btn-gold { background: var(--gold); color: var(--navy); }
+  .btn-gold:hover { background: var(--gold-light); transform: translateY(-1px); box-shadow: 0 6px 16px rgba(201,169,97,0.25); }
+
+  /* ===== RESULT ===== */
+  .result-section { display: none; }
+  .result-section.show { display: block; animation: slideIn 0.5s; }
+  @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+  .result-hero { text-align: center; padding: 24px 0 16px; }
+  .result-hero-label { font-size: 13px; color: var(--gray-700); margin-bottom: 8px; }
+  .result-hero-value { font-family: var(--serif); font-size: 44px; font-weight: 700; color: var(--blue); line-height: 1.1; margin-bottom: 4px; }
+  .result-hero-sub { font-size: 13px; color: var(--gray-500); }
+
+  .status-badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 16px; border-radius: 999px; font-size: 13px; font-weight: 600; margin: 8px 0 4px; }
+  .status-badge.aman { background: rgba(5,150,105,0.12); color: #047857; }
+  .status-badge.kurang { background: rgba(245,158,11,0.14); color: #b45309; }
+  .status-badge.rentan { background: rgba(220,38,38,0.1); color: var(--red); }
+
+  /* Coverage bar */
+  .progress-block { background: var(--gray-50); border-radius: 12px; padding: 20px; margin: 20px 0; }
+  .progress-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
+  .progress-head .label { font-size: 13px; font-weight: 600; color: var(--navy); }
+  .progress-head .pct { font-family: var(--serif); font-size: 22px; font-weight: 700; color: var(--blue); }
+  .progress-track { height: 22px; background: var(--gray-200); border-radius: 11px; overflow: hidden; position: relative; }
+  .progress-fill { height: 100%; border-radius: 11px; background: linear-gradient(90deg, var(--blue) 0%, var(--blue-dark) 100%); width: 0; transition: width 1.1s cubic-bezier(0.4, 0, 0.2, 1); }
+  .progress-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--gray-500); margin-top: 8px; }
+  .progress-labels strong { color: var(--navy); font-family: var(--serif); font-size: 13px; }
+
+  .result-gap { background: var(--navy); color: var(--white); border-radius: 12px; padding: 20px; text-align: center; margin: 20px 0; }
+  .result-gap-label { font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 6px; }
+  .result-gap-value { font-family: var(--serif); font-size: 32px; font-weight: 700; color: var(--gold); }
+  .result-gap-sub { font-size: 12px; color: rgba(255,255,255,0.6); margin-top: 4px; }
+
+  /* Capture */
+  .capture-block { background: var(--cream); border: 1.5px solid var(--gold); border-radius: 12px; padding: 22px; margin-top: 22px; }
+  .capture-title { font-family: var(--serif); font-size: 18px; font-weight: 600; color: var(--navy); margin-bottom: 6px; }
+  .capture-sub { font-size: 13px; color: var(--gray-700); margin-bottom: 16px; }
+  .privacy-note { margin-top: 12px; font-size: 11px; color: var(--gray-500); text-align: center; line-height: 1.5; }
+  .form-error { background: #fee2e2; border: 1px solid #fca5a5; color: #991b1b; padding: 10px 14px; border-radius: 8px; font-size: 13px; margin: 12px 0; display: none; }
+  .form-error.show { display: block; }
+
+  /* Detail */
+  .detail-section { display: none; margin-top: 22px; padding-top: 22px; border-top: 1px solid var(--gray-200); }
+  .detail-section.show { display: block; animation: slideIn 0.5s; }
+  .insight-card { background: var(--white); border: 1px solid var(--gray-200); border-left: 4px solid var(--gold); border-radius: 8px; padding: 16px 18px; margin-bottom: 12px; }
+  .insight-card-title { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+  .insight-card-text { font-size: 13px; color: var(--gray-700); line-height: 1.6; }
+
+  /* Breakdown stack */
+  .breakdown-list { margin: 6px 0; }
+  .breakdown-item { display: flex; align-items: center; justify-content: space-between; padding: 9px 0; border-bottom: 1px solid var(--gray-100); font-size: 13px; }
+  .breakdown-item:last-child { border-bottom: none; }
+  .breakdown-item .bd-label { display: flex; align-items: center; gap: 8px; color: var(--gray-700); }
+  .breakdown-item .bd-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+  .breakdown-item .bd-val { font-family: var(--serif); font-weight: 700; color: var(--navy); }
+  .breakdown-item.minus .bd-val { color: var(--green); }
+  .breakdown-item.total { border-top: 2px solid var(--navy); border-bottom: none; padding-top: 12px; margin-top: 4px; }
+  .breakdown-item.total .bd-label { font-weight: 700; color: var(--navy); }
+  .breakdown-item.total .bd-val { font-size: 16px; }
+
+  .cta-block { background: var(--navy); color: var(--white); border-radius: 12px; padding: 22px; margin-top: 20px; text-align: center; }
+  .cta-title { font-family: var(--serif); font-size: 19px; font-weight: 600; margin-bottom: 8px; }
+  .cta-sub { font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 16px; }
+  .cta-block .btn-gold { width: 100%; }
+
+  .disclaimer { font-size: 11px; color: var(--gray-500); text-align: center; margin-top: 20px; line-height: 1.5; }
+
+  @media (max-width: 600px) {
+    .title { font-size: 23px; }
+    .result-hero-value { font-size: 34px; }
+    .result-gap-value { font-size: 27px; }
+    .agent-info { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="quiz-header">
+  <div class="quiz-header-inner">
+    <a href="#" class="logo">AKP<span class="accent">Agenku</span></a>
+    <div class="agent-info" id="agentInfo" style="display:none;">
+      <div class="agent-avatar" id="agentAvatar">?</div>
+      <div>
+        <div class="agent-tag">Kalkulator dari</div>
+        <div class="agent-name" id="agentName">-</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- MAIN -->
+<div class="container">
+  <div class="card">
+    <div class="hero">
+      <img class="hero-img" src="/img/magnet-up.png" alt="Uang Pertanggungan" onerror="this.style.display='none'">
+      <div class="hero-icon">🛡️</div>
+    </div>
+    <div class="body">
+
+      <!-- INPUT VIEW -->
+      <div id="inputView">
+        <h1 class="title">Kalkulator Uang Pertanggungan</h1>
+        <p class="subtitle">Hitung nilai uang pertanggungan asuransi jiwa yang ideal untuk melindungi keluarga Anda — dan cek apakah proteksi Anda sekarang sudah cukup.</p>
+
+        <div class="form-group">
+          <label class="form-label">Penghasilan bulanan Anda</label>
+          <div class="input-money">
+            <span class="prefix">Rp</span>
+            <input type="text" class="form-input" id="penghasilan" value="10.000.000" oninput="formatMoney(this)">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Berapa tahun keluarga perlu disokong? <span class="hint">(jika Anda tiada)</span></label>
+          <div class="slider-wrap">
+            <div class="slider-value" id="tahunValue">10 tahun</div>
+            <input type="range" id="tahun" min="5" max="25" value="10" step="1" oninput="updateTahun(this.value)">
+            <div class="slider-minmax"><span>5 tahun</span><span>25 tahun</span></div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Total utang <span class="hint">(KPR, KTA, cicilan, dll)</span></label>
+          <div class="input-money">
+            <span class="prefix">Rp</span>
+            <input type="text" class="form-input" id="utang" value="0" oninput="formatMoney(this)">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Estimasi total biaya pendidikan anak <span class="hint">(sampai lulus, kosongkan jika belum perlu)</span></label>
+          <div class="input-money">
+            <span class="prefix">Rp</span>
+            <input type="text" class="form-input" id="pendidikan" value="0" oninput="formatMoney(this)">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Dana / aset likuid yang sudah ada <span class="hint">(tabungan, deposito, investasi)</span></label>
+          <div class="input-money">
+            <span class="prefix">Rp</span>
+            <input type="text" class="form-input" id="aset" value="0" oninput="formatMoney(this)">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">UP asuransi jiwa yang sudah dimiliki <span class="hint">(kosongkan jika belum punya)</span></label>
+          <div class="input-money">
+            <span class="prefix">Rp</span>
+            <input type="text" class="form-input" id="upDimiliki" value="0" oninput="formatMoney(this)">
+          </div>
+        </div>
+
+        <button class="btn btn-primary" onclick="hitung()">Hitung UP Ideal Saya →</button>
+      </div>
+
+      <!-- RESULT VIEW -->
+      <div class="result-section" id="resultView">
+        <div class="result-hero">
+          <div class="result-hero-label">Uang Pertanggungan ideal Anda:</div>
+          <div class="result-hero-value" id="upIdealVal">Rp 0</div>
+          <div class="result-hero-sub">Untuk melindungi keluarga secara menyeluruh</div>
+          <div><span class="status-badge" id="statusBadge">-</span></div>
+        </div>
+
+        <div class="progress-block">
+          <div class="progress-head">
+            <span class="label">Proteksi Anda saat ini</span>
+            <span class="pct" id="coveragePct">0%</span>
+          </div>
+          <div class="progress-track"><div class="progress-fill" id="coverageFill"></div></div>
+          <div class="progress-labels">
+            <span>Dimiliki: <strong id="dimilikiLabel">Rp 0</strong></span>
+            <span>Ideal: <strong id="idealLabel">Rp 0</strong></span>
+          </div>
+        </div>
+
+        <div class="result-gap">
+          <div class="result-gap-label">Gap proteksi (kekurangan):</div>
+          <div class="result-gap-value" id="gapVal">Rp 0</div>
+          <div class="result-gap-sub" id="gapSub">Tambahan UP yang sebaiknya Anda miliki</div>
+        </div>
+
+        <!-- CAPTURE -->
+        <div class="capture-block" id="captureBlock">
+          <div class="capture-title">Mau tahu rincian & cara menutup gap ini?</div>
+          <div class="capture-sub">Masukkan kontak untuk lihat breakdown lengkap + konsultasi gratis tentang opsi proteksi yang sesuai budget Anda.</div>
+
+          <div class="form-group" style="margin-bottom:12px;">
+            <label class="form-label">Nama Lengkap *</label>
+            <input type="text" class="form-input" id="capNama" placeholder="Nama Anda">
+          </div>
+          <div class="form-group" style="margin-bottom:12px;">
+            <label class="form-label">Email *</label>
+            <input type="email" class="form-input" id="capEmail" placeholder="nama@email.com">
+          </div>
+          <div class="form-group" style="margin-bottom:12px;">
+            <label class="form-label">No. WhatsApp *</label>
+            <div class="input-money">
+              <span class="prefix">+62</span>
+              <input type="tel" class="form-input" id="capWA" placeholder="81234567890" style="padding-left:48px;">
+            </div>
+          </div>
+
+          <div class="form-error" id="formError"></div>
+
+          <button class="btn btn-gold" onclick="submitCapture()">Lihat Rincian Lengkap →</button>
+          <div class="privacy-note">🔒 Data Anda hanya digunakan oleh agen terkait untuk follow-up. Tidak dibagikan ke pihak ketiga.</div>
+        </div>
+
+        <!-- DETAIL -->
+        <div class="detail-section" id="detailSection">
+          <div class="insight-card">
+            <div class="insight-card-title">📊 Rincian UP Ideal Anda</div>
+            <div class="breakdown-list" id="breakdownList"></div>
+          </div>
+
+          <div class="insight-card">
+            <div class="insight-card-title">💡 Apa Artinya Untuk Anda?</div>
+            <div class="insight-card-text" id="strategiText">UP asuransi jiwa idealnya cukup untuk tiga hal: mengganti penghasilan Anda beberapa tahun ke depan, melunasi utang yang tersisa, dan mengamankan pendidikan anak. Untuk UP besar, asuransi jiwa berjangka (term life) biasanya paling efisien karena preminya terjangkau.</div>
+          </div>
+
+          <div class="cta-block">
+            <div class="cta-title">Mau cek opsi proteksi yang sesuai?</div>
+            <div class="cta-sub">Agen <strong id="ctaAgentName">Anda</strong> bisa bantu Anda memilih asuransi jiwa dengan UP sesuai kebutuhan & budget. Gratis konsultasi, tanpa hardsell.</div>
+            <button class="btn btn-gold" onclick="contactAgent()">Konsultasi via WhatsApp</button>
+          </div>
+        </div>
+
+        <div class="disclaimer">
+          *Hasil ini estimasi berdasarkan metode gabungan (pengganti penghasilan + pelunasan utang + pendidikan anak, dikurangi aset yang sudah ada). Angka aktual dapat disesuaikan dengan kondisi pribadi Anda. Bukan merupakan saran finansial yang mengikat.
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function() {
+  'use strict';
+
+  const SUPABASE_URL = 'https://bfydtsfekvueqzvuschp.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_3Xec3HYKViIiuX99hHxHqg_Ih8ABX_T';
+
+  let supabase = null;
+  let agentData = null;
+  let calcResult = null;
+  let leadId = null;
+
+  function parseMoney(str) { return parseInt(String(str).replace(/[^0-9]/g, ''), 10) || 0; }
+  function fmtMoney(num) { return 'Rp ' + Math.round(num).toLocaleString('id-ID'); }
+  function fmtShort(num) {
+    if (num >= 1000000000) return 'Rp ' + (num / 1000000000).toFixed(num % 1000000000 === 0 ? 0 : 1) + ' M';
+    if (num >= 1000000) return 'Rp ' + Math.round(num / 1000000) + ' jt';
+    if (num >= 1000) return 'Rp ' + Math.round(num / 1000) + ' rb';
+    return 'Rp ' + num;
+  }
+
+  window.formatMoney = function(input) {
+    const val = parseMoney(input.value);
+    input.value = val ? val.toLocaleString('id-ID') : '';
+  };
+
+  window.updateTahun = function(val) {
+    document.getElementById('tahunValue').textContent = val + ' tahun';
+  };
+
+  function calculate() {
+    const penghasilan = parseMoney(document.getElementById('penghasilan').value);
+    const tahun = parseInt(document.getElementById('tahun').value, 10);
+    const utang = parseMoney(document.getElementById('utang').value);
+    const pendidikan = parseMoney(document.getElementById('pendidikan').value);
+    const aset = parseMoney(document.getElementById('aset').value);
+    const upDimiliki = parseMoney(document.getElementById('upDimiliki').value);
+
+    const incomeReplacement = penghasilan * 12 * tahun;
+    const totalKebutuhan = incomeReplacement + utang + pendidikan;
+    const upIdeal = Math.max(0, totalKebutuhan - aset);
+    const gap = Math.max(0, upIdeal - upDimiliki);
+    const coveragePct = upIdeal > 0 ? Math.min(100, Math.round((upDimiliki / upIdeal) * 100)) : 100;
+
+    let status;
+    if (upDimiliki >= upIdeal) status = 'aman';
+    else if (upDimiliki >= upIdeal / 2) status = 'kurang';
+    else status = 'rentan';
+
+    return {
+      penghasilan, tahun, utang, pendidikan, aset, upDimiliki,
+      incomeReplacement, totalKebutuhan, upIdeal, gap, coveragePct, status
+    };
+  }
+
+  window.hitung = function() {
+    calcResult = calculate();
+
+    document.getElementById('inputView').style.display = 'none';
+    document.getElementById('resultView').classList.add('show');
+
+    document.getElementById('upIdealVal').textContent = fmtMoney(calcResult.upIdeal);
+
+    const badge = document.getElementById('statusBadge');
+    const statusMap = {
+      aman: { cls: 'aman', txt: '✅ Terlindungi — UP Anda sudah memadai' },
+      kurang: { cls: 'kurang', txt: '⚠️ Kurang — proteksi belum ideal' },
+      rentan: { cls: 'rentan', txt: '❗ Sangat Kurang — keluarga belum terlindungi cukup' }
+    };
+    const st = statusMap[calcResult.status];
+    badge.className = 'status-badge ' + st.cls;
+    badge.textContent = st.txt;
+
+    document.getElementById('coveragePct').textContent = calcResult.coveragePct + '%';
+    document.getElementById('dimilikiLabel').textContent = fmtShort(calcResult.upDimiliki);
+    document.getElementById('idealLabel').textContent = fmtShort(calcResult.upIdeal);
+    setTimeout(() => {
+      document.getElementById('coverageFill').style.width = calcResult.coveragePct + '%';
+    }, 200);
+
+    document.getElementById('gapVal').textContent = calcResult.gap > 0 ? fmtMoney(calcResult.gap) : 'Rp 0 🎉';
+    if (calcResult.gap <= 0) {
+      document.getElementById('gapSub').textContent = 'Proteksi Anda sudah mencukupi kebutuhan ideal';
+    }
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  async function loadAgent(username) {
+    try {
+      const { data } = await supabase
+        .from('users')
+        .select('id, nama_lengkap, nama_panggilan, username, whatsapp')
+        .eq('username', username)
+        .eq('subscription_status', 'active')
+        .maybeSingle();
+      if (data) {
+        agentData = data;
+        const name = data.nama_panggilan || data.nama_lengkap.split(' ')[0];
+        document.getElementById('agentInfo').style.display = 'flex';
+        document.getElementById('agentName').textContent = name;
+        document.getElementById('agentAvatar').textContent = name[0].toUpperCase();
+        document.getElementById('ctaAgentName').textContent = name;
+        trackClick();
+      }
+    } catch (e) { console.warn('Agent load failed:', e); }
+  }
+
+  // Catat klik/buka halaman (fire-and-forget)
+  function trackClick() {
+    if (!agentData) return;
+    try {
+      const params = new URLSearchParams(window.location.search);
+      supabase.from('magnet_clicks').insert({
+        user_id: agentData.id,
+        magnet_slug: 'uang-pertanggungan',
+        referrer: document.referrer || null,
+        user_agent: navigator.userAgent || null,
+        utm_source: params.get('utm_source') || null
+      }).then(() => {}).catch(err => console.warn('Click track failed:', err));
+    } catch (e) { console.warn('Click track error:', e); }
+  }
+
+  window.submitCapture = async function() {
+    const nama = document.getElementById('capNama').value.trim();
+    const email = document.getElementById('capEmail').value.trim();
+    const wa = document.getElementById('capWA').value.trim();
+    const errEl = document.getElementById('formError');
+    errEl.classList.remove('show');
+
+    if (!nama || !email || !wa) { errEl.textContent = 'Mohon lengkapi semua field.'; errEl.classList.add('show'); return; }
+    if (!email.includes('@')) { errEl.textContent = 'Email tidak valid.'; errEl.classList.add('show'); return; }
+    if (wa.length < 9) { errEl.textContent = 'No. WhatsApp tidak valid.'; errEl.classList.add('show'); return; }
+
+    if (agentData) {
+      try {
+        const { data: leadData, error: leadError } = await supabase
+          .from('leads')
+          .insert({
+            owner_id: agentData.id,
+            nama: nama,
+            email: email,
+            whatsapp: wa,
+            stage: 'new',
+            source_magnet: 'up',
+            score: Math.round(calcResult.gap / 1000000),
+            result_json: calcResult
+          })
+          .select()
+          .single();
+
+        if (!leadError && leadData) {
+          leadId = leadData.id;
+          await supabase.from('lead_magnet_responses').insert({
+            lead_id: leadId,
+            magnet_slug: 'uang-pertanggungan',
+            raw_answers: {
+              penghasilan_bulanan: calcResult.penghasilan,
+              tahun_disokong: calcResult.tahun,
+              total_utang: calcResult.utang,
+              biaya_pendidikan: calcResult.pendidikan,
+              aset_likuid: calcResult.aset,
+              up_dimiliki: calcResult.upDimiliki
+            },
+            scores: {
+              up_ideal: calcResult.upIdeal,
+              gap: calcResult.gap,
+              income_replacement: calcResult.incomeReplacement,
+              total_kebutuhan: calcResult.totalKebutuhan,
+              coverage_pct: calcResult.coveragePct,
+              up_dimiliki: calcResult.upDimiliki
+            },
+            priority_areas: ['uang-pertanggungan']
+          });
+
+          // Send result email to prospek (fire-and-forget)
+          try {
+            fetch(SUPABASE_URL + '/functions/v1/send-magnet-result', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + SUPABASE_ANON_KEY
+              },
+              body: JSON.stringify({
+                prospek_nama: nama,
+                prospek_email: email,
+                magnet_slug: 'uang-pertanggungan',
+                scores: {
+                  up_ideal: calcResult.upIdeal,
+                  gap: calcResult.gap,
+                  income_replacement: calcResult.incomeReplacement,
+                  total_kebutuhan: calcResult.totalKebutuhan,
+                  coverage_pct: calcResult.coveragePct,
+                  up_dimiliki: calcResult.upDimiliki
+                },
+                priority_areas: ['uang-pertanggungan'],
+                agen_nama: agentData.nama_panggilan || agentData.nama_lengkap.split(' ')[0],
+                agen_whatsapp: agentData.whatsapp || ''
+              })
+            }).catch(err => console.warn('Email send failed:', err));
+          } catch (e) { console.warn('Email trigger failed:', e); }
+        } else if (leadError) {
+          console.error('Lead insert error:', leadError);
+        }
+      } catch (e) { console.warn('Save failed:', e); }
+    }
+
+    document.getElementById('captureBlock').style.display = 'none';
+    showDetail();
+  };
+
+  function showDetail() {
+    // Breakdown
+    const bd = document.getElementById('breakdownList');
+    let rows = `
+      <div class="breakdown-item">
+        <span class="bd-label"><span class="bd-dot" style="background:#2563eb;"></span> Pengganti penghasilan (${calcResult.tahun} thn)</span>
+        <span class="bd-val">${fmtShort(calcResult.incomeReplacement)}</span>
+      </div>`;
+    if (calcResult.utang > 0) {
+      rows += `
+      <div class="breakdown-item">
+        <span class="bd-label"><span class="bd-dot" style="background:#f59e0b;"></span> Pelunasan utang</span>
+        <span class="bd-val">${fmtShort(calcResult.utang)}</span>
+      </div>`;
+    }
+    if (calcResult.pendidikan > 0) {
+      rows += `
+      <div class="breakdown-item">
+        <span class="bd-label"><span class="bd-dot" style="background:#7c3aed;"></span> Pendidikan anak</span>
+        <span class="bd-val">${fmtShort(calcResult.pendidikan)}</span>
+      </div>`;
+    }
+    if (calcResult.aset > 0) {
+      rows += `
+      <div class="breakdown-item minus">
+        <span class="bd-label"><span class="bd-dot" style="background:#059669;"></span> Dikurangi aset yang sudah ada</span>
+        <span class="bd-val">− ${fmtShort(calcResult.aset)}</span>
+      </div>`;
+    }
+    rows += `
+      <div class="breakdown-item total">
+        <span class="bd-label">UP Ideal</span>
+        <span class="bd-val">${fmtShort(calcResult.upIdeal)}</span>
+      </div>`;
+    bd.innerHTML = rows;
+
+    // Strategy text by status
+    let strategi;
+    if (calcResult.status === 'aman') {
+      strategi = 'Bagus! UP asuransi jiwa Anda sudah memadai untuk melindungi keluarga. Tetap review berkala — kebutuhan bisa berubah seiring bertambahnya utang, anak, atau penghasilan. Pastikan juga proteksi lain (kesehatan, penyakit kritis) sudah lengkap.';
+    } else if (calcResult.status === 'kurang') {
+      strategi = 'UP Anda sudah ada, tapi belum ideal. Masih ada gap ' + fmtMoney(calcResult.gap) + ' yang sebaiknya ditutup agar keluarga benar-benar aman jika terjadi hal tak terduga. Asuransi jiwa berjangka (term life) bisa menambah UP besar dengan premi terjangkau.';
+    } else {
+      strategi = 'Proteksi jiwa Anda masih sangat kurang dibanding kebutuhan ideal. Jika Anda pencari nafkah utama, ini penting agar keluarga tidak kehilangan sumber penghasilan, terbebani utang, atau terganggu pendidikan anak. Term life adalah cara paling efisien menutup gap besar ini.';
+    }
+    document.getElementById('strategiText').textContent = strategi;
+
+    document.getElementById('detailSection').classList.add('show');
+    window.scrollTo({ top: document.getElementById('detailSection').offsetTop - 20, behavior: 'smooth' });
+  }
+
+  window.contactAgent = function() {
+    if (!agentData || !agentData.whatsapp) {
+      alert('Agen akan menghubungi Anda dalam 24 jam. Terima kasih!');
+      return;
+    }
+    const nama = document.getElementById('capNama').value.trim() || 'Saya';
+    const text = encodeURIComponent('Halo ' + (agentData.nama_panggilan || agentData.nama_lengkap.split(' ')[0]) + ', saya ' + nama + '. Saya baru pakai kalkulator uang pertanggungan di mini-site Anda — UP ideal saya ' + fmtMoney(calcResult.upIdeal) + ', masih ada gap ' + fmtMoney(calcResult.gap) + '. Mau diskusi opsi proteksinya.');
+    const phone = '62' + agentData.whatsapp.replace(/^0/, '').replace(/^62/, '');
+    window.open('https://wa.me/' + phone + '?text=' + text, '_blank');
+  };
+
+  async function init() {
+    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const urlParams = new URLSearchParams(window.location.search);
+    const ref = urlParams.get('ref');
+    if (ref) await loadAgent(ref);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+
+</body>
+</html>

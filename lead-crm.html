@@ -1901,6 +1901,124 @@ const KRITIS_PRODUCTS = {
   'default': { name: 'Asuransi Penyakit Kritis (CI)', meta: 'Santunan tunai saat diagnosis \u2014 sesuaikan dengan produk Anda' }
 };
 
+const UP_PRODUCTS = {
+  'Allianz': { name: 'Allianz Flexi Life / Term Life', meta: 'UP besar dengan premi terjangkau' },
+  'Prudential': { name: 'PRULife Cover / PRUTerm', meta: 'Asuransi jiwa proteksi keluarga' },
+  'AIA': { name: 'AIA Term / Asuransi Jiwa Berjangka', meta: 'Proteksi jiwa UP tinggi' },
+  'Manulife': { name: 'Manulife Term Life / Proteksi Jiwa', meta: 'Asuransi jiwa berjangka' },
+  'default': { name: 'Asuransi Jiwa Berjangka (Term Life)', meta: 'UP besar, premi terjangkau \u2014 sesuaikan dengan produk Anda' }
+};
+
+function renderUpRecommendation(lead, magnetResponse) {
+  const scores = magnetResponse.scores || {};
+  const raw = magnetResponse.raw_answers || {};
+  const session = JSON.parse(sessionStorage.getItem('akp_session') || '{}');
+  const principal = getPrincipalKey(session.perusahaan);
+
+  const upIdeal = scores.up_ideal || 0;
+  const gap = scores.gap || 0;
+  const incomeReplacement = scores.income_replacement || 0;
+  const coveragePct = scores.coverage_pct || 0;
+  const upDimiliki = scores.up_dimiliki || 0;
+
+  let status, statusIcon;
+  if (gap <= 0) { status = 'Terlindungi'; statusIcon = '\u2705'; }
+  else if (coveragePct >= 50) { status = 'Kurang'; statusIcon = '\u26a0\ufe0f'; }
+  else { status = 'Sangat Kurang'; statusIcon = '\u2757'; }
+
+  // Breakdown
+  const breakdownEl = document.getElementById('pilarBreakdownCM');
+  breakdownEl.innerHTML = `
+    <div class="pilar-row-cm">
+      <div class="pilar-icon-cm">${statusIcon}</div>
+      <div class="pilar-info-cm"><div class="pilar-name-cm">Status proteksi</div></div>
+      <div class="pilar-score-cm" style="font-size:12px;">${status} (${coveragePct}%)</div>
+    </div>
+    <div class="pilar-row-cm">
+      <div class="pilar-icon-cm">\ud83d\udcb0</div>
+      <div class="pilar-info-cm"><div class="pilar-name-cm">Penghasilan / bln</div></div>
+      <div class="pilar-score-cm" style="font-size:12px;">${fmtRupiah(raw.penghasilan_bulanan || 0)}</div>
+    </div>
+    <div class="pilar-row-cm">
+      <div class="pilar-icon-cm">\ud83d\udcc5</div>
+      <div class="pilar-info-cm"><div class="pilar-name-cm">Sokong keluarga</div></div>
+      <div class="pilar-score-cm" style="font-size:12px;">${raw.tahun_disokong || 0} tahun</div>
+    </div>
+    <div class="pilar-row-cm">
+      <div class="pilar-icon-cm">\ud83c\udfaf</div>
+      <div class="pilar-info-cm"><div class="pilar-name-cm">UP ideal</div></div>
+      <div class="pilar-score-cm" style="font-size:12px;">${fmtRupiah(upIdeal)}</div>
+    </div>
+    <div class="pilar-row-cm">
+      <div class="pilar-icon-cm">\ud83d\udee1\ufe0f</div>
+      <div class="pilar-info-cm"><div class="pilar-name-cm">UP dimiliki</div></div>
+      <div class="pilar-score-cm" style="font-size:12px;">${fmtRupiah(upDimiliki)}</div>
+    </div>
+    <div class="pilar-row-cm" style="background:rgba(201,169,97,0.1);border-color:var(--gold);">
+      <div class="pilar-icon-cm">\u26a0\ufe0f</div>
+      <div class="pilar-info-cm"><div class="pilar-name-cm"><strong>Gap proteksi</strong></div></div>
+      <div class="pilar-score-cm" style="color:var(--gold-dark);">${gap > 0 ? fmtRupiah(gap) : 'Terlindungi'}</div>
+    </div>
+  `;
+  document.getElementById('recommendationSection').style.display = '';
+
+  // Products
+  const product = UP_PRODUCTS[principal] || UP_PRODUCTS['default'];
+  const productsEl = document.getElementById('productsListCM');
+  if (gap > 0) {
+    productsEl.innerHTML = `
+      <div class="product-card">
+        <div class="product-card-name"><span class="product-card-num">1.</span> ${product.name}</div>
+        <div class="product-card-addr">\u2192 Tutup gap UP: <strong>${fmtRupiah(gap)}</strong> (status ${status})</div>
+        <div class="product-card-meta">${product.meta}</div>
+      </div>
+      <div class="product-card" style="border-left-color:var(--navy);">
+        <div class="product-card-name"><span class="product-card-num" style="color:var(--navy);">\ud83d\udca1</span> Angle pendekatan</div>
+        <div class="product-card-addr">Fokus: lindungi keluarga dari risiko kehilangan pencari nafkah</div>
+        <div class="product-card-meta">Term life paling efisien untuk gap besar. Bisa juga tawarkan unit link kalau prospek mau proteksi + investasi.</div>
+      </div>`;
+  } else {
+    productsEl.innerHTML = `
+      <div class="product-card">
+        <div class="product-card-name"><span class="product-card-num" style="color:var(--navy);">\u2705</span> UP sudah memadai</div>
+        <div class="product-card-addr">Prospek sudah punya UP yang cukup</div>
+        <div class="product-card-meta">ANGLE: Review berkala (kebutuhan berubah seiring utang/anak/penghasilan). Bisa tawarkan proteksi lain: kesehatan, penyakit kritis.</div>
+      </div>`;
+  }
+  document.getElementById('productsSection').style.display = '';
+
+  // Script
+  const agenName = session.nama_panggilan || (session.nama_lengkap ? session.nama_lengkap.split(' ')[0] : 'Saya');
+  const leadFirstName = (lead.name || 'Bapak/Ibu').split(' ')[0];
+
+  let scriptBody;
+  if (gap > 0) {
+    scriptBody = `Saya lihat dari kalkulator, uang pertanggungan ideal untuk melindungi keluarga Anda sekitar ${fmtRupiah(upIdeal)}, dan saat ini masih ada selisih ${fmtRupiah(gap)}. Artinya kalau terjadi hal tak terduga pada pencari nafkah, ada kebutuhan yang belum tercukupi.
+
+Kabar baiknya, menutup gap ini bisa dengan premi yang terjangkau lewat asuransi jiwa berjangka. Boleh saya jelaskan opsinya?`;
+  } else {
+    scriptBody = `Saya lihat uang pertanggungan Anda sudah memadai untuk melindungi keluarga \ud83d\udc4d Mungkin kita bisa review berkala untuk memastikan nilainya tetap sesuai seiring perubahan kebutuhan. Boleh saya bantu cek?`;
+  }
+
+  const script = `Halo ${leadFirstName} \ud83d\ude4f Saya ${agenName}.
+
+${scriptBody}
+
+Saya gak akan hardsell \u2014 tujuan saya cuma bantu Anda memastikan keluarga terlindungi dengan baik \ud83d\ude42`;
+
+  document.getElementById('scriptTextCM').textContent = script;
+  window.currentScript = script;
+  document.getElementById('scriptSection').style.display = '';
+
+  const copyBtn = document.getElementById('copyScriptBtn');
+  if (copyBtn) {
+    copyBtn.classList.remove('copied');
+    document.getElementById('copyBtnText').textContent = 'Copy Script';
+  }
+
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+
 function renderKritisRecommendation(lead, magnetResponse) {
   const scores = magnetResponse.scores || {};
   const raw = magnetResponse.raw_answers || {};
@@ -2374,6 +2492,10 @@ async function renderRecommendations(lead) {
   }
   if (magnetResponse.magnet_slug === 'risiko-kritis') {
     renderKritisRecommendation(lead, magnetResponse);
+    return;
+  }
+  if (magnetResponse.magnet_slug === 'uang-pertanggungan') {
+    renderUpRecommendation(lead, magnetResponse);
     return;
   }
   // Default: skor-kesehatan-keuangan (4-pilar)
