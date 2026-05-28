@@ -1098,7 +1098,7 @@ function initApp() {
   supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   // Default view = Approval (default filter = pending)
   window.currentView = 'approval';
-  window.currentFilter = 'pending';
+  currentFilter = 'pending';
   window.currentSubFilter = 'active'; // for Data Agen view
   loadAgents();
 }
@@ -1204,10 +1204,10 @@ function setView(view) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   if (view === 'approval') {
     document.getElementById('viewApproval').classList.add('active');
-    window.currentFilter = 'pending';
+    currentFilter = 'pending';
   } else if (view === 'data-agen') {
     document.getElementById('viewDataAgen').classList.add('active');
-    window.currentFilter = window.currentSubFilter || 'active';
+    currentFilter = window.currentSubFilter || 'active';
   }
   renderAgents();
   if (typeof lucide !== 'undefined') lucide.createIcons();
@@ -1215,7 +1215,7 @@ function setView(view) {
 
 function setSubFilter(subFilter, event) {
   window.currentSubFilter = subFilter;
-  window.currentFilter = subFilter;
+  currentFilter = subFilter;
   // Update tab active states in Data Agen view
   const tabs = document.querySelectorAll('#viewDataAgen .tab');
   tabs.forEach(t => t.classList.remove('active'));
