@@ -1885,6 +1885,116 @@ function fmtRupiah(num) {
   return 'Rp ' + Math.round(num);
 }
 
+const PENSIUN_PRODUCTS = {
+  'Allianz': { name: 'Smartlink Flexi Account Plus', meta: 'Unit Link untuk Dana Pensiun' },
+  'Prudential': { name: 'PRUSaver / PRUlink Retirement', meta: 'Unit Link goal-based pensiun' },
+  'AIA': { name: 'AIA Pasti / Retirement Solution', meta: 'Unit Link pensiun' },
+  'Manulife': { name: 'MiGolden Retirement', meta: 'Solusi dana hari tua' },
+  'default': { name: 'Unit Link / Anuitas Pensiun', meta: 'Sesuaikan dengan produk yang Anda jual' }
+};
+
+function renderPensiunRecommendation(lead, magnetResponse) {
+  const scores = magnetResponse.scores || {};
+  const raw = magnetResponse.raw_answers || {};
+  const session = JSON.parse(sessionStorage.getItem('akp_session') || '{}');
+  const principal = getPrincipalKey(session.perusahaan);
+
+  const totalDana = scores.total_dana || 0;
+  const setoran = scores.setoran_bulanan || 0;
+  const tahunMenuju = scores.tahun_menuju_pensiun || 0;
+  const lamaPensiun = scores.lama_masa_pensiun || 0;
+  const pengeluaranPensiun = scores.pengeluaran_saat_pensiun || 0;
+
+  const sumberLabels = {
+    'belum': 'Belum ada / hanya BPJS TK',
+    'sebagian': 'BPJS TK + sedikit tabungan',
+    'lumayan': 'Sudah ada tabungan/investasi pensiun'
+  };
+  const sumberText = sumberLabels[raw.sumber_dana] || '-';
+
+  // Breakdown
+  const breakdownEl = document.getElementById('pilarBreakdownCM');
+  breakdownEl.innerHTML = `
+    <div class="pilar-row-cm">
+      <div class="pilar-icon-cm">\ud83d\udc64</div>
+      <div class="pilar-info-cm"><div class="pilar-name-cm">Usia sekarang</div></div>
+      <div class="pilar-score-cm">${raw.usia_sekarang != null ? raw.usia_sekarang + ' th' : '-'}</div>
+    </div>
+    <div class="pilar-row-cm">
+      <div class="pilar-icon-cm">\ud83c\udfd6\ufe0f</div>
+      <div class="pilar-info-cm"><div class="pilar-name-cm">Target usia pensiun</div></div>
+      <div class="pilar-score-cm">${raw.target_usia != null ? raw.target_usia + ' th' : '-'}</div>
+    </div>
+    <div class="pilar-row-cm">
+      <div class="pilar-icon-cm">\u23f3</div>
+      <div class="pilar-info-cm"><div class="pilar-name-cm">Waktu menuju pensiun</div></div>
+      <div class="pilar-score-cm">${tahunMenuju} th</div>
+    </div>
+    <div class="pilar-row-cm">
+      <div class="pilar-icon-cm">\ud83c\udfe6</div>
+      <div class="pilar-info-cm"><div class="pilar-name-cm">Sumber dana saat ini</div></div>
+      <div class="pilar-score-cm" style="font-size:11px;">${sumberText}</div>
+    </div>
+    <div class="pilar-row-cm">
+      <div class="pilar-icon-cm">\ud83d\udcb0</div>
+      <div class="pilar-info-cm"><div class="pilar-name-cm">Total dana dibutuhkan</div></div>
+      <div class="pilar-score-cm" style="font-size:12px;">${fmtRupiah(totalDana)}</div>
+    </div>
+    <div class="pilar-row-cm" style="background:rgba(201,169,97,0.1);border-color:var(--gold);">
+      <div class="pilar-icon-cm">\ud83d\udcc5</div>
+      <div class="pilar-info-cm"><div class="pilar-name-cm"><strong>Setoran bulanan dibutuhkan</strong></div></div>
+      <div class="pilar-score-cm" style="color:var(--gold-dark);">${fmtRupiah(setoran)}</div>
+    </div>
+  `;
+  document.getElementById('recommendationSection').style.display = '';
+
+  // Products
+  const product = PENSIUN_PRODUCTS[principal] || PENSIUN_PRODUCTS['default'];
+  let fundType, fundReason;
+  if (tahunMenuju > 15) { fundType = 'Equity (agresif)'; fundReason = 'jangka sangat panjang, pertumbuhan maksimal'; }
+  else if (tahunMenuju >= 8) { fundType = 'Balanced'; fundReason = 'keseimbangan growth & keamanan'; }
+  else { fundType = 'Fixed Income (konservatif)'; fundReason = 'lindungi dana mendekati pensiun'; }
+
+  const productsEl = document.getElementById('productsListCM');
+  productsEl.innerHTML = `
+    <div class="product-card">
+      <div class="product-card-name"><span class="product-card-num">1.</span> ${product.name}</div>
+      <div class="product-card-addr">\u2192 Tujuan: <strong>Dana Pensiun</strong> (${lamaPensiun} th masa pensiun)</div>
+      <div class="product-card-meta">${product.meta}</div>
+      <div class="product-card-meta" style="margin-top:6px;">Fund: ${fundType} \u2014 ${fundReason}</div>
+    </div>
+    <div class="product-card" style="border-left-color:var(--navy);">
+      <div class="product-card-name"><span class="product-card-num" style="color:var(--navy);">\ud83d\udca1</span> Target setoran: ${fmtRupiah(setoran)}/bulan</div>
+      <div class="product-card-addr">Untuk mencapai ${fmtRupiah(totalDana)} dalam ${tahunMenuju} tahun</div>
+    </div>
+  `;
+  document.getElementById('productsSection').style.display = '';
+
+  // Script
+  const agenName = session.nama_panggilan || (session.nama_lengkap ? session.nama_lengkap.split(' ')[0] : 'Saya');
+  const leadFirstName = (lead.name || 'Bapak/Ibu').split(' ')[0];
+
+  const script = `Halo ${leadFirstName} \ud83d\ude4f Saya ${agenName}.
+
+Saya lihat Anda baru pakai kalkulator dana pensiun di mini-site saya. Hasilnya menarik \u2014 untuk pensiun ${tahunMenuju} tahun lagi, dibutuhkan sekitar ${fmtRupiah(totalDana)} agar masa tua tetap nyaman selama ${lamaPensiun} tahun.
+
+Kabar baiknya, dengan setoran sekitar ${fmtRupiah(setoran)}/bulan lewat instrumen yang tepat, target itu bisa tercapai. Boleh saya jelaskan opsinya via WA atau ngobrol singkat 15 menit?
+
+Saya gak akan hardsell \u2014 tujuan saya cuma kasih opsi yang Anda bisa pilih sendiri \ud83d\ude42`;
+
+  document.getElementById('scriptTextCM').textContent = script;
+  window.currentScript = script;
+  document.getElementById('scriptSection').style.display = '';
+
+  const copyBtn = document.getElementById('copyScriptBtn');
+  if (copyBtn) {
+    copyBtn.classList.remove('copied');
+    document.getElementById('copyBtnText').textContent = 'Copy Script';
+  }
+
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+
 function renderPendidikanRecommendation(lead, magnetResponse) {
   const scores = magnetResponse.scores || {};
   const raw = magnetResponse.raw_answers || {};
@@ -2035,6 +2145,10 @@ async function renderRecommendations(lead) {
   // ===== BRANCH BY MAGNET TYPE =====
   if (magnetResponse.magnet_slug === 'dana-pendidikan') {
     renderPendidikanRecommendation(lead, magnetResponse);
+    return;
+  }
+  if (magnetResponse.magnet_slug === 'dana-pensiun') {
+    renderPensiunRecommendation(lead, magnetResponse);
     return;
   }
   // Default: skor-kesehatan-keuangan (4-pilar)

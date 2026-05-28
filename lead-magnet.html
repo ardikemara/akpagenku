@@ -789,20 +789,50 @@
         </div>
       </div>
 
-      <!-- ===== COMING SOON: Kalkulator Dana Pensiun ===== -->
-      <div class="magnet-item coming-soon">
-        <div class="magnet-thumb cs">
-          <img class="magnet-thumb-img" src="/img/magnet-pensiun.jpg" alt="Kalkulator Dana Pensiun" onerror="this.style.display='none'" style="filter:grayscale(0.4) opacity(0.85);">
-          <span class="magnet-badge-soon"><i data-lucide="clock" style="width:10px;height:10px;display:inline;margin-right:2px;"></i> COMING SOON</span>
+      <!-- ===== MAGNET #3: KALKULATOR DANA PENSIUN (AKTIF) ===== -->
+      <div class="magnet-item">
+        <div class="magnet-thumb pensiun">
+          <img class="magnet-thumb-img" src="/img/magnet-pensiun.png" alt="Kalkulator Dana Pensiun" onerror="this.style.display='none'">
+          <span class="magnet-badge-primary"><i data-lucide="check-circle-2" style="width:10px;height:10px;display:inline;margin-right:2px;"></i> AKTIF</span>
           <span class="magnet-badge-type">KALKULATOR</span>
           <div class="magnet-thumb-icon"><i data-lucide="piggy-bank"></i></div>
         </div>
         <div class="magnet-body">
           <div class="magnet-name">Kalkulator Dana Pensiun</div>
-          <div class="magnet-desc">"Apakah tabungan pensiun saya cukup?" Gap analysis kebutuhan pensiun + rekomendasi setoran bulanan untuk capai target.</div>
+          <div class="magnet-desc">"Apakah tabungan pensiun saya cukup?" Prospek input usia &amp; pengeluaran, dapat estimasi total dana pensiun + setoran bulanan. Lead masuk ke CRM dengan rekomendasi produk &amp; script WhatsApp.</div>
 
-          <div class="cs-overlay">
-            <span class="cs-badge-text"><i data-lucide="hammer"></i> Sedang dikembangkan</span>
+          <div class="magnet-stats-row">
+            <div class="magnet-stat-item">
+              <div class="magnet-stat-icon"><i data-lucide="mouse-pointer-click"></i></div>
+              <div class="magnet-stat-text">
+                <div class="magnet-stat-value" id="pensiunKlik">0</div>
+                <div class="magnet-stat-label">KLIK</div>
+              </div>
+            </div>
+            <div class="magnet-stat-item">
+              <div class="magnet-stat-icon"><i data-lucide="users"></i></div>
+              <div class="magnet-stat-text">
+                <div class="magnet-stat-value" id="pensiunLead">0</div>
+                <div class="magnet-stat-label">LEAD</div>
+              </div>
+            </div>
+            <div class="magnet-stat-item">
+              <div class="magnet-stat-icon"><i data-lucide="percent"></i></div>
+              <div class="magnet-stat-text">
+                <div class="magnet-stat-value">—</div>
+                <div class="magnet-stat-label">KONVERSI</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="magnet-link-row">
+            <span class="magnet-link-text">akpagenku.com/dana-pensiun?ref=cristine</span>
+            <button class="magnet-copy-btn" onclick="copyLink(this, 'akpagenku.com/dana-pensiun?ref=cristine')"><i data-lucide="copy"></i> Salin</button>
+          </div>
+
+          <div class="magnet-actions">
+            <a href="/dana-pensiun.html?ref=cristine" target="_blank" class="magnet-btn ghost"><i data-lucide="eye"></i> Preview</a>
+            <button class="magnet-btn primary" onclick="shareWA('Kalkulator Dana Pensiun', 'akpagenku.com/dana-pensiun?ref=cristine')"><i data-lucide="message-circle"></i> Share ke WhatsApp</button>
           </div>
         </div>
       </div>
@@ -999,12 +1029,21 @@
         .eq('source_magnet', 'pendidikan');
       const totalPend = (pendLeads || []).length;
 
+      // Count pensiun leads
+      const { data: pensiunLeads } = await supabaseClient
+        .from('leads')
+        .select('id')
+        .eq('owner_id', session.id)
+        .eq('source_magnet', 'pensiun');
+      const totalPensiun = (pensiunLeads || []).length;
+
       // Total lead masuk (real) - all magnets
-      setVal('statLead', totalLead + totalPend, true);
+      setVal('statLead', totalLead + totalPend + totalPensiun, true);
 
       // Per-magnet card stat
       setVal('skorLead', totalLead, false);
       setVal('pendidikanLead', totalPend, false);
+      setVal('pensiunLead', totalPensiun, false);
 
       // Magnet paling laku (kalau ada lead, Skor yang aktif)
       if (totalLead > 0) {
