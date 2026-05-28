@@ -871,6 +871,31 @@
             },
             priority_areas: ['dana-pendidikan']
           });
+
+          // Send result email to prospek (fire-and-forget)
+          try {
+            fetch(SUPABASE_URL + '/functions/v1/send-magnet-result', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + SUPABASE_ANON_KEY
+              },
+              body: JSON.stringify({
+                prospek_nama: nama,
+                prospek_email: email,
+                magnet_slug: 'dana-pendidikan',
+                scores: {
+                  biaya_masa_depan: calcResult.biayaMasaDepan,
+                  setoran_bulanan: calcResult.setoranNow,
+                  tahun_tersisa: calcResult.tahunTersisa,
+                  multiplier_inflasi: calcResult.multiplier
+                },
+                priority_areas: ['dana-pendidikan'],
+                agen_nama: agentData.nama_panggilan || agentData.nama_lengkap.split(' ')[0],
+                agen_whatsapp: agentData.whatsapp || ''
+              })
+            }).catch(err => console.warn('Email send failed:', err));
+          } catch (e) { console.warn('Email trigger failed:', e); }
         } else if (leadError) {
           console.error('Lead insert error:', leadError);
         }
