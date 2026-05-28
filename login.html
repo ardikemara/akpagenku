@@ -553,6 +553,13 @@
           return;
         }
 
+        if (user.subscription_status === 'deleted') {
+          showError('Akun ini sudah dihapus. Jika ini kesalahan, hubungi admin untuk pemulihan (maksimal 30 hari).');
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalText;
+          return;
+        }
+
         if (user.subscription_status !== 'active') {
           showError('Status akun tidak valid (' + user.subscription_status + '). Hubungi admin.');
           submitBtn.disabled = false;

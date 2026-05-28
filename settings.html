@@ -1235,7 +1235,8 @@
             </div>
           </div>
 
-          <div class="panel-card">
+          <!-- DISEMBUNYIKAN 28 Mei 2026: 2FA masih dummy, belum ada backend. Aktifkan lagi kalau sudah dibuat beneran. -->
+          <div class="panel-card" style="display:none;">
             <div class="panel-card-title">Two-Factor Authentication (2FA)</div>
             <div class="panel-card-sub">Tambah lapisan keamanan ekstra untuk akun Anda.</div>
 
@@ -1256,7 +1257,8 @@
             </div>
           </div>
 
-          <div class="panel-card">
+          <!-- DISEMBUNYIKAN 28 Mei 2026: Sesi Aktif masih dummy (device hardcode, belum ada session tracking server). Aktifkan lagi kalau sudah dibuat beneran. -->
+          <div class="panel-card" style="display:none;">
             <div class="panel-card-title">Sesi Aktif</div>
             <div class="panel-card-sub">Device yang saat ini login ke akun Anda.</div>
 
@@ -1294,7 +1296,7 @@
           <div class="panel-card danger-zone">
             <div class="panel-card-title">Hapus Akun</div>
             <div class="panel-card-sub">Tindakan ini permanen. Mini-site, data lead, dan riwayat akan terhapus dan tidak bisa dipulihkan.</div>
-            <button class="btn btn-danger"><i data-lucide="trash-2"></i> Hapus Akun Saya</button>
+            <button class="btn btn-danger" id="btnHapusAkun" onclick="hapusAkun()"><i data-lucide="trash-2"></i> Hapus Akun Saya</button>
           </div>
         </div>
 
@@ -1487,10 +1489,51 @@
     }
   }
 
+  // ===== HAPUS AKUN (soft delete) =====
+  async function hapusAkun() {
+    if (!currentSession) return;
+
+    // Lapis 1: konfirmasi penjelasan
+    const ok1 = confirm(
+      'Hapus akun Anda?\n\n' +
+      '• Mini-site Anda akan langsung OFFLINE\n' +
+      '• Anda tidak bisa login lagi\n' +
+      '• Data lead & riwayat disimpan 30 hari sebelum dihapus permanen\n\n' +
+      'Masih bisa dipulihkan dalam 30 hari dengan menghubungi admin.\n\nLanjutkan?'
+    );
+    if (!ok1) return;
+
+    // Lapis 2: ketik kata kunci
+    const typed = prompt('Untuk konfirmasi, ketik: HAPUS');
+    if (typed === null) return;
+    if (typed.trim().toUpperCase() !== 'HAPUS') {
+      window.showToast('Konfirmasi tidak cocok. Akun tidak dihapus.');
+      return;
+    }
+
+    const btn = document.getElementById('btnHapusAkun');
+    if (btn) { btn.disabled = true; btn.textContent = 'Memproses...'; }
+    try {
+      const { error } = await getSupabase()
+        .from('users')
+        .update({ subscription_status: 'deleted', updated_at: new Date().toISOString() })
+        .eq('id', currentSession.id);
+      if (error) throw error;
+
+      window.showToast('Akun dihapus. Anda akan keluar...');
+      sessionStorage.removeItem('akp_session');
+      setTimeout(() => { window.location.href = '/login.html'; }, 1500);
+    } catch (e) {
+      if (btn) { btn.disabled = false; btn.innerHTML = '<i data-lucide="trash-2"></i> Hapus Akun Saya'; if (typeof lucide !== 'undefined') lucide.createIcons(); }
+      window.showToast('Gagal menghapus akun: ' + (e.message || 'coba lagi'));
+    }
+  }
+
   // Expose handler yang dipanggil dari onclick inline
   window.init = init;
   window.saveProfil = saveProfil;
   window.changePassword = changePassword;
+  window.hapusAkun = hapusAkun;
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);

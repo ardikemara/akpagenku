@@ -1486,9 +1486,13 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // Ambil user
     const { data: user, error: uErr } = await supabase
-      .from('users').select('id, nama_lengkap, nama_panggilan, username, whatsapp, perusahaan, email')
+      .from('users').select('id, nama_lengkap, nama_panggilan, username, whatsapp, perusahaan, email, subscription_status')
       .eq('username', username).maybeSingle();
     if (uErr || !user) { showError('Agen "' + username + '" tidak ditemukan.'); return; }
+    // Mini-site hanya tampil untuk akun aktif (akun dihapus/nonaktif -> offline)
+    if (user.subscription_status && user.subscription_status !== 'active') {
+      showError('Mini-site ini sedang tidak aktif.'); return;
+    }
 
     // Ambil mini-site
     const { data: site } = await supabase
