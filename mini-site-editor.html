@@ -1046,7 +1046,7 @@
 
           <div class="field-group">
             <label class="field-label">Perusahaan Asuransi</label>
-            <input type="text" class="field-input" value="Prudential Indonesia">
+            <input type="text" class="field-input" id="input-perusahaan" value="Prudential Indonesia">
             <div class="field-help">Perusahaan asuransi tempat Anda berlisensi.</div>
           </div>
 
@@ -1058,7 +1058,7 @@
 
           <div class="field-group">
             <label class="field-label">Tahun Pengalaman</label>
-            <input type="number" class="field-input" value="8">
+            <input type="number" class="field-input" id="input-tahun" value="8">
           </div>
         </div>
 
@@ -1069,7 +1069,7 @@
             <div class="field-help" style="margin-top: 0; margin-bottom: 12px;">Centang produk yang ingin ditampilkan di mini-site. Maksimal 6 produk.</div>
 
             <div class="check-list">
-              <div class="check-item checked" onclick="toggleCheck(this, 'jiwa')">
+              <div class="check-item checked" data-produk="jiwa" onclick="toggleCheck(this, 'jiwa')">
                 <div class="check-box"><i data-lucide="check"></i></div>
                 <div class="check-body">
                   <div class="check-title">Asuransi Jiwa</div>
@@ -1078,7 +1078,7 @@
                 </div>
               </div>
 
-              <div class="check-item checked" onclick="toggleCheck(this, 'kritis')">
+              <div class="check-item checked" data-produk="kritis" onclick="toggleCheck(this, 'kritis')">
                 <div class="check-box"><i data-lucide="check"></i></div>
                 <div class="check-body">
                   <div class="check-title">Penyakit Kritis</div>
@@ -1087,7 +1087,7 @@
                 </div>
               </div>
 
-              <div class="check-item checked" onclick="toggleCheck(this, 'kesehatan')">
+              <div class="check-item checked" data-produk="kesehatan" onclick="toggleCheck(this, 'kesehatan')">
                 <div class="check-box"><i data-lucide="check"></i></div>
                 <div class="check-body">
                   <div class="check-title">Asuransi Kesehatan</div>
@@ -1096,7 +1096,7 @@
                 </div>
               </div>
 
-              <div class="check-item checked" onclick="toggleCheck(this, 'pendidikan')">
+              <div class="check-item checked" data-produk="pendidikan" onclick="toggleCheck(this, 'pendidikan')">
                 <div class="check-box"><i data-lucide="check"></i></div>
                 <div class="check-body">
                   <div class="check-title">Dana Pendidikan</div>
@@ -1105,7 +1105,7 @@
                 </div>
               </div>
 
-              <div class="check-item" onclick="toggleCheck(this, 'pensiun')">
+              <div class="check-item" data-produk="pensiun" onclick="toggleCheck(this, 'pensiun')">
                 <div class="check-box"><i data-lucide="check"></i></div>
                 <div class="check-body">
                   <div class="check-title">Dana Pensiun</div>
@@ -1114,7 +1114,7 @@
                 </div>
               </div>
 
-              <div class="check-item" onclick="toggleCheck(this, 'syariah')">
+              <div class="check-item" data-produk="syariah" onclick="toggleCheck(this, 'syariah')">
                 <div class="check-box"><i data-lucide="check"></i></div>
                 <div class="check-body">
                   <div class="check-title">Asuransi Syariah</div>
@@ -1602,6 +1602,63 @@
       }
     }
 
+    // Restore perusahaan + tahun
+    setVal('input-perusahaan', data.perusahaan_display || (typeof session !== 'undefined' ? session.perusahaan : ''));
+    if (data.tahun_pengalaman) setVal('input-tahun', data.tahun_pengalaman);
+
+    // Restore THEME ke previewFrame + swatch aktif
+    const frame = document.getElementById('previewFrame');
+    if (frame && data.theme) {
+      const tmap = { navy_gold:'theme-default', green:'theme-green', rose:'theme-rose', purple:'theme-purple' };
+      frame.classList.remove('theme-default','theme-green','theme-rose','theme-purple');
+      frame.classList.add(tmap[data.theme] || 'theme-default');
+      // swatch aktif
+      const themeArg = { navy_gold:'default', green:'green', rose:'rose', purple:'purple' }[data.theme] || 'default';
+      document.querySelectorAll('.color-swatch').forEach(s => {
+        s.classList.toggle('active', (s.getAttribute('onclick')||'').includes("setTheme('" + themeArg + "'"));
+      });
+    }
+    // Restore FONT
+    if (frame && data.font_style) {
+      frame.classList.remove('font-serif','font-sans');
+      frame.classList.add('font-' + (data.font_style === 'sans' ? 'sans' : 'serif'));
+      document.querySelectorAll('.font-option').forEach(o => {
+        o.classList.toggle('active', (o.getAttribute('onclick')||'').includes("setFont('" + (data.font_style||'serif') + "'"));
+      });
+    }
+
+    // Restore PRODUK (checkbox + preview)
+    if (Array.isArray(data.produk_aktif)) {
+      document.querySelectorAll('#tab-produk .check-item').forEach(el => {
+        const key = el.getAttribute('data-produk');
+        el.classList.toggle('checked', data.produk_aktif.includes(key));
+      });
+      if (typeof updateProductsPreview === 'function') updateProductsPreview();
+    }
+
+    // Restore MAGNET (utama + supporting)
+    if (data.magnet_utama || Array.isArray(data.magnet_supporting)) {
+      const supporting = Array.isArray(data.magnet_supporting) ? data.magnet_supporting : [];
+      document.querySelectorAll('.magnet-pick').forEach(card => {
+        const id = card.dataset.id;
+        const btn = card.querySelector('.utama-btn');
+        // reset
+        card.classList.remove('is-utama','is-supporting');
+        if (btn) { btn.classList.remove('active'); btn.innerHTML = '<i data-lucide=\"star\"></i>'; }
+        // supporting?
+        if (supporting.includes(id)) card.classList.add('is-supporting');
+        // utama?
+        if (id === data.magnet_utama) {
+          card.classList.add('is-utama');
+          card.classList.add('is-supporting');
+          if (btn) { btn.classList.add('active'); btn.innerHTML = '<i data-lucide=\"star\"></i> Utama'; }
+        }
+      });
+      if (typeof updateMagnetCounts === 'function') updateMagnetCounts();
+      if (typeof updateMagnetPreview === 'function') updateMagnetPreview();
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
     // Trigger updatePreview function (if it exists, for live preview when typing)
     if (typeof updatePreview === 'function') updatePreview();
   }
@@ -1624,6 +1681,23 @@
     btnSave.disabled = true;
     btnPublish.disabled = true;
 
+    // Baca theme & font dari class previewFrame
+    const frame = document.getElementById('previewFrame');
+    let theme = 'navy_gold', font = 'serif';
+    if (frame) {
+      const tmap = { 'theme-default':'navy_gold', 'theme-green':'green', 'theme-rose':'rose', 'theme-purple':'purple' };
+      Object.keys(tmap).forEach(cls => { if (frame.classList.contains(cls)) theme = tmap[cls]; });
+      if (frame.classList.contains('font-sans')) font = 'sans';
+    }
+    // Baca produk aktif (checkbox)
+    const produkAktif = Array.from(document.querySelectorAll('#tab-produk .check-item.checked'))
+      .map(el => el.getAttribute('data-produk')).filter(Boolean);
+    // Baca magnet utama + supporting
+    const utamaEl = document.querySelector('.magnet-pick.is-utama');
+    const magnetUtama = utamaEl?.dataset.id || 'skor';
+    const magnetSupporting = Array.from(document.querySelectorAll('.magnet-pick.is-supporting:not(.is-utama)'))
+      .map(el => el.dataset.id).filter(Boolean);
+
     const payload = {
       user_id: session.id,
       headline: document.getElementById('input-headline')?.value || '',
@@ -1631,6 +1705,13 @@
       cta_text: document.getElementById('input-cta')?.value || '',
       bio: document.getElementById('input-bio')?.value || '',
       credentials: document.getElementById('input-creds')?.value || '',
+      perusahaan_display: document.getElementById('input-perusahaan')?.value || '',
+      tahun_pengalaman: parseInt(document.getElementById('input-tahun')?.value) || null,
+      theme: theme,
+      font_style: font,
+      produk_aktif: produkAktif,
+      magnet_utama: magnetUtama,
+      magnet_supporting: magnetSupporting,
       updated_at: new Date().toISOString()
     };
     if (publish) payload.is_published = true;
@@ -1857,11 +1938,33 @@ function setFont(font, el) {
   el.classList.add('active');
 }
 
-// Init Lucide icons
+// Expose semua handler ke window (jaga-jaga untuk atribut inline)
+window.updatePreview = updatePreview;
+window.toggleCheck = toggleCheck;
+window.toggleMagnet = toggleMagnet;
+window.setUtama = setUtama;
+window.setTheme = setTheme;
+window.setFont = setFont;
+window.toggleArticleCheck = toggleArticleCheck;
+window.switchTab = (typeof switchTab !== 'undefined') ? switchTab : window.switchTab;
+
+// Pasang event listener tambahan sebagai pengaman (selain oninput inline)
+function bindLiveInputs() {
+  ['input-headline','input-subheadline','input-cta','input-bio','input-creds','input-perusahaan','input-tahun'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el && !el.dataset.bound) {
+      el.addEventListener('input', updatePreview);
+      el.dataset.bound = '1';
+    }
+  });
+}
+
+// Init Lucide icons + bind inputs
 window.addEventListener('DOMContentLoaded', () => {
   if (typeof lucide !== 'undefined') {
     lucide.createIcons();
   }
+  bindLiveInputs();
 });
 </script>
 
