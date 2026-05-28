@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kuis Coverage Kesehatan | AKPAgenku</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0f2647;
+    --navy-dark: #081a33;
+    --gold: #c9a961;
+    --gold-light: #d9bd7f;
+    --gold-dark: #a88a45;
+    --cream: #faf8f3;
+    --gray-50: #fafafa;
+    --gray-100: #f5f5f5;
+    --gray-200: #e5e5e5;
+    --gray-300: #d4d4d4;
+    --gray-500: #737373;
+    --gray-700: #404040;
+    --gray-900: #171717;
+    --white: #ffffff;
+    --green: #059669;
+    --amber: #f59e0b;
+    --red: #dc2626;
+    --teal: #0891b2;
+    --teal-dark: #0e7490;
+    --serif: 'Playfair Display', serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--cream);
+    color: var(--gray-900);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ===== HEADER ===== */
+  .quiz-header { background: var(--navy); color: var(--white); padding: 16px 20px; }
+  .quiz-header-inner { max-width: 680px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .agent-info { display: flex; align-items: center; gap: 10px; font-size: 13px; }
+  .agent-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--gold); color: var(--navy); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink: 0; }
+  .agent-name { font-weight: 600; }
+  .agent-tag { color: var(--gold); font-size: 11px; letter-spacing: 1px; text-transform: uppercase; }
+  .logo { font-family: var(--serif); font-size: 18px; font-weight: 700; color: var(--white); text-decoration: none; }
+  .logo .accent { color: var(--gold); }
+
+  /* ===== MAIN ===== */
+  .container { max-width: 680px; margin: 0 auto; padding: 32px 20px 80px; }
+  .card { background: var(--white); border-radius: 16px; border: 1px solid var(--gray-200); box-shadow: 0 4px 14px rgba(15, 38, 71, 0.04); overflow: hidden; }
+
+  /* ===== HERO ===== */
+  .hero { position: relative; width: 100%; aspect-ratio: 16 / 9; background: linear-gradient(135deg, var(--teal) 0%, var(--teal-dark) 100%); overflow: hidden; }
+  .hero-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(15,38,71,0.1) 0%, rgba(15,38,71,0.4) 100%); z-index: 1; }
+  .hero-icon { position: absolute; bottom: 16px; left: 28px; z-index: 2; width: 56px; height: 56px; border-radius: 14px; background: rgba(255,255,255,0.18); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; font-size: 28px; border: 1px solid rgba(255,255,255,0.25); }
+  .body { padding: 28px 28px 32px; }
+  .title { font-family: var(--serif); font-size: 27px; font-weight: 700; color: var(--navy); line-height: 1.2; margin-bottom: 10px; }
+  .subtitle { font-size: 15px; color: var(--gray-700); margin-bottom: 26px; }
+
+  /* ===== QUIZ ===== */
+  .question { margin-bottom: 26px; }
+  .question-num { font-size: 12px; font-weight: 700; color: var(--gold-dark); letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 8px; }
+  .question-text { font-size: 16px; font-weight: 600; color: var(--navy); margin-bottom: 14px; line-height: 1.4; }
+  .options { display: flex; flex-direction: column; gap: 8px; }
+  .option { display: flex; align-items: center; gap: 12px; padding: 13px 16px; border: 1.5px solid var(--gray-200); border-radius: 10px; cursor: pointer; transition: all 0.15s; font-size: 14px; }
+  .option:hover { border-color: var(--gold); background: rgba(201,169,97,0.04); }
+  .option.selected { border-color: var(--teal); background: rgba(8,145,178,0.05); }
+  .option-radio { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--gray-300); flex-shrink: 0; position: relative; transition: all 0.15s; }
+  .option.selected .option-radio { border-color: var(--teal); }
+  .option.selected .option-radio::after { content: ''; position: absolute; inset: 3px; background: var(--teal); border-radius: 50%; }
+
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 15px 24px; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; font-family: inherit; width: 100%; }
+  .btn-primary { background: var(--navy); color: var(--white); }
+  .btn-primary:hover { background: var(--navy-dark); transform: translateY(-1px); }
+  .btn-primary:disabled { background: var(--gray-300); cursor: not-allowed; transform: none; }
+  .btn-gold { background: var(--gold); color: var(--navy); }
+  .btn-gold:hover { background: var(--gold-light); transform: translateY(-1px); box-shadow: 0 6px 16px rgba(201,169,97,0.25); }
+
+  .form-input { width: 100%; padding: 13px 14px; border: 1.5px solid var(--gray-200); border-radius: 9px; font-size: 14px; font-family: inherit; background: var(--white); color: var(--gray-900); }
+  .form-input:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201, 169, 97, 0.15); }
+  .form-label { display: block; font-size: 14px; font-weight: 600; color: var(--navy); margin-bottom: 8px; }
+  .input-money { position: relative; }
+  .input-money .prefix { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--gray-500); font-size: 14px; font-weight: 600; pointer-events: none; }
+
+  /* ===== RESULT ===== */
+  .result-section { display: none; }
+  .result-section.show { display: block; animation: slideIn 0.5s; }
+  @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* Gauge */
+  .gauge-wrap { text-align: center; padding: 16px 0 8px; }
+  .gauge-label-top { font-size: 13px; color: var(--gray-700); margin-bottom: 12px; }
+  .gauge { position: relative; width: 200px; height: 110px; margin: 0 auto 8px; }
+  .gauge svg { width: 100%; height: 100%; }
+  .gauge-value { font-family: var(--serif); font-size: 38px; font-weight: 700; line-height: 1; }
+  .gauge-value .denom { font-size: 18px; color: var(--gray-300); }
+  .gauge-level { font-size: 15px; font-weight: 700; margin-top: 2px; }
+
+  /* Gap areas */
+  .gap-block { background: var(--gray-50); border-radius: 12px; padding: 18px; margin: 20px 0; }
+  .gap-title { font-size: 13px; font-weight: 600; color: var(--navy); margin-bottom: 12px; }
+  .gap-item { display: flex; align-items: flex-start; gap: 10px; padding: 9px 0; font-size: 13px; color: var(--gray-700); border-bottom: 1px solid var(--gray-100); line-height: 1.5; }
+  .gap-item:last-child { border-bottom: none; }
+  .gap-icon { color: var(--amber); flex-shrink: 0; font-size: 14px; margin-top: 1px; }
+  .gap-empty { text-align: center; color: var(--green); font-size: 13px; padding: 8px 0; }
+
+  /* Capture */
+  .capture-block { background: var(--cream); border: 1.5px solid var(--gold); border-radius: 12px; padding: 22px; margin-top: 22px; }
+  .capture-title { font-family: var(--serif); font-size: 18px; font-weight: 600; color: var(--navy); margin-bottom: 6px; }
+  .capture-sub { font-size: 13px; color: var(--gray-700); margin-bottom: 16px; }
+  .form-group { margin-bottom: 12px; }
+  .privacy-note { margin-top: 12px; font-size: 11px; color: var(--gray-500); text-align: center; line-height: 1.5; }
+  .form-error { background: #fee2e2; border: 1px solid #fca5a5; color: #991b1b; padding: 10px 14px; border-radius: 8px; font-size: 13px; margin: 12px 0; display: none; }
+  .form-error.show { display: block; }
+
+  /* Detail */
+  .detail-section { display: none; margin-top: 22px; padding-top: 22px; border-top: 1px solid var(--gray-200); }
+  .detail-section.show { display: block; animation: slideIn 0.5s; }
+  .insight-card { background: var(--white); border: 1px solid var(--gray-200); border-left: 4px solid var(--gold); border-radius: 8px; padding: 16px 18px; margin-bottom: 12px; }
+  .insight-card-title { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+  .insight-card-text { font-size: 13px; color: var(--gray-700); line-height: 1.6; }
+
+  .cta-block { background: var(--navy); color: var(--white); border-radius: 12px; padding: 22px; margin-top: 20px; text-align: center; }
+  .cta-title { font-family: var(--serif); font-size: 19px; font-weight: 600; margin-bottom: 8px; }
+  .cta-sub { font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 16px; }
+  .cta-block .btn-gold { width: 100%; }
+
+  .disclaimer { font-size: 11px; color: var(--gray-500); text-align: center; margin-top: 20px; line-height: 1.5; }
+
+  @media (max-width: 600px) {
+    .title { font-size: 23px; }
+    .agent-info { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="quiz-header">
+  <div class="quiz-header-inner">
+    <a href="#" class="logo">AKP<span class="accent">Agenku</span></a>
+    <div class="agent-info" id="agentInfo" style="display:none;">
+      <div class="agent-avatar" id="agentAvatar">?</div>
+      <div>
+        <div class="agent-tag">Kuis dari</div>
+        <div class="agent-name" id="agentName">-</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- MAIN -->
+<div class="container">
+  <div class="card">
+    <div class="hero">
+      <img class="hero-img" src="/img/magnet-kesehatan.png" alt="Coverage Kesehatan" onerror="this.style.display='none'">
+      <div class="hero-icon">🏥</div>
+    </div>
+    <div class="body">
+
+      <!-- INPUT VIEW -->
+      <div id="inputView">
+        <h1 class="title">Kuis Coverage Kesehatan</h1>
+        <p class="subtitle">Jawab 6 pertanyaan singkat untuk tahu seberapa lengkap proteksi kesehatan Anda — dan apakah ada celah yang bikin Anda berisiko nombok besar saat sakit.</p>
+
+        <div id="questionsContainer"></div>
+
+        <button class="btn btn-primary" id="submitQuizBtn" onclick="hitung()" disabled>Lihat Skor Coverage Saya →</button>
+      </div>
+
+      <!-- RESULT VIEW -->
+      <div class="result-section" id="resultView">
+        <div class="gauge-wrap">
+          <div class="gauge-label-top">Skor Coverage Kesehatan Anda:</div>
+          <div class="gauge">
+            <svg viewBox="0 0 200 110">
+              <path d="M 15 100 A 85 85 0 0 1 185 100" fill="none" stroke="#e5e5e5" stroke-width="16" stroke-linecap="round"/>
+              <path id="gaugeArc" d="M 15 100 A 85 85 0 0 1 185 100" fill="none" stroke="#0891b2" stroke-width="16" stroke-linecap="round" stroke-dasharray="267" stroke-dashoffset="267" style="transition: stroke-dashoffset 1.2s cubic-bezier(0.4,0,0.2,1);"/>
+            </svg>
+          </div>
+          <div class="gauge-value" id="gaugeValue">0<span class="denom">/100</span></div>
+          <div class="gauge-level" id="gaugeLevel">-</div>
+        </div>
+
+        <div class="gap-block">
+          <div class="gap-title">🔍 Area Proteksi yang Perlu Diperkuat</div>
+          <div id="gapList"></div>
+        </div>
+
+        <!-- CAPTURE -->
+        <div class="capture-block" id="captureBlock">
+          <div class="capture-title">Mau tahu cara menutup celah proteksi ini?</div>
+          <div class="capture-sub">Masukkan kontak untuk lihat penjelasan lengkap + konsultasi gratis dengan agen tentang proteksi kesehatan yang sesuai.</div>
+
+          <div class="form-group">
+            <label class="form-label">Nama Lengkap *</label>
+            <input type="text" class="form-input" id="capNama" placeholder="Nama Anda">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email *</label>
+            <input type="email" class="form-input" id="capEmail" placeholder="nama@email.com">
+          </div>
+          <div class="form-group">
+            <label class="form-label">No. WhatsApp *</label>
+            <div class="input-money">
+              <span class="prefix">+62</span>
+              <input type="tel" class="form-input" id="capWA" placeholder="81234567890" style="padding-left:48px;">
+            </div>
+          </div>
+
+          <div class="form-error" id="formError"></div>
+
+          <button class="btn btn-gold" onclick="submitCapture()">Lihat Penjelasan Lengkap →</button>
+          <div class="privacy-note">🔒 Data Anda hanya digunakan oleh agen terkait untuk follow-up. Tidak dibagikan ke pihak ketiga.</div>
+        </div>
+
+        <!-- DETAIL -->
+        <div class="detail-section" id="detailSection">
+          <div class="insight-card">
+            <div class="insight-card-title">💡 BPJS Itu Fondasi, Tapi Sering Tidak Cukup</div>
+            <div class="insight-card-text">BPJS Kesehatan adalah fondasi yang baik, tapi punya keterbatasan: antrean panjang, sistem rujukan berjenjang, plafon obat tertentu, dan kelas kamar terbatas. Asuransi kesehatan swasta menutup celah ini — memberi akses ke RS swasta, sistem cashless, kamar lebih nyaman, dan limit lebih besar.</div>
+          </div>
+
+          <div class="insight-card">
+            <div class="insight-card-title">⏰ Kenapa Sebaiknya Sekarang?</div>
+            <div class="insight-card-text" id="strategiText">Asuransi kesehatan paling mudah disetujui dan preminya paling terjangkau saat Anda masih sehat. Jika menunggu sampai ada riwayat penyakit, beberapa kondisi bisa dikecualikan atau preminya naik.</div>
+          </div>
+
+          <div class="cta-block">
+            <div class="cta-title">Mau cek opsi proteksi kesehatan?</div>
+            <div class="cta-sub">Agen <strong id="ctaAgentName">Anda</strong> bisa bantu Anda memahami pilihan asuransi kesehatan yang melengkapi BPJS, sesuai kebutuhan & budget. Gratis konsultasi, tanpa hardsell.</div>
+            <button class="btn btn-gold" onclick="contactAgent()">Konsultasi via WhatsApp</button>
+          </div>
+        </div>
+
+        <div class="disclaimer">
+          *Kuis ini bersifat edukatif untuk membantu Anda memahami kelengkapan proteksi kesehatan, bukan penilaian medis atau finansial yang mengikat. Hasil dihitung dari jawaban Anda atas pertanyaan umum.
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function() {
+  'use strict';
+
+  const SUPABASE_URL = 'https://bfydtsfekvueqzvuschp.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_3Xec3HYKViIiuX99hHxHqg_Ih8ABX_T';
+
+  let supabase = null;
+  let agentData = null;
+  let calcResult = null;
+  let leadId = null;
+
+  // 6 pertanyaan (poin = coverage, max total = 100)
+  const questions = [
+    { id: 'q1_bpjs', text: 'Apakah Anda punya BPJS Kesehatan aktif?', opts: [
+      { label: 'Ya, aktif & rutin bayar', poin: 15, gap: null },
+      { label: 'Ada, tapi sedang nunggak', poin: 5, gap: 'BPJS nunggak — aktifkan kembali agar tetap terlindungi' },
+      { label: 'Tidak punya', poin: 0, gap: 'Belum punya BPJS — ini fondasi proteksi kesehatan paling dasar' }
+    ]},
+    { id: 'q2_swasta', text: 'Apakah punya asuransi kesehatan swasta (selain BPJS)?', opts: [
+      { label: 'Ya, dengan manfaat lengkap', poin: 30, gap: null },
+      { label: 'Ada, tapi manfaatnya terbatas', poin: 15, gap: 'Asuransi swasta terbatas — mungkin belum cukup untuk RS swasta as-charged' },
+      { label: 'Belum punya', poin: 0, gap: 'Belum punya asuransi swasta — BPJS sering tidak cukup untuk RS swasta' }
+    ]},
+    { id: 'q3_sistem', text: 'Kalau dirawat, biasanya pakai sistem pembayaran apa?', opts: [
+      { label: 'Cashless (cukup tunjukkan kartu)', poin: 20, gap: null },
+      { label: 'Reimburse (bayar dulu, klaim kemudian)', poin: 10, gap: 'Masih reimburse — perlu siapkan dana talangan saat darurat' },
+      { label: 'Bayar sendiri sepenuhnya', poin: 0, gap: 'Belum ada sistem cashless — harus siapkan dana tunai besar saat darurat' }
+    ]},
+    { id: 'q4_kelas', text: 'Kelas/kamar RS yang ditanggung asuransi Anda?', opts: [
+      { label: 'VIP / kelas utama', poin: 20, gap: null },
+      { label: 'Kelas 1 - 2', poin: 12, gap: null },
+      { label: 'Kelas 3 / BPJS saja', poin: 5, gap: 'Kelas kamar terbatas — mungkin perlu naik kelas atau top-up' },
+      { label: 'Tidak tahu', poin: 0, gap: 'Belum tahu kelas yang ditanggung — penting untuk dicek' }
+    ]},
+    { id: 'q5_limit', text: 'Apakah Anda tahu limit/plafon tahunan asuransi kesehatan Anda?', opts: [
+      { label: 'Ya, dan nilainya cukup besar', poin: 10, gap: null },
+      { label: 'Ada, tapi nilainya kecil', poin: 5, gap: 'Limit tahunan kecil — berisiko habis saat sakit besar/rawat lama' },
+      { label: 'Tidak tahu / tidak ada', poin: 0, gap: 'Limit tahunan tidak diketahui — risiko limit habis saat butuh' }
+    ]},
+    { id: 'q6_nombok', text: 'Pernahkah Anda harus nombok besar saat berobat/rawat inap?', opts: [
+      { label: 'Tidak pernah', poin: 5, gap: null },
+      { label: 'Pernah, jumlahnya kecil', poin: 2, gap: null },
+      { label: 'Pernah, jumlahnya besar', poin: 0, gap: 'Pernah nombok besar — indikasi kuat proteksi belum memadai' }
+    ]}
+  ];
+
+  const answers = {};
+
+  function renderQuestions() {
+    const c = document.getElementById('questionsContainer');
+    c.innerHTML = questions.map((q, qi) => `
+      <div class="question">
+        <div class="question-num">Pertanyaan ${qi + 1} dari ${questions.length}</div>
+        <div class="question-text">${q.text}</div>
+        <div class="options">
+          ${q.opts.map((o, oi) => `
+            <div class="option" data-q="${q.id}" data-poin="${o.poin}" data-oi="${oi}" onclick="selectOption(this)">
+              <div class="option-radio"></div>
+              <span>${o.label}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  window.selectOption = function(el) {
+    const qid = el.getAttribute('data-q');
+    const poin = parseInt(el.getAttribute('data-poin'), 10);
+    const oi = parseInt(el.getAttribute('data-oi'), 10);
+    document.querySelectorAll('.option[data-q="' + qid + '"]').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    answers[qid] = { poin, oi };
+    if (Object.keys(answers).length === questions.length) {
+      document.getElementById('submitQuizBtn').disabled = false;
+    }
+  };
+
+  function calculate() {
+    let score = 0;
+    const gaps = [];
+    questions.forEach(q => {
+      if (answers[q.id]) {
+        const oi = answers[q.id].oi;
+        score += q.opts[oi].poin;
+        const g = q.opts[oi].gap;
+        if (g) gaps.push(g);
+      }
+    });
+    score = Math.min(100, score);
+
+    let level, levelColor;
+    if (score <= 40) { level = 'Rentan'; levelColor = '#dc2626'; }
+    else if (score <= 70) { level = 'Cukup, Ada Gap'; levelColor = '#f59e0b'; }
+    else { level = 'Terlindungi Baik'; levelColor = '#059669'; }
+
+    return {
+      score, level, levelColor, gaps,
+      rawAnswers: {
+        q1_bpjs: answers['q1_bpjs'] ? answers['q1_bpjs'].oi : null,
+        q2_swasta: answers['q2_swasta'] ? answers['q2_swasta'].oi : null,
+        q3_sistem: answers['q3_sistem'] ? answers['q3_sistem'].oi : null,
+        q4_kelas: answers['q4_kelas'] ? answers['q4_kelas'].oi : null,
+        q5_limit: answers['q5_limit'] ? answers['q5_limit'].oi : null,
+        q6_nombok: answers['q6_nombok'] ? answers['q6_nombok'].oi : null
+      }
+    };
+  }
+
+  window.hitung = function() {
+    calcResult = calculate();
+
+    document.getElementById('inputView').style.display = 'none';
+    document.getElementById('resultView').classList.add('show');
+
+    // Gauge
+    document.getElementById('gaugeValue').innerHTML = calcResult.score + '<span class="denom">/100</span>';
+    document.getElementById('gaugeValue').style.color = calcResult.levelColor;
+    const lvl = document.getElementById('gaugeLevel');
+    lvl.textContent = calcResult.level;
+    lvl.style.color = calcResult.levelColor;
+    document.getElementById('gaugeArc').setAttribute('stroke', calcResult.levelColor);
+    setTimeout(() => {
+      const offset = 267 - (267 * calcResult.score / 100);
+      document.getElementById('gaugeArc').style.strokeDashoffset = offset;
+    }, 200);
+
+    // Gap list (top 3)
+    const gapList = document.getElementById('gapList');
+    const topGaps = calcResult.gaps.slice(0, 3);
+    if (topGaps.length > 0) {
+      gapList.innerHTML = topGaps.map(g => `
+        <div class="gap-item">
+          <span class="gap-icon">⚠️</span>
+          <span>${g}</span>
+        </div>
+      `).join('');
+    } else {
+      gapList.innerHTML = '<div class="gap-empty">✅ Proteksi kesehatan Anda sudah cukup lengkap! Tetap review berkala.</div>';
+    }
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  async function loadAgent(username) {
+    try {
+      const { data } = await supabase
+        .from('users')
+        .select('id, nama_lengkap, nama_panggilan, username, whatsapp')
+        .eq('username', username)
+        .eq('subscription_status', 'active')
+        .maybeSingle();
+      if (data) {
+        agentData = data;
+        const name = data.nama_panggilan || data.nama_lengkap.split(' ')[0];
+        document.getElementById('agentInfo').style.display = 'flex';
+        document.getElementById('agentName').textContent = name;
+        document.getElementById('agentAvatar').textContent = name[0].toUpperCase();
+        document.getElementById('ctaAgentName').textContent = name;
+        trackClick();
+      }
+    } catch (e) { console.warn('Agent load failed:', e); }
+  }
+
+  // Catat klik/buka halaman (fire-and-forget)
+  function trackClick() {
+    if (!agentData) return;
+    try {
+      const params = new URLSearchParams(window.location.search);
+      supabase.from('magnet_clicks').insert({
+        user_id: agentData.id,
+        magnet_slug: 'coverage-kesehatan',
+        referrer: document.referrer || null,
+        user_agent: navigator.userAgent || null,
+        utm_source: params.get('utm_source') || null
+      }).then(() => {}).catch(err => console.warn('Click track failed:', err));
+    } catch (e) { console.warn('Click track error:', e); }
+  }
+
+  window.submitCapture = async function() {
+    const nama = document.getElementById('capNama').value.trim();
+    const email = document.getElementById('capEmail').value.trim();
+    const wa = document.getElementById('capWA').value.trim();
+    const errEl = document.getElementById('formError');
+    errEl.classList.remove('show');
+
+    if (!nama || !email || !wa) { errEl.textContent = 'Mohon lengkapi semua field.'; errEl.classList.add('show'); return; }
+    if (!email.includes('@')) { errEl.textContent = 'Email tidak valid.'; errEl.classList.add('show'); return; }
+    if (wa.length < 9) { errEl.textContent = 'No. WhatsApp tidak valid.'; errEl.classList.add('show'); return; }
+
+    if (agentData) {
+      try {
+        const { data: leadData, error: leadError } = await supabase
+          .from('leads')
+          .insert({
+            owner_id: agentData.id,
+            nama: nama,
+            email: email,
+            whatsapp: wa,
+            stage: 'new',
+            source_magnet: 'kesehatan',
+            score: calcResult.score,
+            result_json: calcResult
+          })
+          .select()
+          .single();
+
+        if (!leadError && leadData) {
+          leadId = leadData.id;
+          await supabase.from('lead_magnet_responses').insert({
+            lead_id: leadId,
+            magnet_slug: 'coverage-kesehatan',
+            raw_answers: calcResult.rawAnswers,
+            scores: {
+              coverage_score: calcResult.score,
+              gap_count: calcResult.gaps.length
+            },
+            priority_areas: ['coverage-kesehatan']
+          });
+
+          // Send result email to prospek (fire-and-forget)
+          try {
+            fetch(SUPABASE_URL + '/functions/v1/send-magnet-result', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + SUPABASE_ANON_KEY
+              },
+              body: JSON.stringify({
+                prospek_nama: nama,
+                prospek_email: email,
+                magnet_slug: 'coverage-kesehatan',
+                scores: {
+                  coverage_score: calcResult.score,
+                  gap_count: calcResult.gaps.length
+                },
+                priority_areas: calcResult.gaps.slice(0, 3),
+                agen_nama: agentData.nama_panggilan || agentData.nama_lengkap.split(' ')[0],
+                agen_whatsapp: agentData.whatsapp || ''
+              })
+            }).catch(err => console.warn('Email send failed:', err));
+          } catch (e) { console.warn('Email trigger failed:', e); }
+        } else if (leadError) {
+          console.error('Lead insert error:', leadError);
+        }
+      } catch (e) { console.warn('Save failed:', e); }
+    }
+
+    document.getElementById('captureBlock').style.display = 'none';
+    showDetail();
+  };
+
+  function showDetail() {
+    let strategi;
+    if (calcResult.score > 70) {
+      strategi = 'Proteksi kesehatan Anda sudah cukup lengkap! Tetap review berkala untuk memastikan limit & manfaat masih sesuai dengan biaya kesehatan terkini. Pastikan juga proteksi lain (jiwa, penyakit kritis) sudah lengkap.';
+    } else if (calcResult.score > 40) {
+      strategi = 'Proteksi kesehatan Anda sudah cukup, tapi ada beberapa celah yang sebaiknya ditutup agar Anda tidak nombok besar saat sakit. Asuransi kesehatan paling mudah disetujui & preminya paling terjangkau saat Anda masih sehat.';
+    } else {
+      strategi = 'Proteksi kesehatan Anda masih punya banyak celah. Mengingat biaya RS swasta terus naik, melengkapi proteksi sekarang penting agar tabungan tidak terkuras saat sakit. Asuransi kesehatan paling mudah disetujui saat Anda masih sehat & muda.';
+    }
+    document.getElementById('strategiText').textContent = strategi;
+
+    document.getElementById('detailSection').classList.add('show');
+    window.scrollTo({ top: document.getElementById('detailSection').offsetTop - 20, behavior: 'smooth' });
+  }
+
+  window.contactAgent = function() {
+    if (!agentData || !agentData.whatsapp) {
+      alert('Agen akan menghubungi Anda dalam 24 jam. Terima kasih!');
+      return;
+    }
+    const nama = document.getElementById('capNama').value.trim() || 'Saya';
+    const text = encodeURIComponent('Halo ' + (agentData.nama_panggilan || agentData.nama_lengkap.split(' ')[0]) + ', saya ' + nama + '. Saya baru ikut kuis coverage kesehatan di mini-site Anda — skor saya ' + calcResult.score + '/100 (' + calcResult.level + '). Mau diskusi soal proteksi kesehatan yang sesuai.');
+    const phone = '62' + agentData.whatsapp.replace(/^0/, '').replace(/^62/, '');
+    window.open('https://wa.me/' + phone + '?text=' + text, '_blank');
+  };
+
+  async function init() {
+    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    renderQuestions();
+    const urlParams = new URLSearchParams(window.location.search);
+    const ref = urlParams.get('ref');
+    if (ref) await loadAgent(ref);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+
+</body>
+</html>
