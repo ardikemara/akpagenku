@@ -469,6 +469,31 @@
     position: relative;
   }
   .tool-icon-wrap [data-lucide] { width: 26px; height: 26px; }
+  .tool-card.has-thumb { padding: 0 0 24px; }
+  .tool-thumb {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    display: block;
+    background: var(--cream);
+    position: relative;
+  }
+  .tool-card.has-thumb .tool-title,
+  .tool-card.has-thumb .tool-desc,
+  .tool-card.has-thumb .tool-meta { padding-left: 24px; padding-right: 24px; }
+  .tool-card.has-thumb .tool-title { margin-top: 18px; }
+  .tool-thumb-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: var(--green);
+    color: var(--white);
+    font-size: 9px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 8px;
+    letter-spacing: 0.5px;
+  }
   .tool-badge-free {
     position: absolute;
     top: 0;
@@ -1247,57 +1272,8 @@
       Sudah cek skor kesehatan keuangan? Pakai kalkulator di bawah untuk hitung target finansial spesifik. Semua gratis, hasil langsung.
     </div>
 
-    <div class="tools-grid">
-      <a href="#" class="tool-card">
-        <div class="tool-icon-wrap">
-          <i data-lucide="graduation-cap"></i>
-          <span class="tool-badge-free">GRATIS</span>
-        </div>
-        <div class="tool-title">Kalkulator Dana Pendidikan</div>
-        <div class="tool-desc">
-          Hitung berapa yang perlu Anda sisihkan tiap bulan untuk dana kuliah anak.
-          Sudah memperhitungkan inflasi pendidikan.
-        </div>
-        <div class="tool-meta">
-          <span class="tool-meta-item"><i data-lucide="clock"></i> 1 menit</span>
-          <span class="tool-meta-item"><i data-lucide="check-circle-2"></i> Tanpa daftar</span>
-          <span class="tool-cta">Coba <i data-lucide="arrow-right"></i></span>
-        </div>
-      </a>
-
-      <a href="#" class="tool-card">
-        <div class="tool-icon-wrap">
-          <i data-lucide="piggy-bank"></i>
-          <span class="tool-badge-free">GRATIS</span>
-        </div>
-        <div class="tool-title">Kalkulator Dana Pensiun</div>
-        <div class="tool-desc">
-          Cek apakah tabungan pensiun Anda saat ini cukup untuk hidup tenang di usia 60+.
-          Dapat estimasi target yang realistis.
-        </div>
-        <div class="tool-meta">
-          <span class="tool-meta-item"><i data-lucide="clock"></i> 2 menit</span>
-          <span class="tool-meta-item"><i data-lucide="check-circle-2"></i> Tanpa daftar</span>
-          <span class="tool-cta">Coba <i data-lucide="arrow-right"></i></span>
-        </div>
-      </a>
-
-      <a href="#" class="tool-card">
-        <div class="tool-icon-wrap">
-          <i data-lucide="shield"></i>
-          <span class="tool-badge-free">GRATIS</span>
-        </div>
-        <div class="tool-title">Kalkulator Dana Darurat</div>
-        <div class="tool-desc">
-          Tentukan jumlah ideal dana darurat untuk keluarga Anda berdasarkan pengeluaran
-          bulanan dan jumlah tanggungan.
-        </div>
-        <div class="tool-meta">
-          <span class="tool-meta-item"><i data-lucide="clock"></i> 1 menit</span>
-          <span class="tool-meta-item"><i data-lucide="check-circle-2"></i> Tanpa daftar</span>
-          <span class="tool-cta">Coba <i data-lucide="arrow-right"></i></span>
-        </div>
-      </a>
+    <div class="tools-grid" id="m-tools-grid">
+      <!-- diisi dinamis oleh loader dari magnet_supporting -->
     </div>
   </div>
 </section>
@@ -1518,6 +1494,16 @@ window.addEventListener('DOMContentLoaded', () => {
     const { data: site } = await supabase
       .from('mini_sites').select('*').eq('user_id', user.id).maybeSingle();
 
+    // Ambil semua magnet (sumber tunggal: judul/desc/url/icon/gambar)
+    let MAGNETS = {};
+    try {
+      const { data: mg } = await supabase.from('magnets').select('*');
+      (mg || []).forEach(m => { MAGNETS[m.id] = m; });
+    } catch (e) {}
+    function getMagnet(id) {
+      return MAGNETS[id] || MAGNET_INFO[id] || MAGNET_INFO.skor;
+    }
+
     const nama = user.nama_lengkap || user.nama_panggilan || username;
     const inisial = (nama[0] || 'A').toUpperCase();
 
@@ -1638,12 +1624,43 @@ window.addEventListener('DOMContentLoaded', () => {
         }
       }
 
-      // Magnet utama
+      // Magnet utama (card besar)
       const mu = site.magnet_utama || 'skor';
-      const minfo = MAGNET_INFO[mu] || MAGNET_INFO.skor;
+      const minfo = getMagnet(mu);
       setText('m-magnet-title', minfo.title);
       const magnetBtn = document.getElementById('m-magnet-btn');
-      if (magnetBtn) magnetBtn.href = minfo.url + '?ref=' + username;
+      if (magnetBtn) magnetBtn.href = (minfo.url || '/skor-kesehatan-keuangan.html') + '?ref=' + username;
+
+      // Tool Gratis Lainnya (supporting magnets) -> dinamis dari pilihan agen
+      const toolsGrid = document.getElementById('m-tools-grid');
+      const toolsSection = document.querySelector('.tools-section');
+      if (toolsGrid) {
+        let supp = Array.isArray(site.magnet_supporting) ? site.magnet_supporting.filter(Boolean) : [];
+        // Jangan tampilkan magnet utama lagi di daftar supporting
+        supp = supp.filter(id => id !== mu);
+        if (supp.length) {
+          toolsGrid.innerHTML = supp.map(id => {
+            const m = getMagnet(id);
+            if (!m) return '';
+            const href = (m.url || '#') + '?ref=' + encodeURIComponent(username);
+            const mins = (m.est_minutes || 2) + ' menit';
+            const head = m.image_url
+              ? '<img class="tool-thumb" src="' + m.image_url + '" alt="" loading="lazy"><span class="tool-thumb-badge">GRATIS</span>'
+              : '<div class="tool-icon-wrap"><i data-lucide="' + (m.icon || 'sparkles') + '"></i><span class="tool-badge-free">GRATIS</span></div>';
+            return '<a href="' + href + '" class="tool-card' + (m.image_url ? ' has-thumb' : '') + '">' +
+              head +
+              '<div class="tool-title">' + m.title + '</div>' +
+              '<div class="tool-desc">' + (m.description || '') + '</div>' +
+              '<div class="tool-meta">' +
+                '<span class="tool-meta-item"><i data-lucide="clock"></i> ' + mins + '</span>' +
+                '<span class="tool-meta-item"><i data-lucide="check-circle-2"></i> Tanpa daftar</span>' +
+                '<span class="tool-cta">Coba <i data-lucide="arrow-right"></i></span>' +
+              '</div></a>';
+          }).join('');
+        } else if (toolsSection) {
+          toolsSection.style.display = 'none';
+        }
+      }
     }
 
     // === WHATSAPP LINKS ===

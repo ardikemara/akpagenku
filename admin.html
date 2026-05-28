@@ -926,6 +926,11 @@
         <span>Artikel</span>
         <span class="sidebar-count" id="sidebarCountArtikel">0</span>
       </button>
+      <button class="sidebar-item" data-view="magnet" onclick="setView('magnet')">
+        <i data-lucide="sparkles"></i>
+        <span>Lead Magnet</span>
+        <span class="sidebar-count" id="sidebarCountMagnet">0</span>
+      </button>
     </nav>
 
     <div class="sidebar-footer">
@@ -1089,6 +1094,45 @@
       </div>
     </div>
 
+    <!-- ===== VIEW: LEAD MAGNET ===== -->
+    <div class="view" id="viewMagnet">
+      <div class="view-header">
+        <h1 class="view-title">Lead Magnet</h1>
+        <p class="view-sub">Kuis & kalkulator yang ditampilkan di mini-site agen. Tambahkan gambar cover (16:9) agar kartu lebih menarik. Gambar berlaku untuk semua agen.</p>
+      </div>
+      <div class="konten-body-wrap">
+        <div id="magnetAdminList">
+          <div class="loading">Loading...</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== MAGNET IMAGE MODAL ===== -->
+<div class="modal-overlay" id="magnetFormModal">
+  <div class="modal" style="max-width:520px;">
+    <div class="modal-header">
+      <div class="modal-title" id="magnetFormTitle">Gambar Lead Magnet</div>
+      <button class="modal-close" onclick="closeMagnetForm()"><i data-lucide="x"></i></button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="magnetId">
+      <div class="form-field">
+        <label class="form-label" id="magnetNamaLabel">Magnet</label>
+        <div style="font-size:11px;color:#737373;margin-bottom:8px;">Rasio 16:9 disarankan (mis. 1200×675 px), maks 2MB.</div>
+        <input type="file" class="form-input" id="magnetCoverFile" accept="image/png,image/jpeg,image/webp" onchange="previewMagnetCover(event)">
+        <div id="magnetCoverPreview" style="margin-top:10px;display:none;">
+          <img id="magnetCoverImg" src="" alt="" style="width:100%;max-width:320px;aspect-ratio:16/9;object-fit:cover;border-radius:10px;border:1px solid #e5e5e5;">
+          <button type="button" onclick="clearMagnetCover()" style="display:block;margin-top:6px;background:none;border:none;color:#dc2626;font-size:12px;cursor:pointer;">Hapus gambar</button>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer" style="display:flex;justify-content:flex-end;gap:10px;padding:16px 20px;border-top:1px solid #e5e5e5;">
+      <button class="btn-secondary" onclick="closeMagnetForm()" style="padding:9px 16px;border:1px solid #e5e5e5;background:#fff;border-radius:8px;cursor:pointer;font-weight:600;">Batal</button>
+      <button class="btn-primary" id="magnetSaveBtn" onclick="saveMagnet()"><i data-lucide="save"></i> Simpan</button>
+    </div>
   </div>
 </div>
 
@@ -1408,6 +1452,99 @@ function updateStats() {
   set('countAll', total);
 }
 
+// ===== LEAD MAGNET (gambar) =====
+let MAGNET_CACHE = [];
+let magnetCoverFile = null;
+let magnetExistingCover = '';
+
+async function loadMagnetAdmin() {
+  const list = document.getElementById('magnetAdminList');
+  list.innerHTML = '<div class="loading">Loading...</div>';
+  const { data, error } = await supabase.from('magnets').select('*').order('sort_order', { ascending: true });
+  if (error) { list.innerHTML = '<div class="loading">Gagal memuat: ' + escapeHtml(error.message) + '</div>'; return; }
+  MAGNET_CACHE = data || [];
+  const cnt = document.getElementById('sidebarCountMagnet');
+  if (cnt) cnt.textContent = MAGNET_CACHE.length;
+  list.innerHTML = MAGNET_CACHE.map(m =>
+    '<div style="background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:14px 16px;margin-bottom:12px;display:flex;align-items:center;gap:16px;">' +
+      (m.image_url
+        ? '<img src="' + m.image_url + '" alt="" style="width:120px;aspect-ratio:16/9;object-fit:cover;border-radius:8px;flex-shrink:0;">'
+        : '<div style="width:120px;aspect-ratio:16/9;border-radius:8px;background:#faf8f3;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#c9a961;"><i data-lucide="' + (m.icon||'sparkles') + '"></i></div>'
+      ) +
+      '<div style="flex:1;min-width:0;">' +
+        '<div style="font-weight:600;color:#0f2647;font-size:15px;margin-bottom:3px;">' + escapeHtml(m.title) + '</div>' +
+        '<div style="font-size:12px;color:#737373;">' + escapeHtml((m.description||'').slice(0,90)) + ((m.description||'').length>90?'…':'') + '</div>' +
+        '<div style="font-size:11px;color:#a3a3a3;margin-top:4px;">' + (m.image_url ? '✅ Ada gambar' : '○ Belum ada gambar (pakai ikon)') + '</div>' +
+      '</div>' +
+      '<button onclick="openMagnetForm(\'' + m.id + '\')" style="flex-shrink:0;background:#0f2647;color:#fff;border:none;border-radius:8px;padding:9px 14px;cursor:pointer;font-weight:600;font-size:13px;display:inline-flex;align-items:center;gap:6px;"><i data-lucide="image" style="width:15px;height:15px;"></i> ' + (m.image_url ? 'Ganti' : 'Tambah') + ' Gambar</button>' +
+    '</div>'
+  ).join('');
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+
+function openMagnetForm(id) {
+  const m = MAGNET_CACHE.find(x => x.id === id);
+  if (!m) return;
+  document.getElementById('magnetId').value = m.id;
+  document.getElementById('magnetFormTitle').textContent = 'Gambar: ' + m.title;
+  document.getElementById('magnetNamaLabel').textContent = m.title;
+  magnetCoverFile = null;
+  magnetExistingCover = m.image_url || '';
+  if (magnetExistingCover) {
+    document.getElementById('magnetCoverImg').src = magnetExistingCover;
+    document.getElementById('magnetCoverPreview').style.display = 'block';
+  } else {
+    document.getElementById('magnetCoverPreview').style.display = 'none';
+    document.getElementById('magnetCoverImg').src = '';
+  }
+  document.getElementById('magnetCoverFile').value = '';
+  document.getElementById('magnetFormModal').classList.add('show');
+}
+function closeMagnetForm() { document.getElementById('magnetFormModal').classList.remove('show'); }
+function previewMagnetCover(e) {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+  if (file.size > 2 * 1024 * 1024) { alert('Ukuran gambar maksimal 2MB.'); e.target.value=''; return; }
+  magnetCoverFile = file;
+  document.getElementById('magnetCoverImg').src = URL.createObjectURL(file);
+  document.getElementById('magnetCoverPreview').style.display = 'block';
+}
+function clearMagnetCover() {
+  magnetCoverFile = null;
+  magnetExistingCover = '';
+  document.getElementById('magnetCoverFile').value = '';
+  document.getElementById('magnetCoverPreview').style.display = 'none';
+  document.getElementById('magnetCoverImg').src = '';
+}
+async function saveMagnet() {
+  const id = document.getElementById('magnetId').value;
+  if (!id) return;
+  const btn = document.getElementById('magnetSaveBtn');
+  btn.disabled = true;
+  let imageUrl = magnetExistingCover || null;
+  try {
+    if (magnetCoverFile) {
+      const ext = (magnetCoverFile.name.split('.').pop() || 'jpg').toLowerCase();
+      const path = 'magnet/' + id + '_' + Date.now() + '.' + ext;
+      const { error: upErr } = await supabase.storage.from('konten').upload(path, magnetCoverFile, { cacheControl: '3600', upsert: false });
+      if (upErr) throw new Error('Upload gambar gagal: ' + upErr.message);
+      const { data: pub } = supabase.storage.from('konten').getPublicUrl(path);
+      imageUrl = pub.publicUrl;
+    }
+  } catch (e) { btn.disabled = false; alert(e.message); return; }
+  const { error } = await supabase.from('magnets').update({ image_url: imageUrl, updated_at: new Date().toISOString() }).eq('id', id);
+  btn.disabled = false;
+  if (error) { alert('Gagal menyimpan: ' + error.message); return; }
+  closeMagnetForm();
+  loadMagnetAdmin();
+}
+window.loadMagnetAdmin = loadMagnetAdmin;
+window.openMagnetForm = openMagnetForm;
+window.closeMagnetForm = closeMagnetForm;
+window.previewMagnetCover = previewMagnetCover;
+window.clearMagnetCover = clearMagnetCover;
+window.saveMagnet = saveMagnet;
+
 // ===== ARTIKEL CRUD =====
 let ARTIKEL_CACHE = [];
 
@@ -1644,6 +1781,12 @@ function setView(view) {
   else if (view === 'artikel') {
     document.getElementById('viewArtikel').classList.add('active');
     loadArtikelAdmin();
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+    return;
+  }
+  else if (view === 'magnet') {
+    document.getElementById('viewMagnet').classList.add('active');
+    loadMagnetAdmin();
     if (typeof lucide !== 'undefined') lucide.createIcons();
     return;
   }
