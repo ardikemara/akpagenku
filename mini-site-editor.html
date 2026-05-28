@@ -329,6 +329,67 @@
     box-shadow: 0 0 0 3px rgba(201, 169, 97, 0.15);
   }
 
+  /* ===== TEMPLATE PICKER ===== */
+  .tpl-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--gold);
+    background: rgba(201,169,97,0.1);
+    border: 1px solid rgba(201,169,97,0.3);
+    border-radius: 6px;
+    padding: 5px 10px;
+    cursor: pointer;
+    margin-bottom: 8px;
+    transition: all 0.15s;
+  }
+  .tpl-toggle:hover { background: rgba(201,169,97,0.18); }
+  .tpl-toggle [data-lucide] { width: 13px; height: 13px; }
+  .tpl-list {
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+    padding: 12px;
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    border-radius: 10px;
+  }
+  .tpl-list.open { display: flex; }
+  .tpl-card {
+    text-align: left;
+    background: var(--white);
+    border: 1.5px solid var(--gray-200);
+    border-radius: 8px;
+    padding: 10px 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  .tpl-card:hover { border-color: var(--gold); background: rgba(201,169,97,0.04); }
+  .tpl-card-head {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 3px;
+  }
+  .tpl-card-sub {
+    font-size: 11px;
+    color: var(--gray-500);
+    line-height: 1.45;
+  }
+  .tpl-card-tag {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 4px;
+  }
+
   .photo-uploader {
     background: var(--white);
     border: 1.5px dashed var(--gray-300);
@@ -1018,9 +1079,42 @@
           </div>
 
           <div class="field-group">
-            <label class="field-label">Headline (Judul Utama)</label>
-            <input type="text" class="field-input" id="input-headline" value="Keuangan Keluarga yang Lebih Tenang" oninput="updatePreview()">
-            <div class="field-help">Kalimat utama yang dilihat prospek. Bikin ringkas & jelas.</div>
+            <label class="field-label">Headline & Sub-headline</label>
+            <button type="button" class="tpl-toggle" onclick="toggleTemplates()"><i data-lucide="sparkles"></i> Belum kepikiran teksnya? Pilih template siap pakai</button>
+            <div class="tpl-list" id="tpl-list">
+              <button type="button" class="tpl-card" onclick="applyTemplate(0)">
+                <span class="tpl-card-tag">Hangat</span>
+                <div class="tpl-card-head">Keuangan Keluarga yang Lebih Tenang</div>
+                <div class="tpl-card-sub">Saya bantu keluarga muda Indonesia mengatur dana darurat, pendidikan anak, dan persiapan pensiun — tanpa istilah ribet, tanpa pitch.</div>
+              </button>
+              <button type="button" class="tpl-card" onclick="applyTemplate(1)">
+                <span class="tpl-card-tag">Hangat</span>
+                <div class="tpl-card-head">Lindungi yang Paling Anda Sayangi</div>
+                <div class="tpl-card-sub">Mari rencanakan masa depan keluarga bersama, langkah demi langkah, dengan cara yang mudah dipahami siapa saja.</div>
+              </button>
+              <button type="button" class="tpl-card" onclick="applyTemplate(2)">
+                <span class="tpl-card-tag">Profesional</span>
+                <div class="tpl-card-head">Perencanaan Keuangan yang Terukur & Jelas</div>
+                <div class="tpl-card-sub">Saya bantu Anda menyusun strategi proteksi dan investasi yang sesuai tujuan, kondisi, dan kemampuan finansial Anda.</div>
+              </button>
+              <button type="button" class="tpl-card" onclick="applyTemplate(3)">
+                <span class="tpl-card-tag">Profesional</span>
+                <div class="tpl-card-head">Proteksi Tepat, Keputusan Cerdas</div>
+                <div class="tpl-card-sub">Pahami dulu kebutuhan Anda, baru pilih solusi. Konsultasi objektif tanpa tekanan membeli.</div>
+              </button>
+              <button type="button" class="tpl-card" onclick="applyTemplate(4)">
+                <span class="tpl-card-tag">Edukatif</span>
+                <div class="tpl-card-head">Mulai dari Memahami, Bukan Membeli</div>
+                <div class="tpl-card-sub">Sebelum bicara produk, mari pahami dulu kondisi keuangan Anda. Edukasi gratis, keputusan tetap di tangan Anda.</div>
+              </button>
+              <button type="button" class="tpl-card" onclick="applyTemplate(5)">
+                <span class="tpl-card-tag">Edukatif</span>
+                <div class="tpl-card-head">Cek Kesehatan Keuangan Anda Hari Ini</div>
+                <div class="tpl-card-sub">Ambil kuis singkat 2 menit, dapatkan gambaran objektif kondisi keuangan Anda, lalu kita diskusikan langkah berikutnya.</div>
+              </button>
+            </div>
+            <input type="text" class="field-input" id="input-headline" value="Keuangan Keluarga yang Lebih Tenang" oninput="updatePreview()" placeholder="Tulis judul utama Anda di sini...">
+            <div class="field-help">Kalimat utama yang dilihat prospek. Bikin ringkas & jelas — atau pilih template di atas.</div>
           </div>
 
           <div class="field-group">
@@ -1051,9 +1145,9 @@
           </div>
 
           <div class="field-group">
-            <label class="field-label">Sertifikasi / Kredensial</label>
-            <input type="text" class="field-input" id="input-creds" value="AAJI Bersertifikat, MDRT Member 2024, Top Agent 2023" oninput="updatePreview()">
-            <div class="field-help">Pisahkan dengan koma. Akan muncul sebagai badge di mini-site.</div>
+            <label class="field-label">Trust Badge / Sertifikasi <span style="font-weight:400;color:var(--gray-500);">(opsional)</span></label>
+            <input type="text" class="field-input" id="input-creds" value="" oninput="updatePreview()" placeholder="Contoh: AAJI Bersertifikat, 5+ Tahun Pengalaman">
+            <div class="field-help">Pisahkan dengan koma. Muncul sebagai badge di bagian atas mini-site. <strong>Kosongkan kalau belum ada</strong> — badge tidak akan ditampilkan. Isi hanya yang benar-benar Anda miliki.</div>
           </div>
 
           <div class="field-group">
@@ -1391,9 +1485,6 @@
               <div class="preview-section-title">Tentang Saya</div>
               <p class="preview-bio" id="prev-bio">Cristine adalah agen asuransi dengan 8+ tahun pengalaman membantu keluarga muda merencanakan keuangan. Fokus pada edukasi finansial, bukan jualan produk.</p>
               <div class="preview-credentials" id="prev-creds">
-                <span class="preview-cred-tag">AAJI Bersertifikat</span>
-                <span class="preview-cred-tag">MDRT Member 2024</span>
-                <span class="preview-cred-tag">Top Agent 2023</span>
               </div>
             </div>
 
@@ -1774,6 +1865,31 @@ function switchTab(tabName, btn) {
 }
 
 // Update preview real-time
+// ===== TEMPLATE PICKER =====
+const HEADLINE_TEMPLATES = [
+  { h: 'Keuangan Keluarga yang Lebih Tenang', s: 'Saya bantu keluarga muda Indonesia mengatur dana darurat, pendidikan anak, dan persiapan pensiun — tanpa istilah ribet, tanpa pitch.' },
+  { h: 'Lindungi yang Paling Anda Sayangi', s: 'Mari rencanakan masa depan keluarga bersama, langkah demi langkah, dengan cara yang mudah dipahami siapa saja.' },
+  { h: 'Perencanaan Keuangan yang Terukur & Jelas', s: 'Saya bantu Anda menyusun strategi proteksi dan investasi yang sesuai tujuan, kondisi, dan kemampuan finansial Anda.' },
+  { h: 'Proteksi Tepat, Keputusan Cerdas', s: 'Pahami dulu kebutuhan Anda, baru pilih solusi. Konsultasi objektif tanpa tekanan membeli.' },
+  { h: 'Mulai dari Memahami, Bukan Membeli', s: 'Sebelum bicara produk, mari pahami dulu kondisi keuangan Anda. Edukasi gratis, keputusan tetap di tangan Anda.' },
+  { h: 'Cek Kesehatan Keuangan Anda Hari Ini', s: 'Ambil kuis singkat 2 menit, dapatkan gambaran objektif kondisi keuangan Anda, lalu kita diskusikan langkah berikutnya.' }
+];
+function toggleTemplates() {
+  const el = document.getElementById('tpl-list');
+  if (el) el.classList.toggle('open');
+}
+function applyTemplate(i) {
+  const t = HEADLINE_TEMPLATES[i];
+  if (!t) return;
+  const hEl = document.getElementById('input-headline');
+  const sEl = document.getElementById('input-subheadline');
+  if (hEl) hEl.value = t.h;
+  if (sEl) sEl.value = t.s;
+  const list = document.getElementById('tpl-list');
+  if (list) list.classList.remove('open');
+  updatePreview();
+}
+
 function updatePreview() {
   const headline = document.getElementById('input-headline')?.value || '';
   const subheadline = document.getElementById('input-subheadline')?.value || '';
@@ -1786,11 +1902,14 @@ function updatePreview() {
   if (cta) document.getElementById('prev-cta').textContent = cta;
   if (bio) document.getElementById('prev-bio').textContent = bio;
 
-  if (creds) {
-    const credsList = creds.split(',').map(c => c.trim()).filter(c => c);
-    document.getElementById('prev-creds').innerHTML = credsList
-      .map(c => `<span class="preview-cred-tag">${c}</span>`)
-      .join('');
+  const credsEl = document.getElementById('prev-creds');
+  if (credsEl) {
+    if (creds) {
+      const credsList = creds.split(',').map(c => c.trim()).filter(c => c);
+      credsEl.innerHTML = credsList.map(c => `<span class="preview-cred-tag">${c}</span>`).join('');
+    } else {
+      credsEl.innerHTML = '';
+    }
   }
 
   // Update lead magnet preview (utama)
@@ -1940,6 +2059,8 @@ function setFont(font, el) {
 
 // Expose semua handler ke window (jaga-jaga untuk atribut inline)
 window.updatePreview = updatePreview;
+window.toggleTemplates = toggleTemplates;
+window.applyTemplate = applyTemplate;
 window.toggleCheck = toggleCheck;
 window.toggleMagnet = toggleMagnet;
 window.setUtama = setUtama;
