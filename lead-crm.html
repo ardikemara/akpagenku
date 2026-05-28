@@ -1893,6 +1893,122 @@ const PENSIUN_PRODUCTS = {
   'default': { name: 'Unit Link / Anuitas Pensiun', meta: 'Sesuaikan dengan produk yang Anda jual' }
 };
 
+function renderDaruratRecommendation(lead, magnetResponse) {
+  const scores = magnetResponse.scores || {};
+  const raw = magnetResponse.raw_answers || {};
+  const session = JSON.parse(sessionStorage.getItem('akp_session') || '{}');
+
+  const target = scores.target || 0;
+  const gap = scores.gap || 0;
+  const pengali = scores.pengali || 0;
+  const bulanTertahan = scores.bulan_tertahan || 0;
+  const bulanDibutuhkan = scores.bulan_dibutuhkan || 0;
+  const progressPct = scores.progress_pct || 0;
+
+  const situasiLabels = {
+    'lajang': 'Lajang',
+    'keluarga': 'Berkeluarga',
+    'tanggungan': 'Punya tanggungan / wiraswasta'
+  };
+  const situasiText = situasiLabels[raw.situasi] || '-';
+
+  let statusText, statusIcon;
+  if (gap <= 0) { statusText = 'Aman'; statusIcon = '\u2705'; }
+  else if (progressPct >= 50) { statusText = 'Cukup, belum ideal'; statusIcon = '\u26a0\ufe0f'; }
+  else { statusText = 'Rentan'; statusIcon = '\u2757'; }
+
+  // Breakdown
+  const breakdownEl = document.getElementById('pilarBreakdownCM');
+  breakdownEl.innerHTML = `
+    <div class="pilar-row-cm">
+      <div class="pilar-icon-cm">${statusIcon}</div>
+      <div class="pilar-info-cm"><div class="pilar-name-cm">Status dana darurat</div></div>
+      <div class="pilar-score-cm" style="font-size:12px;">${statusText}</div>
+    </div>
+    <div class="pilar-row-cm">
+      <div class="pilar-icon-cm">\ud83d\udc64</div>
+      <div class="pilar-info-cm"><div class="pilar-name-cm">Situasi</div></div>
+      <div class="pilar-score-cm" style="font-size:11px;">${situasiText}</div>
+    </div>
+    <div class="pilar-row-cm">
+      <div class="pilar-icon-cm">\ud83d\udcb8</div>
+      <div class="pilar-info-cm"><div class="pilar-name-cm">Pengeluaran bulanan</div></div>
+      <div class="pilar-score-cm" style="font-size:12px;">${fmtRupiah(raw.pengeluaran_bulanan || 0)}</div>
+    </div>
+    <div class="pilar-row-cm">
+      <div class="pilar-icon-cm">\ud83d\udcca</div>
+      <div class="pilar-info-cm"><div class="pilar-name-cm">Progress (${progressPct}%)</div></div>
+      <div class="pilar-score-cm" style="font-size:11px;">tahan ${bulanTertahan} bln</div>
+    </div>
+    <div class="pilar-row-cm">
+      <div class="pilar-icon-cm">\ud83c\udfaf</div>
+      <div class="pilar-info-cm"><div class="pilar-name-cm">Target dana darurat (${pengali}\u00d7)</div></div>
+      <div class="pilar-score-cm" style="font-size:12px;">${fmtRupiah(target)}</div>
+    </div>
+    <div class="pilar-row-cm" style="background:rgba(201,169,97,0.1);border-color:var(--gold);">
+      <div class="pilar-icon-cm">\u26a0\ufe0f</div>
+      <div class="pilar-info-cm"><div class="pilar-name-cm"><strong>Kekurangan (gap)</strong></div></div>
+      <div class="pilar-score-cm" style="color:var(--gold-dark);">${gap > 0 ? fmtRupiah(gap) : 'Tercapai'}</div>
+    </div>
+  `;
+  document.getElementById('recommendationSection').style.display = '';
+
+  // Products / angle
+  const productsEl = document.getElementById('productsListCM');
+  let angleHtml;
+  if (gap <= 0) {
+    angleHtml = `
+      <div class="product-card">
+        <div class="product-card-name"><span class="product-card-num" style="color:var(--navy);">\ud83c\udf89</span> Dana darurat sudah ideal!</div>
+        <div class="product-card-addr">Prospek siap untuk tahap berikutnya: proteksi & investasi</div>
+        <div class="product-card-meta">ANGLE: Tawarkan asuransi jiwa/kesehatan + unit link investasi. Fondasi sudah kuat.</div>
+      </div>`;
+  } else {
+    angleHtml = `
+      <div class="product-card">
+        <div class="product-card-name"><span class="product-card-num">1.</span> Dana darurat = PINTU MASUK</div>
+        <div class="product-card-addr">Status: ${statusText} \u2014 kekurangan ${fmtRupiah(gap)}</div>
+        <div class="product-card-meta">ANGLE: Posisikan diri sebagai financial planner. Bantu prospek susun dana darurat dulu (instrumen likuid), JANGAN langsung jualan produk.</div>
+      </div>
+      <div class="product-card" style="border-left-color:var(--navy);">
+        <div class="product-card-name"><span class="product-card-num" style="color:var(--navy);">\ud83d\udca1</span> Setelah dana darurat aman</div>
+        <div class="product-card-addr">Lanjut ke proteksi income (asuransi jiwa berjangka) + kesehatan</div>
+        <div class="product-card-meta">Prospek yang sadar dana daruratnya kurang = sadar pentingnya proteksi. Edukasi dulu, baru tawarkan.</div>
+      </div>`;
+  }
+  productsEl.innerHTML = angleHtml;
+  document.getElementById('productsSection').style.display = '';
+
+  // Script
+  const agenName = session.nama_panggilan || (session.nama_lengkap ? session.nama_lengkap.split(' ')[0] : 'Saya');
+  const leadFirstName = (lead.name || 'Bapak/Ibu').split(' ')[0];
+
+  let scriptBody;
+  if (gap <= 0) {
+    scriptBody = `Saya lihat dana darurat Anda sudah sangat sehat \ud83d\udc4d Itu fondasi yang bagus banget. Biasanya langkah berikutnya yang bikin keuangan makin kokoh adalah memastikan proteksi (jiwa/kesehatan) sudah pas. Boleh saya bantu cek bareng?`;
+  } else {
+    scriptBody = `Saya lihat dari kalkulator, target dana darurat Anda sekitar ${fmtRupiah(target)} dan masih ada selisih ${fmtRupiah(gap)} untuk dikejar. Kabar baiknya, dengan rencana yang tepat ini sangat bisa dicapai bertahap. Dana darurat ini fondasi penting sebelum melangkah ke proteksi & investasi. Boleh saya bantu susun rencananya?`;
+  }
+
+  const script = `Halo ${leadFirstName} \ud83d\ude4f Saya ${agenName}.
+
+${scriptBody}
+
+Saya gak akan hardsell \u2014 tujuan saya cuma bantu Anda punya fondasi keuangan yang kuat \ud83d\ude42`;
+
+  document.getElementById('scriptTextCM').textContent = script;
+  window.currentScript = script;
+  document.getElementById('scriptSection').style.display = '';
+
+  const copyBtn = document.getElementById('copyScriptBtn');
+  if (copyBtn) {
+    copyBtn.classList.remove('copied');
+    document.getElementById('copyBtnText').textContent = 'Copy Script';
+  }
+
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+
 function renderPensiunRecommendation(lead, magnetResponse) {
   const scores = magnetResponse.scores || {};
   const raw = magnetResponse.raw_answers || {};
@@ -2149,6 +2265,10 @@ async function renderRecommendations(lead) {
   }
   if (magnetResponse.magnet_slug === 'dana-pensiun') {
     renderPensiunRecommendation(lead, magnetResponse);
+    return;
+  }
+  if (magnetResponse.magnet_slug === 'dana-darurat') {
+    renderDaruratRecommendation(lead, magnetResponse);
     return;
   }
   // Default: skor-kesehatan-keuangan (4-pilar)

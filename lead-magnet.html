@@ -837,20 +837,50 @@
         </div>
       </div>
 
-      <!-- ===== COMING SOON: Kalkulator Dana Darurat ===== -->
-      <div class="magnet-item coming-soon">
-        <div class="magnet-thumb cs">
-          <img class="magnet-thumb-img" src="/img/magnet-darurat.jpg" alt="Kalkulator Dana Darurat" onerror="this.style.display='none'" style="filter:grayscale(0.4) opacity(0.85);">
-          <span class="magnet-badge-soon"><i data-lucide="clock" style="width:10px;height:10px;display:inline;margin-right:2px;"></i> COMING SOON</span>
+      <!-- ===== MAGNET #4: KALKULATOR DANA DARURAT (AKTIF) ===== -->
+      <div class="magnet-item">
+        <div class="magnet-thumb darurat">
+          <img class="magnet-thumb-img" src="/img/magnet-darurat.png" alt="Kalkulator Dana Darurat" onerror="this.style.display='none'">
+          <span class="magnet-badge-primary"><i data-lucide="check-circle-2" style="width:10px;height:10px;display:inline;margin-right:2px;"></i> AKTIF</span>
           <span class="magnet-badge-type">KALKULATOR</span>
           <div class="magnet-thumb-icon"><i data-lucide="shield"></i></div>
         </div>
         <div class="magnet-body">
           <div class="magnet-name">Kalkulator Dana Darurat</div>
-          <div class="magnet-desc">"Berapa dana darurat ideal saya?" Hitung target dana darurat berdasarkan pengeluaran + jangka waktu untuk mencapainya.</div>
+          <div class="magnet-desc">"Berapa dana darurat ideal saya?" Prospek input pengeluaran &amp; situasi, dapat target dana darurat + gap + lama nabung. Lead masuk ke CRM dengan angle konsultasi &amp; script WhatsApp.</div>
 
-          <div class="cs-overlay">
-            <span class="cs-badge-text"><i data-lucide="hammer"></i> Sedang dikembangkan</span>
+          <div class="magnet-stats-row">
+            <div class="magnet-stat-item">
+              <div class="magnet-stat-icon"><i data-lucide="mouse-pointer-click"></i></div>
+              <div class="magnet-stat-text">
+                <div class="magnet-stat-value" id="daruratKlik">0</div>
+                <div class="magnet-stat-label">KLIK</div>
+              </div>
+            </div>
+            <div class="magnet-stat-item">
+              <div class="magnet-stat-icon"><i data-lucide="users"></i></div>
+              <div class="magnet-stat-text">
+                <div class="magnet-stat-value" id="daruratLead">0</div>
+                <div class="magnet-stat-label">LEAD</div>
+              </div>
+            </div>
+            <div class="magnet-stat-item">
+              <div class="magnet-stat-icon"><i data-lucide="percent"></i></div>
+              <div class="magnet-stat-text">
+                <div class="magnet-stat-value" id="daruratKonv">—</div>
+                <div class="magnet-stat-label">KONVERSI</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="magnet-link-row">
+            <span class="magnet-link-text">akpagenku.com/dana-darurat?ref=cristine</span>
+            <button class="magnet-copy-btn" onclick="copyLink(this, 'akpagenku.com/dana-darurat?ref=cristine')"><i data-lucide="copy"></i> Salin</button>
+          </div>
+
+          <div class="magnet-actions">
+            <a href="/dana-darurat.html?ref=cristine" target="_blank" class="magnet-btn ghost"><i data-lucide="eye"></i> Preview</a>
+            <button class="magnet-btn primary" onclick="shareWA('Kalkulator Dana Darurat', 'akpagenku.com/dana-darurat?ref=cristine')"><i data-lucide="message-circle"></i> Share ke WhatsApp</button>
           </div>
         </div>
       </div>
@@ -1016,7 +1046,8 @@
       const leadSkor = leads.filter(l => l.source_magnet === 'skor').length;
       const leadPend = leads.filter(l => l.source_magnet === 'pendidikan').length;
       const leadPensiun = leads.filter(l => l.source_magnet === 'pensiun').length;
-      const totalLeadAll = leadSkor + leadPend + leadPensiun;
+      const leadDarurat = leads.filter(l => l.source_magnet === 'darurat').length;
+      const totalLeadAll = leadSkor + leadPend + leadPensiun + leadDarurat;
 
       // ===== CLICKS per magnet (magnet_slug pakai slug panjang) =====
       const { data: allClicks, error: clickErr } = await supabaseClient
@@ -1029,7 +1060,8 @@
       const klikSkor = clicks.filter(c => c.magnet_slug === 'skor-kesehatan-keuangan').length;
       const klikPend = clicks.filter(c => c.magnet_slug === 'dana-pendidikan').length;
       const klikPensiun = clicks.filter(c => c.magnet_slug === 'dana-pensiun').length;
-      const totalKlikAll = klikSkor + klikPend + klikPensiun;
+      const klikDarurat = clicks.filter(c => c.magnet_slug === 'dana-darurat').length;
+      const totalKlikAll = klikSkor + klikPend + klikPensiun + klikDarurat;
       const klikThisMonth = clicks.filter(c => new Date(c.clicked_at) >= monthStart).length;
 
       // ===== Helper: konversi =====
@@ -1047,7 +1079,8 @@
       const ranking = [
         { name: 'Skor', n: leadSkor },
         { name: 'Pendidikan', n: leadPend },
-        { name: 'Pensiun', n: leadPensiun }
+        { name: 'Pensiun', n: leadPensiun },
+        { name: 'Darurat', n: leadDarurat }
       ].sort((a, b) => b.n - a.n);
       if (ranking[0].n > 0) setVal('statTop', ranking[0].name, true);
 
@@ -1063,6 +1096,10 @@
       setVal('pensiunKlik', klikPensiun, false);
       setVal('pensiunLead', leadPensiun, false);
       setVal('pensiunKonv', konv(leadPensiun, klikPensiun), false);
+
+      setVal('daruratKlik', klikDarurat, false);
+      setVal('daruratLead', leadDarurat, false);
+      setVal('daruratKonv', konv(leadDarurat, klikDarurat), false);
 
     } catch (e) {
       console.warn('loadRealStats failed:', e);

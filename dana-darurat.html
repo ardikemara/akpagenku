@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kalkulator Dana Darurat | AKPAgenku</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0f2647;
+    --navy-dark: #081a33;
+    --gold: #c9a961;
+    --gold-light: #d9bd7f;
+    --gold-dark: #a88a45;
+    --cream: #faf8f3;
+    --gray-50: #fafafa;
+    --gray-100: #f5f5f5;
+    --gray-200: #e5e5e5;
+    --gray-300: #d4d4d4;
+    --gray-500: #737373;
+    --gray-700: #404040;
+    --gray-900: #171717;
+    --white: #ffffff;
+    --green: #059669;
+    --green-dark: #047857;
+    --amber: #f59e0b;
+    --red: #dc2626;
+    --serif: 'Playfair Display', serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--cream);
+    color: var(--gray-900);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ===== HEADER ===== */
+  .quiz-header { background: var(--navy); color: var(--white); padding: 16px 20px; }
+  .quiz-header-inner { max-width: 680px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .agent-info { display: flex; align-items: center; gap: 10px; font-size: 13px; }
+  .agent-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--gold); color: var(--navy); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink: 0; }
+  .agent-name { font-weight: 600; }
+  .agent-tag { color: var(--gold); font-size: 11px; letter-spacing: 1px; text-transform: uppercase; }
+  .logo { font-family: var(--serif); font-size: 18px; font-weight: 700; color: var(--white); text-decoration: none; }
+  .logo .accent { color: var(--gold); }
+
+  /* ===== MAIN ===== */
+  .container { max-width: 680px; margin: 0 auto; padding: 32px 20px 80px; }
+  .card { background: var(--white); border-radius: 16px; border: 1px solid var(--gray-200); box-shadow: 0 4px 14px rgba(15, 38, 71, 0.04); overflow: hidden; }
+
+  /* ===== HERO ===== */
+  .hero { position: relative; width: 100%; aspect-ratio: 16 / 9; background: linear-gradient(135deg, var(--green) 0%, var(--green-dark) 100%); overflow: hidden; }
+  .hero-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(15,38,71,0.1) 0%, rgba(15,38,71,0.4) 100%); z-index: 1; }
+  .hero-icon { position: absolute; bottom: 16px; left: 28px; z-index: 2; width: 56px; height: 56px; border-radius: 14px; background: rgba(255,255,255,0.18); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; font-size: 28px; border: 1px solid rgba(255,255,255,0.25); }
+  .body { padding: 28px 28px 32px; }
+  .title { font-family: var(--serif); font-size: 27px; font-weight: 700; color: var(--navy); line-height: 1.2; margin-bottom: 10px; }
+  .subtitle { font-size: 15px; color: var(--gray-700); margin-bottom: 26px; }
+
+  /* ===== FORM ===== */
+  .form-group { margin-bottom: 22px; }
+  .form-label { display: block; font-size: 14px; font-weight: 600; color: var(--navy); margin-bottom: 10px; }
+  .form-label .hint { font-weight: 400; color: var(--gray-500); font-size: 12px; }
+
+  .form-select, .form-input { width: 100%; padding: 13px 14px; border: 1.5px solid var(--gray-200); border-radius: 9px; font-size: 14px; font-family: inherit; background: var(--white); transition: border-color 0.2s; color: var(--gray-900); }
+  .form-select:focus, .form-input:focus { outline: none; border-color: var(--green); box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.12); }
+  .input-money { position: relative; }
+  .input-money .prefix { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--gray-500); font-size: 14px; font-weight: 600; pointer-events: none; }
+  .input-money .form-input { padding-left: 38px; }
+
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 15px 24px; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; font-family: inherit; width: 100%; }
+  .btn-primary { background: var(--navy); color: var(--white); }
+  .btn-primary:hover { background: var(--navy-dark); transform: translateY(-1px); }
+  .btn-gold { background: var(--gold); color: var(--navy); }
+  .btn-gold:hover { background: var(--gold-light); transform: translateY(-1px); box-shadow: 0 6px 16px rgba(201,169,97,0.25); }
+
+  /* ===== RESULT ===== */
+  .result-section { display: none; }
+  .result-section.show { display: block; animation: slideIn 0.5s; }
+  @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+  .result-hero { text-align: center; padding: 24px 0 16px; }
+  .result-hero-label { font-size: 13px; color: var(--gray-700); margin-bottom: 8px; }
+  .result-hero-value { font-family: var(--serif); font-size: 44px; font-weight: 700; color: var(--green); line-height: 1.1; margin-bottom: 4px; }
+  .result-hero-sub { font-size: 13px; color: var(--gray-500); }
+
+  /* Status badge */
+  .status-badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 16px; border-radius: 999px; font-size: 13px; font-weight: 600; margin: 8px 0 4px; }
+  .status-badge.aman { background: rgba(5,150,105,0.12); color: var(--green-dark); }
+  .status-badge.cukup { background: rgba(245,158,11,0.14); color: #b45309; }
+  .status-badge.rentan { background: rgba(220,38,38,0.1); color: var(--red); }
+
+  /* Progress block */
+  .progress-block { background: var(--gray-50); border-radius: 12px; padding: 20px; margin: 20px 0; }
+  .progress-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
+  .progress-head .label { font-size: 13px; font-weight: 600; color: var(--navy); }
+  .progress-head .pct { font-family: var(--serif); font-size: 22px; font-weight: 700; color: var(--green); }
+  .progress-track { height: 22px; background: var(--gray-200); border-radius: 11px; overflow: hidden; position: relative; }
+  .progress-fill { height: 100%; border-radius: 11px; background: linear-gradient(90deg, var(--green) 0%, var(--green-dark) 100%); width: 0; transition: width 1.1s cubic-bezier(0.4, 0, 0.2, 1); }
+  .progress-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--gray-500); margin-top: 8px; }
+  .progress-labels strong { color: var(--navy); font-family: var(--serif); font-size: 13px; }
+
+  .result-gap { background: var(--navy); color: var(--white); border-radius: 12px; padding: 20px; text-align: center; margin: 20px 0; }
+  .result-gap-label { font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 6px; }
+  .result-gap-value { font-family: var(--serif); font-size: 32px; font-weight: 700; color: var(--gold); }
+  .result-gap-sub { font-size: 12px; color: rgba(255,255,255,0.6); margin-top: 4px; }
+
+  /* Capture */
+  .capture-block { background: var(--cream); border: 1.5px solid var(--gold); border-radius: 12px; padding: 22px; margin-top: 22px; }
+  .capture-title { font-family: var(--serif); font-size: 18px; font-weight: 600; color: var(--navy); margin-bottom: 6px; }
+  .capture-sub { font-size: 13px; color: var(--gray-700); margin-bottom: 16px; }
+  .privacy-note { margin-top: 12px; font-size: 11px; color: var(--gray-500); text-align: center; line-height: 1.5; }
+  .form-error { background: #fee2e2; border: 1px solid #fca5a5; color: #991b1b; padding: 10px 14px; border-radius: 8px; font-size: 13px; margin: 12px 0; display: none; }
+  .form-error.show { display: block; }
+
+  /* Detail */
+  .detail-section { display: none; margin-top: 22px; padding-top: 22px; border-top: 1px solid var(--gray-200); }
+  .detail-section.show { display: block; animation: slideIn 0.5s; }
+  .insight-card { background: var(--white); border: 1px solid var(--gray-200); border-left: 4px solid var(--gold); border-radius: 8px; padding: 16px 18px; margin-bottom: 12px; }
+  .insight-card-title { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+  .insight-card-text { font-size: 13px; color: var(--gray-700); line-height: 1.6; }
+  .insight-compare { display: flex; gap: 12px; margin: 14px 0; }
+  .compare-item { flex: 1; text-align: center; padding: 14px 10px; border-radius: 10px; border: 1px solid var(--gray-200); }
+  .compare-item.slow { background: rgba(245,158,11,0.06); border-color: var(--amber); }
+  .compare-item.fast { background: rgba(5,150,105,0.06); border-color: var(--green); }
+  .compare-label { font-size: 11px; font-weight: 600; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+  .compare-value { font-family: var(--serif); font-size: 19px; font-weight: 700; }
+  .compare-item.slow .compare-value { color: #b45309; }
+  .compare-item.fast .compare-value { color: var(--green); }
+  .compare-sub { font-size: 11px; color: var(--gray-500); margin-top: 2px; }
+
+  .cta-block { background: var(--navy); color: var(--white); border-radius: 12px; padding: 22px; margin-top: 20px; text-align: center; }
+  .cta-title { font-family: var(--serif); font-size: 19px; font-weight: 600; margin-bottom: 8px; }
+  .cta-sub { font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 16px; }
+  .cta-block .btn-gold { width: 100%; }
+
+  .disclaimer { font-size: 11px; color: var(--gray-500); text-align: center; margin-top: 20px; line-height: 1.5; }
+
+  @media (max-width: 600px) {
+    .title { font-size: 23px; }
+    .result-hero-value { font-size: 36px; }
+    .result-gap-value { font-size: 27px; }
+    .agent-info { display: none; }
+    .insight-compare { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="quiz-header">
+  <div class="quiz-header-inner">
+    <a href="#" class="logo">AKP<span class="accent">Agenku</span></a>
+    <div class="agent-info" id="agentInfo" style="display:none;">
+      <div class="agent-avatar" id="agentAvatar">?</div>
+      <div>
+        <div class="agent-tag">Kalkulator dari</div>
+        <div class="agent-name" id="agentName">-</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- MAIN -->
+<div class="container">
+  <div class="card">
+    <div class="hero">
+      <img class="hero-img" src="/img/magnet-darurat.png" alt="Dana Darurat" onerror="this.style.display='none'">
+      <div class="hero-icon">🛡️</div>
+    </div>
+    <div class="body">
+
+      <!-- INPUT VIEW -->
+      <div id="inputView">
+        <h1 class="title">Kalkulator Dana Darurat</h1>
+        <p class="subtitle">Cek apakah dana darurat Anda sudah cukup — dan berapa yang perlu disiapkan agar tenang menghadapi hal tak terduga.</p>
+
+        <div class="form-group">
+          <label class="form-label">Pengeluaran bulanan <span class="hint">(rutin per bulan)</span></label>
+          <div class="input-money">
+            <span class="prefix">Rp</span>
+            <input type="text" class="form-input" id="pengeluaran" value="5.000.000" oninput="formatMoney(this)">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Situasi Anda</label>
+          <select class="form-select" id="situasi">
+            <option value="lajang" data-pengali="6">Lajang (6× pengeluaran)</option>
+            <option value="keluarga" data-pengali="9">Berkeluarga (9× pengeluaran)</option>
+            <option value="tanggungan" data-pengali="12">Punya tanggungan / wiraswasta (12× pengeluaran)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Tabungan darurat saat ini <span class="hint">(yang likuid/mudah dicairkan)</span></label>
+          <div class="input-money">
+            <span class="prefix">Rp</span>
+            <input type="text" class="form-input" id="tabungan" value="0" oninput="formatMoney(this)">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Kemampuan menabung per bulan <span class="hint">(untuk dana darurat)</span></label>
+          <div class="input-money">
+            <span class="prefix">Rp</span>
+            <input type="text" class="form-input" id="nabung" value="1.000.000" oninput="formatMoney(this)">
+          </div>
+        </div>
+
+        <button class="btn btn-primary" onclick="hitung()">Cek Dana Darurat Saya →</button>
+      </div>
+
+      <!-- RESULT VIEW -->
+      <div class="result-section" id="resultView">
+        <div class="result-hero">
+          <div class="result-hero-label">Target dana darurat Anda:</div>
+          <div class="result-hero-value" id="targetVal">Rp 0</div>
+          <div class="result-hero-sub" id="targetSub">(9× pengeluaran bulanan)</div>
+          <div><span class="status-badge" id="statusBadge">-</span></div>
+        </div>
+
+        <div class="progress-block">
+          <div class="progress-head">
+            <span class="label">Progress dana darurat Anda</span>
+            <span class="pct" id="progressPct">0%</span>
+          </div>
+          <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+          <div class="progress-labels">
+            <span>Sekarang: <strong id="tabunganLabel">Rp 0</strong></span>
+            <span>Target: <strong id="targetLabel">Rp 0</strong></span>
+          </div>
+        </div>
+
+        <div class="result-gap">
+          <div class="result-gap-label">Kekurangan yang perlu dikejar:</div>
+          <div class="result-gap-value" id="gapVal">Rp 0</div>
+          <div class="result-gap-sub" id="gapSub">Tabungan Anda saat ini cukup untuk 0 bulan</div>
+        </div>
+
+        <!-- CAPTURE -->
+        <div class="capture-block" id="captureBlock">
+          <div class="capture-title">Mau rencana lengkap mencapai target ini?</div>
+          <div class="capture-sub">Masukkan kontak untuk lihat simulasi waktu pencapaian + konsultasi gratis menyusun fondasi keuangan Anda.</div>
+
+          <div class="form-group" style="margin-bottom:12px;">
+            <label class="form-label">Nama Lengkap *</label>
+            <input type="text" class="form-input" id="capNama" placeholder="Nama Anda">
+          </div>
+          <div class="form-group" style="margin-bottom:12px;">
+            <label class="form-label">Email *</label>
+            <input type="email" class="form-input" id="capEmail" placeholder="nama@email.com">
+          </div>
+          <div class="form-group" style="margin-bottom:12px;">
+            <label class="form-label">No. WhatsApp *</label>
+            <div class="input-money">
+              <span class="prefix">+62</span>
+              <input type="tel" class="form-input" id="capWA" placeholder="81234567890" style="padding-left:48px;">
+            </div>
+          </div>
+
+          <div class="form-error" id="formError"></div>
+
+          <button class="btn btn-gold" onclick="submitCapture()">Lihat Rencana Lengkap →</button>
+          <div class="privacy-note">🔒 Data Anda hanya digunakan oleh agen terkait untuk follow-up. Tidak dibagikan ke pihak ketiga.</div>
+        </div>
+
+        <!-- DETAIL -->
+        <div class="detail-section" id="detailSection">
+          <div class="insight-card">
+            <div class="insight-card-title">⏱️ Berapa Lama untuk Mencapai Target?</div>
+            <div class="insight-card-text">Dengan kemampuan menabung Anda saat ini, target dana darurat bisa tercapai dalam waktu berikut. Menambah setoran mempercepat pencapaian:</div>
+            <div class="insight-compare">
+              <div class="compare-item slow">
+                <div class="compare-label">Setoran Sekarang</div>
+                <div class="compare-value" id="waktuNow">0 bln</div>
+                <div class="compare-sub" id="nabungNowLabel">Rp 1jt/bln</div>
+              </div>
+              <div class="compare-item fast">
+                <div class="compare-label">Jika Digandakan</div>
+                <div class="compare-value" id="waktuFast">0 bln</div>
+                <div class="compare-sub" id="nabungFastLabel">Rp 2jt/bln</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="insight-card">
+            <div class="insight-card-title">💡 Dana Darurat = Fondasi Pertama</div>
+            <div class="insight-card-text" id="strategiText">Dana darurat adalah langkah pertama sebelum investasi atau asuransi lain. Simpan di instrumen yang likuid & aman (tabungan, deposito, atau reksa dana pasar uang) — bukan di instrumen berisiko, karena tujuannya keamanan, bukan pertumbuhan.</div>
+          </div>
+
+          <div class="cta-block">
+            <div class="cta-title">Mau bantuan menyusun fondasi keuangan?</div>
+            <div class="cta-sub">Agen <strong id="ctaAgentName">Anda</strong> bisa bantu Anda menyusun rencana dana darurat + proteksi yang sesuai. Gratis konsultasi, tanpa hardsell.</div>
+            <button class="btn btn-gold" onclick="contactAgent()">Konsultasi via WhatsApp</button>
+          </div>
+        </div>
+
+        <div class="disclaimer">
+          *Hasil ini estimasi berdasarkan kaidah umum dana darurat (6–12× pengeluaran sesuai situasi). Angka aktual dapat disesuaikan dengan kondisi pribadi Anda. Bukan merupakan saran finansial yang mengikat.
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function() {
+  'use strict';
+
+  const SUPABASE_URL = 'https://bfydtsfekvueqzvuschp.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_3Xec3HYKViIiuX99hHxHqg_Ih8ABX_T';
+
+  let supabase = null;
+  let agentData = null;
+  let calcResult = null;
+  let leadId = null;
+
+  function parseMoney(str) { return parseInt(String(str).replace(/[^0-9]/g, ''), 10) || 0; }
+  function fmtMoney(num) { return 'Rp ' + Math.round(num).toLocaleString('id-ID'); }
+  function fmtShort(num) {
+    if (num >= 1000000000) return 'Rp ' + (num / 1000000000).toFixed(num % 1000000000 === 0 ? 0 : 1) + ' M';
+    if (num >= 1000000) return 'Rp ' + Math.round(num / 1000000) + ' jt';
+    if (num >= 1000) return 'Rp ' + Math.round(num / 1000) + ' rb';
+    return 'Rp ' + num;
+  }
+
+  window.formatMoney = function(input) {
+    const val = parseMoney(input.value);
+    input.value = val ? val.toLocaleString('id-ID') : '';
+  };
+
+  // ===== CALCULATION =====
+  function calculate() {
+    const pengeluaran = parseMoney(document.getElementById('pengeluaran').value);
+    const sel = document.getElementById('situasi');
+    const situasi = sel.value;
+    const pengali = parseInt(sel.options[sel.selectedIndex].getAttribute('data-pengali'), 10);
+    const tabungan = parseMoney(document.getElementById('tabungan').value);
+    const nabung = parseMoney(document.getElementById('nabung').value);
+
+    const target = pengeluaran * pengali;
+    const gap = Math.max(0, target - tabungan);
+    const bulanDibutuhkan = (nabung > 0 && gap > 0) ? Math.ceil(gap / nabung) : 0;
+    const bulanFast = (nabung > 0 && gap > 0) ? Math.ceil(gap / (nabung * 2)) : 0;
+    const bulanTertahan = pengeluaran > 0 ? (tabungan / pengeluaran) : 0;
+    const progressPct = target > 0 ? Math.min(100, Math.round((tabungan / target) * 100)) : 0;
+
+    let status;
+    if (tabungan >= target) status = 'aman';
+    else if (tabungan >= target / 2) status = 'cukup';
+    else status = 'rentan';
+
+    return {
+      pengeluaran, situasi, pengali, tabungan, nabung,
+      target, gap, bulanDibutuhkan, bulanFast,
+      bulanTertahan: parseFloat(bulanTertahan.toFixed(1)),
+      progressPct, status
+    };
+  }
+
+  window.hitung = function() {
+    calcResult = calculate();
+
+    document.getElementById('inputView').style.display = 'none';
+    document.getElementById('resultView').classList.add('show');
+
+    // Hero
+    document.getElementById('targetVal').textContent = fmtMoney(calcResult.target);
+    document.getElementById('targetSub').textContent = '(' + calcResult.pengali + '× pengeluaran bulanan)';
+
+    // Status badge
+    const badge = document.getElementById('statusBadge');
+    const statusMap = {
+      aman: { cls: 'aman', txt: '✅ Aman — dana darurat Anda sudah ideal' },
+      cukup: { cls: 'cukup', txt: '⚠️ Cukup, tapi belum ideal' },
+      rentan: { cls: 'rentan', txt: '❗ Rentan — perlu segera diperkuat' }
+    };
+    const st = statusMap[calcResult.status];
+    badge.className = 'status-badge ' + st.cls;
+    badge.textContent = st.txt;
+
+    // Progress
+    document.getElementById('progressPct').textContent = calcResult.progressPct + '%';
+    document.getElementById('tabunganLabel').textContent = fmtShort(calcResult.tabungan);
+    document.getElementById('targetLabel').textContent = fmtShort(calcResult.target);
+    setTimeout(() => {
+      document.getElementById('progressFill').style.width = calcResult.progressPct + '%';
+    }, 200);
+
+    // Gap
+    document.getElementById('gapVal').textContent = calcResult.gap > 0 ? fmtMoney(calcResult.gap) : 'Rp 0 🎉';
+    const bln = calcResult.bulanTertahan;
+    document.getElementById('gapSub').textContent = 'Tabungan Anda saat ini cukup untuk ' + bln + ' bulan pengeluaran';
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  async function loadAgent(username) {
+    try {
+      const { data } = await supabase
+        .from('users')
+        .select('id, nama_lengkap, nama_panggilan, username, whatsapp')
+        .eq('username', username)
+        .eq('subscription_status', 'active')
+        .maybeSingle();
+      if (data) {
+        agentData = data;
+        const name = data.nama_panggilan || data.nama_lengkap.split(' ')[0];
+        document.getElementById('agentInfo').style.display = 'flex';
+        document.getElementById('agentName').textContent = name;
+        document.getElementById('agentAvatar').textContent = name[0].toUpperCase();
+        document.getElementById('ctaAgentName').textContent = name;
+        trackClick();
+      }
+    } catch (e) { console.warn('Agent load failed:', e); }
+  }
+
+  // Catat klik/buka halaman (fire-and-forget)
+  function trackClick() {
+    if (!agentData) return;
+    try {
+      const params = new URLSearchParams(window.location.search);
+      supabase.from('magnet_clicks').insert({
+        user_id: agentData.id,
+        magnet_slug: 'dana-darurat',
+        referrer: document.referrer || null,
+        user_agent: navigator.userAgent || null,
+        utm_source: params.get('utm_source') || null
+      }).then(() => {}).catch(err => console.warn('Click track failed:', err));
+    } catch (e) { console.warn('Click track error:', e); }
+  }
+
+  window.submitCapture = async function() {
+    const nama = document.getElementById('capNama').value.trim();
+    const email = document.getElementById('capEmail').value.trim();
+    const wa = document.getElementById('capWA').value.trim();
+    const errEl = document.getElementById('formError');
+    errEl.classList.remove('show');
+
+    if (!nama || !email || !wa) { errEl.textContent = 'Mohon lengkapi semua field.'; errEl.classList.add('show'); return; }
+    if (!email.includes('@')) { errEl.textContent = 'Email tidak valid.'; errEl.classList.add('show'); return; }
+    if (wa.length < 9) { errEl.textContent = 'No. WhatsApp tidak valid.'; errEl.classList.add('show'); return; }
+
+    if (agentData) {
+      try {
+        const { data: leadData, error: leadError } = await supabase
+          .from('leads')
+          .insert({
+            owner_id: agentData.id,
+            nama: nama,
+            email: email,
+            whatsapp: wa,
+            stage: 'new',
+            source_magnet: 'darurat',
+            score: Math.round(calcResult.gap / 1000),
+            result_json: calcResult
+          })
+          .select()
+          .single();
+
+        if (!leadError && leadData) {
+          leadId = leadData.id;
+          await supabase.from('lead_magnet_responses').insert({
+            lead_id: leadId,
+            magnet_slug: 'dana-darurat',
+            raw_answers: {
+              pengeluaran_bulanan: calcResult.pengeluaran,
+              situasi: calcResult.situasi,
+              tabungan_sekarang: calcResult.tabungan,
+              kemampuan_nabung: calcResult.nabung
+            },
+            scores: {
+              target: calcResult.target,
+              gap: calcResult.gap,
+              bulan_dibutuhkan: calcResult.bulanDibutuhkan,
+              bulan_tertahan: calcResult.bulanTertahan,
+              pengali: calcResult.pengali,
+              progress_pct: calcResult.progressPct
+            },
+            priority_areas: ['dana-darurat']
+          });
+
+          // Send result email to prospek (fire-and-forget)
+          try {
+            fetch(SUPABASE_URL + '/functions/v1/send-magnet-result', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + SUPABASE_ANON_KEY
+              },
+              body: JSON.stringify({
+                prospek_nama: nama,
+                prospek_email: email,
+                magnet_slug: 'dana-darurat',
+                scores: {
+                  target: calcResult.target,
+                  gap: calcResult.gap,
+                  bulan_dibutuhkan: calcResult.bulanDibutuhkan,
+                  bulan_tertahan: calcResult.bulanTertahan,
+                  pengali: calcResult.pengali,
+                  progress_pct: calcResult.progressPct
+                },
+                priority_areas: ['dana-darurat'],
+                agen_nama: agentData.nama_panggilan || agentData.nama_lengkap.split(' ')[0],
+                agen_whatsapp: agentData.whatsapp || ''
+              })
+            }).catch(err => console.warn('Email send failed:', err));
+          } catch (e) { console.warn('Email trigger failed:', e); }
+        } else if (leadError) {
+          console.error('Lead insert error:', leadError);
+        }
+      } catch (e) { console.warn('Save failed:', e); }
+    }
+
+    document.getElementById('captureBlock').style.display = 'none';
+    showDetail();
+  };
+
+  function showDetail() {
+    // Waktu pencapaian
+    const waktuNow = calcResult.bulanDibutuhkan;
+    const waktuFast = calcResult.bulanFast;
+    const fmtBln = (b) => {
+      if (b <= 0) return 'Tercapai 🎉';
+      if (b >= 12) {
+        const th = Math.floor(b / 12); const sisa = b % 12;
+        return th + ' th' + (sisa > 0 ? ' ' + sisa + ' bln' : '');
+      }
+      return b + ' bln';
+    };
+    document.getElementById('waktuNow').textContent = fmtBln(waktuNow);
+    document.getElementById('waktuFast').textContent = fmtBln(waktuFast);
+    document.getElementById('nabungNowLabel').textContent = fmtShort(calcResult.nabung) + '/bln';
+    document.getElementById('nabungFastLabel').textContent = fmtShort(calcResult.nabung * 2) + '/bln';
+
+    // Strategy text by status
+    let strategi;
+    if (calcResult.status === 'aman') {
+      strategi = 'Selamat! Dana darurat Anda sudah ideal. Sekarang saat yang tepat untuk melangkah ke tahap berikutnya: proteksi (asuransi jiwa/kesehatan) dan investasi jangka panjang. Tetap simpan dana darurat di instrumen likuid & aman.';
+    } else if (calcResult.status === 'cukup') {
+      strategi = 'Dana darurat Anda sudah lumayan, tapi belum ideal. Lengkapi dulu sampai target sebelum fokus ke investasi berisiko. Simpan di instrumen likuid & aman (tabungan, deposito, reksa dana pasar uang).';
+    } else {
+      strategi = 'Dana darurat Anda masih rentan. Ini prioritas pertama sebelum investasi atau asuransi lain — karena dana darurat adalah "bantalan" saat ada kejadian tak terduga. Mulai sisihkan secara rutin di instrumen likuid & aman.';
+    }
+    document.getElementById('strategiText').textContent = strategi;
+
+    document.getElementById('detailSection').classList.add('show');
+    window.scrollTo({ top: document.getElementById('detailSection').offsetTop - 20, behavior: 'smooth' });
+  }
+
+  window.contactAgent = function() {
+    if (!agentData || !agentData.whatsapp) {
+      alert('Agen akan menghubungi Anda dalam 24 jam. Terima kasih!');
+      return;
+    }
+    const nama = document.getElementById('capNama').value.trim() || 'Saya';
+    const text = encodeURIComponent('Halo ' + (agentData.nama_panggilan || agentData.nama_lengkap.split(' ')[0]) + ', saya ' + nama + '. Saya baru pakai kalkulator dana darurat di mini-site Anda — target saya ' + fmtMoney(calcResult.target) + ', masih kurang ' + fmtMoney(calcResult.gap) + '. Mau diskusi cara menyusunnya?');
+    const phone = '62' + agentData.whatsapp.replace(/^0/, '').replace(/^62/, '');
+    window.open('https://wa.me/' + phone + '?text=' + text, '_blank');
+  };
+
+  async function init() {
+    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const urlParams = new URLSearchParams(window.location.search);
+    const ref = urlParams.get('ref');
+    if (ref) await loadAgent(ref);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+
+</body>
+</html>
