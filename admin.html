@@ -195,6 +195,144 @@
   .nav-logout:hover { color: var(--white); }
 
   /* ===== STATS BAR ===== */
+
+  /* ===== SIDEBAR LAYOUT ===== */
+  .app-shell {
+    display: flex;
+    min-height: 100vh;
+  }
+  .sidebar {
+    width: 240px;
+    background: var(--navy);
+    color: var(--white);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+  }
+  .sidebar-header {
+    padding: 24px 22px 18px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .sidebar-logo {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--white);
+    letter-spacing: -0.5px;
+  }
+  .sidebar-logo .accent { color: var(--gold); }
+  .sidebar-tag {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-top: 4px;
+    display: block;
+  }
+  .sidebar-section-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: rgba(255,255,255,0.35);
+    text-transform: uppercase;
+    padding: 18px 22px 8px;
+  }
+  .sidebar-nav {
+    flex: 1;
+    padding: 4px 14px;
+  }
+  .sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 14px;
+    border-radius: 8px;
+    color: rgba(255,255,255,0.7);
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 4px;
+    border: none;
+    background: transparent;
+    width: 100%;
+    text-align: left;
+    font-family: inherit;
+    transition: all 0.18s;
+  }
+  .sidebar-item:hover { background: rgba(255,255,255,0.05); color: var(--white); }
+  .sidebar-item.active {
+    background: rgba(201,169,97,0.15);
+    color: var(--gold);
+    border-left: 3px solid var(--gold);
+    padding-left: 11px;
+  }
+  .sidebar-item [data-lucide] { width: 18px; height: 18px; }
+  .sidebar-count {
+    margin-left: auto;
+    background: rgba(255,255,255,0.1);
+    color: var(--white);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+    min-width: 22px;
+    text-align: center;
+  }
+  .sidebar-item.active .sidebar-count {
+    background: var(--gold);
+    color: var(--navy);
+  }
+  .sidebar-footer {
+    padding: 14px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+  .sidebar-action {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    color: rgba(255,255,255,0.7);
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    border: none;
+    background: transparent;
+    width: 100%;
+    text-align: left;
+    font-family: inherit;
+    transition: all 0.18s;
+  }
+  .sidebar-action:hover { background: rgba(255,255,255,0.05); color: var(--white); }
+  .sidebar-action [data-lucide] { width: 16px; height: 16px; }
+  .main-content { flex: 1; min-width: 0; }
+  .view { display: none; }
+  .view.active { display: block; }
+  .view-header {
+    padding: 28px 32px 0;
+  }
+  .view-title {
+    font-family: var(--serif);
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--navy);
+    letter-spacing: -0.5px;
+    margin: 0 0 4px;
+  }
+  .view-sub {
+    color: var(--gray-500);
+    font-size: 14px;
+    margin-bottom: 24px;
+  }
+  @media (max-width: 768px) {
+    .sidebar { width: 200px; }
+    .view-header { padding: 20px; }
+  }
+
   .stats-bar {
     background: var(--white);
     border-bottom: 1px solid var(--gray-200);
@@ -707,78 +845,147 @@
   </div>
 </div>
 
-<!-- ===== NAVBAR ===== -->
-<nav class="navbar" style="display:none;" id="mainNav">
-  <div>
-    <span class="nav-logo">AKP<span class="accent">Agenku</span></span>
-    <span class="nav-tag">Admin</span>
-  </div>
-  <div class="nav-right">
-    <button class="nav-refresh" onclick="loadAgents()">
-      <i data-lucide="refresh-cw"></i>
-      Refresh
-    </button>
-    <button class="nav-logout" onclick="logout()">Sign Out</button>
-  </div>
-</nav>
+<!-- ===== APP SHELL ===== -->
+<div class="app-shell" id="appShell" style="display:none;">
 
-<!-- ===== STATS ===== -->
-<div class="stats-bar" id="statsBar" style="display:none;">
-  <div class="stat">
-    <div class="stat-label">Total Agen</div>
-    <div class="stat-value" id="statTotal">-</div>
-    <div class="stat-sub">All time</div>
-  </div>
-  <div class="stat">
-    <div class="stat-label">Pending Approval</div>
-    <div class="stat-value amber" id="statPending">-</div>
-    <div class="stat-sub">Belum dibayar</div>
-  </div>
-  <div class="stat">
-    <div class="stat-label">Active</div>
-    <div class="stat-value green" id="statActive">-</div>
-    <div class="stat-sub">Membayar aktif</div>
-  </div>
-  <div class="stat">
-    <div class="stat-label">MRR</div>
-    <div class="stat-value" id="statMRR">-</div>
-    <div class="stat-sub">Monthly recurring</div>
-  </div>
-  <div class="stat">
-    <div class="stat-label">H-5 Expiring</div>
-    <div class="stat-value red" id="statExpiring">-</div>
-    <div class="stat-sub">Perlu reminder</div>
-  </div>
-</div>
-
-<!-- ===== MAIN ===== -->
-<div class="container" id="mainContainer" style="display:none;">
-  <div class="toolbar">
-    <div class="search-box">
-      <i data-lucide="search"></i>
-      <input type="text" class="search-input" id="searchInput" placeholder="Cari nama, email, atau username..." oninput="renderAgents()">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">AKP<span class="accent">Agenku</span></div>
+      <span class="sidebar-tag">Admin Panel</span>
     </div>
-    <div class="tabs">
-      <button class="tab active" data-filter="pending" onclick="setFilter('pending', event)">
-        Pending <span class="tab-count" id="countPending">0</span>
+
+    <div class="sidebar-section-label">Menu</div>
+    <nav class="sidebar-nav">
+      <button class="sidebar-item active" data-view="approval" onclick="setView('approval')">
+        <i data-lucide="user-check"></i>
+        <span>Approval</span>
+        <span class="sidebar-count" id="sidebarCountPending">0</span>
       </button>
-      <button class="tab" data-filter="active" onclick="setFilter('active', event)">
-        Active <span class="tab-count" id="countActive">0</span>
+      <button class="sidebar-item" data-view="data-agen" onclick="setView('data-agen')">
+        <i data-lucide="users"></i>
+        <span>Data Agen</span>
+        <span class="sidebar-count" id="sidebarCountActive">0</span>
       </button>
-      <button class="tab" data-filter="expired" onclick="setFilter('expired', event)">
-        Expired <span class="tab-count" id="countExpired">0</span>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="sidebar-action" onclick="loadAgents()">
+        <i data-lucide="refresh-cw"></i>
+        Refresh Data
       </button>
-      <button class="tab" data-filter="rejected" onclick="setFilter('rejected', event)">
-        Rejected <span class="tab-count" id="countRejected">0</span>
-      </button>
-      <button class="tab" data-filter="all" onclick="setFilter('all', event)">
-        All <span class="tab-count" id="countAll">0</span>
+      <button class="sidebar-action" onclick="logout()">
+        <i data-lucide="log-out"></i>
+        Sign Out
       </button>
     </div>
-  </div>
+  </aside>
 
-  <div id="agentList">
-    <div class="loading">Loading agents...</div>
+  <!-- MAIN CONTENT -->
+  <div class="main-content">
+
+    <!-- ===== VIEW: APPROVAL ===== -->
+    <div class="view active" id="viewApproval">
+      <div class="view-header">
+        <h1 class="view-title">Approval Calon Agen</h1>
+        <p class="view-sub">Verifikasi pembayaran dan aktifkan akun calon agen yang sudah daftar.</p>
+      </div>
+
+      <!-- Stats focused on approval -->
+      <div class="stats-bar" style="margin-top:0;">
+        <div class="stat">
+          <div class="stat-label">Pending Approval</div>
+          <div class="stat-value amber" id="statPending">-</div>
+          <div class="stat-sub">Menunggu verifikasi</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Total Pendaftar</div>
+          <div class="stat-value" id="statTotal">-</div>
+          <div class="stat-sub">All time</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Approved Hari Ini</div>
+          <div class="stat-value green" id="statApprovedToday">-</div>
+          <div class="stat-sub">24 jam terakhir</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Rejected</div>
+          <div class="stat-value red" id="statRejectedTotal">-</div>
+          <div class="stat-sub">All time</div>
+        </div>
+      </div>
+
+      <div class="container" style="display:block; padding-top:24px;">
+        <div class="toolbar">
+          <div class="search-box">
+            <i data-lucide="search"></i>
+            <input type="text" class="search-input" id="searchInputApproval" placeholder="Cari nama, email, atau username..." oninput="renderAgents()">
+          </div>
+        </div>
+        <div id="agentListApproval">
+          <div class="loading">Loading...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== VIEW: DATA AGEN ===== -->
+    <div class="view" id="viewDataAgen">
+      <div class="view-header">
+        <h1 class="view-title">Data Agen</h1>
+        <p class="view-sub">Daftar semua agen aktif, expired, atau rejected. Kelola subscription dan akses.</p>
+      </div>
+
+      <!-- Stats focused on active agents -->
+      <div class="stats-bar" style="margin-top:0;">
+        <div class="stat">
+          <div class="stat-label">Active</div>
+          <div class="stat-value green" id="statActive">-</div>
+          <div class="stat-sub">Subscription aktif</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">MRR</div>
+          <div class="stat-value" id="statMRR">-</div>
+          <div class="stat-sub">Monthly recurring</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">H-5 Expiring</div>
+          <div class="stat-value red" id="statExpiring">-</div>
+          <div class="stat-sub">Perlu reminder</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Expired</div>
+          <div class="stat-value amber" id="statExpired">-</div>
+          <div class="stat-sub">Subscription habis</div>
+        </div>
+      </div>
+
+      <div class="container" style="display:block; padding-top:24px;">
+        <div class="toolbar">
+          <div class="search-box">
+            <i data-lucide="search"></i>
+            <input type="text" class="search-input" id="searchInputDataAgen" placeholder="Cari nama, email, atau username..." oninput="renderAgents()">
+          </div>
+          <div class="tabs">
+            <button class="tab active" data-subfilter="active" onclick="setSubFilter('active', event)">
+              Active <span class="tab-count" id="countActive">0</span>
+            </button>
+            <button class="tab" data-subfilter="expired" onclick="setSubFilter('expired', event)">
+              Expired <span class="tab-count" id="countExpired">0</span>
+            </button>
+            <button class="tab" data-subfilter="rejected" onclick="setSubFilter('rejected', event)">
+              Rejected <span class="tab-count" id="countRejected">0</span>
+            </button>
+            <button class="tab" data-subfilter="all" onclick="setSubFilter('all', event)">
+              All <span class="tab-count" id="countAll">0</span>
+            </button>
+          </div>
+        </div>
+        <div id="agentListDataAgen">
+          <div class="loading">Loading...</div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -887,10 +1094,12 @@ function logout() {
 // ===== INIT =====
 function initApp() {
   document.getElementById('loginOverlay').style.display = 'none';
-  document.getElementById('mainNav').style.display = 'flex';
-  document.getElementById('statsBar').style.display = 'grid';
-  document.getElementById('mainContainer').style.display = 'block';
+  document.getElementById('appShell').style.display = 'flex';
   supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  // Default view = Approval (default filter = pending)
+  window.currentView = 'approval';
+  window.currentFilter = 'pending';
+  window.currentSubFilter = 'active'; // for Data Agen view
   loadAgents();
 }
 
@@ -901,7 +1110,10 @@ if (sessionStorage.getItem('admin_authenticated') === 'true') {
 
 // ===== LOAD DATA =====
 async function loadAgents() {
-  document.getElementById('agentList').innerHTML = '<div class="loading">Loading agents...</div>';
+  const approvalList = document.getElementById('agentListApproval');
+  const dataAgenList = document.getElementById('agentListDataAgen');
+  if (approvalList) approvalList.innerHTML = '<div class="loading">Loading...</div>';
+  if (dataAgenList) dataAgenList.innerHTML = '<div class="loading">Loading...</div>';
   try {
     const { data, error } = await supabase
       .from('users')
@@ -916,7 +1128,11 @@ async function loadAgents() {
   } catch (err) {
     console.error('Load error:', err);
     showToast('Error loading data: ' + err.message, 'error');
-    document.getElementById('agentList').innerHTML = '<div class="empty-state"><i data-lucide="alert-circle"></i><div class="empty-title">Failed to load</div><div class="empty-sub">Check Supabase connection</div></div>';
+    const errEl = document.getElementById('agentListApproval');
+    const errEl2 = document.getElementById('agentListDataAgen');
+    const errHtml = '<div class="empty-state"><i data-lucide="alert-circle"></i><div class="empty-title">Failed to load</div><div class="empty-sub">Check Supabase connection</div></div>';
+    if (errEl) errEl.innerHTML = errHtml;
+    if (errEl2) errEl2.innerHTML = errHtml;
     if (typeof lucide !== 'undefined') lucide.createIcons();
   }
 }
@@ -943,21 +1159,70 @@ function updateStats() {
     return until > now && until <= fiveDaysLater;
   }).length;
 
-  document.getElementById('statTotal').textContent = total;
-  document.getElementById('statPending').textContent = pending;
-  document.getElementById('statActive').textContent = active;
-  document.getElementById('statMRR').textContent = 'Rp ' + (mrr / 1000000).toFixed(1) + 'jt';
-  document.getElementById('statExpiring').textContent = expiring;
+  // Approved today
+  const dayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+  const approvedToday = allAgents.filter(a => {
+    if (a.subscription_status !== 'active' || !a.approved_at) return false;
+    return new Date(a.approved_at) >= dayAgo;
+  }).length;
 
-  // Tab counts
-  document.getElementById('countPending').textContent = pending;
-  document.getElementById('countActive').textContent = active;
-  document.getElementById('countExpired').textContent = expired;
-  document.getElementById('countRejected').textContent = rejected;
-  document.getElementById('countAll').textContent = total;
+  // Helper to set if element exists
+  const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+
+  // Approval view stats
+  set('statPending', pending);
+  set('statTotal', total);
+  set('statApprovedToday', approvedToday);
+  set('statRejectedTotal', rejected);
+
+  // Data Agen view stats
+  set('statActive', active);
+  set('statMRR', 'Rp ' + (mrr / 1000000).toFixed(1) + 'jt');
+  set('statExpiring', expiring);
+  set('statExpired', expired);
+
+  // Sidebar counts
+  set('sidebarCountPending', pending);
+  set('sidebarCountActive', active);
+
+  // Tab counts (Data Agen)
+  set('countActive', active);
+  set('countExpired', expired);
+  set('countRejected', rejected);
+  set('countAll', total);
 }
 
 // ===== FILTER =====
+function setView(view) {
+  window.currentView = view;
+  // Update sidebar active states
+  document.querySelectorAll('.sidebar-item').forEach(b => b.classList.remove('active'));
+  const activeBtn = document.querySelector('.sidebar-item[data-view="' + view + '"]');
+  if (activeBtn) activeBtn.classList.add('active');
+
+  // Show correct view
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  if (view === 'approval') {
+    document.getElementById('viewApproval').classList.add('active');
+    window.currentFilter = 'pending';
+  } else if (view === 'data-agen') {
+    document.getElementById('viewDataAgen').classList.add('active');
+    window.currentFilter = window.currentSubFilter || 'active';
+  }
+  renderAgents();
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+
+function setSubFilter(subFilter, event) {
+  window.currentSubFilter = subFilter;
+  window.currentFilter = subFilter;
+  // Update tab active states in Data Agen view
+  const tabs = document.querySelectorAll('#viewDataAgen .tab');
+  tabs.forEach(t => t.classList.remove('active'));
+  if (event && event.currentTarget) event.currentTarget.classList.add('active');
+  renderAgents();
+}
+
 function setFilter(filter, event) {
   currentFilter = filter;
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -967,7 +1232,11 @@ function setFilter(filter, event) {
 
 // ===== RENDER =====
 function renderAgents() {
-  const search = document.getElementById('searchInput').value.toLowerCase().trim();
+  const view = window.currentView || 'approval';
+  const searchInputId = view === 'approval' ? 'searchInputApproval' : 'searchInputDataAgen';
+  const listId = view === 'approval' ? 'agentListApproval' : 'agentListDataAgen';
+  const searchEl = document.getElementById(searchInputId);
+  const search = searchEl ? searchEl.value.toLowerCase().trim() : '';
   const now = new Date();
   const fiveDaysLater = new Date(now.getTime() + 5 * 24 * 60 * 60 * 1000);
 
@@ -992,7 +1261,8 @@ function renderAgents() {
     return true;
   });
 
-  const list = document.getElementById('agentList');
+  const list = document.getElementById(listId);
+  if (!list) return;
   if (filtered.length === 0) {
     list.innerHTML = `
       <div class="empty-state">
