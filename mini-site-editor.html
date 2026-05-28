@@ -1154,6 +1154,70 @@
             <label class="field-label">Tahun Pengalaman</label>
             <input type="number" class="field-input" id="input-tahun" value="8">
           </div>
+
+          <div class="field-group">
+            <label class="field-label">Pertanyaan yang Sering Muncul</label>
+            <div class="field-help" style="margin-top:0;margin-bottom:12px;">Centang pertanyaan yang ingin ditampilkan di mini-site. <strong>Pilih 2 sampai 6</strong>. Teks sudah disiapkan, tinggal pilih yang paling relevan dengan calon klien Anda. <span id="pain-counter" style="font-weight:600;color:var(--gold);"></span></div>
+
+            <div class="check-list" id="pain-checklist">
+              <div class="check-item checked" data-pain="sakit" onclick="togglePain(this)">
+                <div class="check-box"><i data-lucide="check"></i></div>
+                <div class="check-body">
+                  <div class="check-title">"Kalau saya tiba-tiba sakit, gimana?"</div>
+                  <div class="check-desc">Beban biaya rawat di luar plafon BPJS & kehilangan pendapatan</div>
+                </div>
+              </div>
+              <div class="check-item checked" data-pain="pendidikan" onclick="togglePain(this)">
+                <div class="check-box"><i data-lucide="check"></i></div>
+                <div class="check-body">
+                  <div class="check-title">"Biaya kuliah anak 15 tahun lagi berapa ya?"</div>
+                  <div class="check-desc">Inflasi pendidikan & pentingnya mulai menabung lebih awal</div>
+                </div>
+              </div>
+              <div class="check-item checked" data-pain="pensiun" onclick="togglePain(this)">
+                <div class="check-box"><i data-lucide="check"></i></div>
+                <div class="check-body">
+                  <div class="check-title">"Tabungan saya cukup untuk pensiun gak ya?"</div>
+                  <div class="check-desc">Kesiapan dana hari tua & strategi mulai dari sekarang</div>
+                </div>
+              </div>
+              <div class="check-item checked" data-pain="pilihasuransi" onclick="togglePain(this)">
+                <div class="check-box"><i data-lucide="check"></i></div>
+                <div class="check-body">
+                  <div class="check-title">"Asuransi mana yang benar-benar saya butuhkan?"</div>
+                  <div class="check-desc">Paham kondisi keuangan dulu, baru pilih solusi</div>
+                </div>
+              </div>
+              <div class="check-item" data-pain="pencarinafkah" onclick="togglePain(this)">
+                <div class="check-box"><i data-lucide="check"></i></div>
+                <div class="check-body">
+                  <div class="check-title">"Kalau saya tiada, keluarga gimana?"</div>
+                  <div class="check-desc">Proteksi penghasilan pencari nafkah utama</div>
+                </div>
+              </div>
+              <div class="check-item" data-pain="darurat" onclick="togglePain(this)">
+                <div class="check-box"><i data-lucide="check"></i></div>
+                <div class="check-body">
+                  <div class="check-title">"Punya dana darurat yang cukup gak ya?"</div>
+                  <div class="check-desc">Idealnya 3-6 bulan pengeluaran tersimpan aman</div>
+                </div>
+              </div>
+              <div class="check-item" data-pain="kritis" onclick="togglePain(this)">
+                <div class="check-box"><i data-lucide="check"></i></div>
+                <div class="check-body">
+                  <div class="check-title">"Gimana kalau kena penyakit kritis?"</div>
+                  <div class="check-desc">Dana tunai saat terdiagnosa kanker, stroke, atau jantung</div>
+                </div>
+              </div>
+              <div class="check-item" data-pain="warisan" onclick="togglePain(this)">
+                <div class="check-box"><i data-lucide="check"></i></div>
+                <div class="check-body">
+                  <div class="check-title">"Aset saya nanti aman buat anak-anak?"</div>
+                  <div class="check-desc">Perencanaan warisan supaya aset terbagi dengan tenang</div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- TAB: PRODUK -->
@@ -1727,6 +1791,15 @@
       if (typeof updateProductsPreview === 'function') updateProductsPreview();
     }
 
+    // Restore PAIN POINTS (checkbox)
+    if (Array.isArray(data.pain_points) && data.pain_points.length) {
+      document.querySelectorAll('#pain-checklist .check-item').forEach(el => {
+        const key = el.getAttribute('data-pain');
+        el.classList.toggle('checked', data.pain_points.includes(key));
+      });
+    }
+    if (typeof updatePainCounter === 'function') updatePainCounter();
+
     // Restore MAGNET (utama + supporting)
     if (data.magnet_utama || Array.isArray(data.magnet_supporting)) {
       const supporting = Array.isArray(data.magnet_supporting) ? data.magnet_supporting : [];
@@ -1783,6 +1856,9 @@
     // Baca produk aktif (checkbox)
     const produkAktif = Array.from(document.querySelectorAll('#tab-produk .check-item.checked'))
       .map(el => el.getAttribute('data-produk')).filter(Boolean);
+    // Baca pain-point aktif (checkbox)
+    const painPoints = Array.from(document.querySelectorAll('#pain-checklist .check-item.checked'))
+      .map(el => el.getAttribute('data-pain')).filter(Boolean);
     // Baca magnet utama + supporting
     const utamaEl = document.querySelector('.magnet-pick.is-utama');
     const magnetUtama = utamaEl?.dataset.id || 'skor';
@@ -1801,6 +1877,7 @@
       theme: theme,
       font_style: font,
       produk_aktif: produkAktif,
+      pain_points: painPoints,
       magnet_utama: magnetUtama,
       magnet_supporting: magnetSupporting,
       updated_at: new Date().toISOString()
@@ -1999,6 +2076,38 @@ function toggleCheck(el, productKey) {
   updateProductsPreview();
 }
 
+// Toggle pain-point (validasi 2-6)
+function togglePain(el) {
+  const checked = document.querySelectorAll('#pain-checklist .check-item.checked');
+  const isChecked = el.classList.contains('checked');
+  // Mau matikan tapi sudah di batas minimum 2
+  if (isChecked && checked.length <= 2) {
+    updatePainCounter('Minimal pilih 2 pertanyaan.');
+    return;
+  }
+  // Mau nyalakan tapi sudah di batas maksimum 6
+  if (!isChecked && checked.length >= 6) {
+    updatePainCounter('Maksimal 6 pertanyaan.');
+    return;
+  }
+  el.classList.toggle('checked');
+  updatePainCounter();
+}
+
+function updatePainCounter(warnMsg) {
+  const counter = document.getElementById('pain-counter');
+  if (!counter) return;
+  const n = document.querySelectorAll('#pain-checklist .check-item.checked').length;
+  if (warnMsg) {
+    counter.textContent = warnMsg;
+    counter.style.color = '#b91c1c';
+    setTimeout(() => { counter.style.color = 'var(--gold)'; counter.textContent = n + ' terpilih'; }, 1800);
+  } else {
+    counter.textContent = n + ' terpilih';
+    counter.style.color = 'var(--gold)';
+  }
+}
+
 function updateProductsPreview() {
   const checked = document.querySelectorAll('#tab-produk .check-item.checked');
   const grid = document.getElementById('prev-products');
@@ -2062,6 +2171,7 @@ window.updatePreview = updatePreview;
 window.toggleTemplates = toggleTemplates;
 window.applyTemplate = applyTemplate;
 window.toggleCheck = toggleCheck;
+window.togglePain = togglePain;
 window.toggleMagnet = toggleMagnet;
 window.setUtama = setUtama;
 window.setTheme = setTheme;
@@ -2086,6 +2196,7 @@ window.addEventListener('DOMContentLoaded', () => {
     lucide.createIcons();
   }
   bindLiveInputs();
+  if (typeof updatePainCounter === 'function') updatePainCounter();
 });
 </script>
 

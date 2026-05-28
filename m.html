@@ -1165,54 +1165,12 @@
   <div class="container">
     <div class="section-eyebrow">Pertanyaan yang Sering Muncul</div>
     <h2 class="section-title">Apakah Anda Pernah Bertanya...</h2>
-    <div class="section-sub">
-      Empat hal yang paling sering ditanyakan keluarga muda Indonesia ke saya
+    <div class="section-sub" id="m-pain-sub">
+      Beberapa hal yang paling sering ditanyakan keluarga muda Indonesia ke saya
     </div>
 
-    <div class="pain-grid">
-      <div class="pain-card">
-        <div class="pain-icon"><i data-lucide="alert-circle"></i></div>
-        <div class="pain-content">
-          <div class="pain-title">"Kalau saya tiba-tiba sakit, gimana?"</div>
-          <div class="pain-desc">
-            BPJS bantu, tapi biaya kamar VIP, obat di luar plafon, dan kehilangan
-            pendapatan saat dirawat — semua itu seringkali jadi beban yang tidak terduga.
-          </div>
-        </div>
-      </div>
-
-      <div class="pain-card">
-        <div class="pain-icon"><i data-lucide="graduation-cap"></i></div>
-        <div class="pain-content">
-          <div class="pain-title">"Biaya kuliah anak 15 tahun lagi berapa ya?"</div>
-          <div class="pain-desc">
-            Universitas swasta hari ini Rp 250 juta. 15 tahun lagi? Bisa 3x lipat
-            karena inflasi pendidikan. Kalau baru nabung pas anak SMA, sudah terlambat.
-          </div>
-        </div>
-      </div>
-
-      <div class="pain-card">
-        <div class="pain-icon"><i data-lucide="wallet"></i></div>
-        <div class="pain-content">
-          <div class="pain-title">"Tabungan saya cukup untuk pensiun gak ya?"</div>
-          <div class="pain-desc">
-            Banyak yang baru sadar dana pensiunnya kurang pas usia 50+. Padahal kalau
-            mulai dari sekarang dengan strategi yang benar, target lebih mudah tercapai.
-          </div>
-        </div>
-      </div>
-
-      <div class="pain-card">
-        <div class="pain-icon"><i data-lucide="shield-alert"></i></div>
-        <div class="pain-content">
-          <div class="pain-title">"Asuransi mana yang benar-benar saya butuhkan?"</div>
-          <div class="pain-desc">
-            Ada banyak produk di pasaran. Yang penting bukan produknya, tapi paham dulu
-            kondisi keuangan Anda — baru pilih solusi yang sesuai kebutuhan.
-          </div>
-        </div>
-      </div>
+    <div class="pain-grid" id="m-pain-grid">
+      <!-- diisi dinamis oleh loader dari pain_points -->
     </div>
 
     <div class="pain-quote">
@@ -1220,7 +1178,7 @@
         "Kalau Anda merasa salah satu di atas familiar, Anda tidak sendirian.
         Mari kita mulai dari memahami kondisi Anda dulu."
       </div>
-      <div class="pain-quote-sub">— Cristine Lestari, Perencana Keuangan Keluarga</div>
+      <div class="pain-quote-sub" id="m-pain-quote-sub">— Perencana Keuangan Keluarga</div>
     </div>
   </div>
 </section>
@@ -1527,6 +1485,18 @@ window.addEventListener('DOMContentLoaded', () => {
     pensiun:    { name:'Dana Pensiun', desc:'Perencanaan dana hari tua agar tetap mandiri secara finansial saat pensiun.', icon:'piggy-bank' },
     syariah:    { name:'Asuransi Syariah', desc:'Proteksi berbasis prinsip syariah, dikelola sesuai fatwa DSN-MUI.', icon:'moon' }
   };
+  // Library pertanyaan/pain-point siap pakai (agen tinggal pilih 2-6 di editor)
+  const PAINPOINT_LIBRARY = {
+    sakit:        { icon:'alert-circle',    title:'"Kalau saya tiba-tiba sakit, gimana?"', desc:'BPJS bantu, tapi biaya kamar VIP, obat di luar plafon, dan kehilangan pendapatan saat dirawat — semua itu seringkali jadi beban yang tidak terduga.' },
+    pendidikan:   { icon:'graduation-cap',  title:'"Biaya kuliah anak 15 tahun lagi berapa ya?"', desc:'Universitas swasta hari ini Rp 250 juta. 15 tahun lagi? Bisa 3x lipat karena inflasi pendidikan. Kalau baru nabung pas anak SMA, sudah terlambat.' },
+    pensiun:      { icon:'wallet',          title:'"Tabungan saya cukup untuk pensiun gak ya?"', desc:'Banyak yang baru sadar dana pensiunnya kurang pas usia 50+. Padahal kalau mulai dari sekarang dengan strategi yang benar, target lebih mudah tercapai.' },
+    pilihasuransi:{ icon:'shield-alert',    title:'"Asuransi mana yang benar-benar saya butuhkan?"', desc:'Ada banyak produk di pasaran. Yang penting bukan produknya, tapi paham dulu kondisi keuangan Anda — baru pilih solusi yang sesuai kebutuhan.' },
+    pencarinafkah:{ icon:'heart-handshake', title:'"Kalau saya tiada, keluarga gimana?"', desc:'Sebagai pencari nafkah utama, penghasilan Anda menopang banyak hal. Tanpa proteksi yang tepat, keluarga bisa kehilangan pijakan finansial di saat tersulit.' },
+    darurat:      { icon:'umbrella',        title:'"Punya dana darurat yang cukup gak ya?"', desc:'Idealnya 3-6 bulan pengeluaran tersimpan aman. Tanpa dana darurat, satu kejadian tak terduga bisa memaksa Anda berhutang atau menjual aset.' },
+    kritis:       { icon:'activity',        title:'"Gimana kalau kena penyakit kritis?"', desc:'Biaya pengobatan kanker, stroke, atau jantung bisa ratusan juta. Proteksi penyakit kritis memberi dana tunai supaya Anda fokus sembuh, bukan mikir biaya.' },
+    warisan:      { icon:'scroll-text',     title:'"Aset saya nanti aman buat anak-anak?"', desc:'Tanpa perencanaan warisan yang rapi, aset bisa terhambat proses atau terbagi tidak sesuai keinginan. Persiapan sejak dini bikin semuanya lebih tenang.' }
+  };
+  const PAINPOINT_DEFAULT = ['sakit','pendidikan','pensiun','pilihasuransi'];
 
   function getUsername() {
     // 1. Coba dari query string ?u=username (kalau diakses m.html?u=x langsung)
@@ -1628,6 +1598,28 @@ window.addEventListener('DOMContentLoaded', () => {
           }).join('');
         }
       }
+      // Pain points (pertanyaan yang sering muncul)
+      const painGrid = document.getElementById('m-pain-grid');
+      if (painGrid) {
+        let painKeys = Array.isArray(site.pain_points) && site.pain_points.length
+          ? site.pain_points : PAINPOINT_DEFAULT;
+        painKeys = painKeys.filter(k => PAINPOINT_LIBRARY[k]).slice(0, 6);
+        if (painKeys.length) {
+          painGrid.innerHTML = painKeys.map(k => {
+            const p = PAINPOINT_LIBRARY[k];
+            return '<div class="pain-card"><div class="pain-icon"><i data-lucide="' + p.icon + '"></i></div>' +
+              '<div class="pain-content"><div class="pain-title">' + p.title + '</div>' +
+              '<div class="pain-desc">' + p.desc + '</div></div></div>';
+          }).join('');
+        }
+      }
+      // Nama di kutipan bawah pain section
+      const painQuoteSub = document.getElementById('m-pain-quote-sub');
+      if (painQuoteSub) {
+        const peranAgen = (site && site.peran) || 'Perencana Keuangan Keluarga';
+        painQuoteSub.textContent = '— ' + nama + ', ' + peranAgen;
+      }
+
       // Magnet utama
       const mu = site.magnet_utama || 'skor';
       const minfo = MAGNET_INFO[mu] || MAGNET_INFO.skor;
