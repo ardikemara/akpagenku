@@ -846,11 +846,12 @@
   .tipe-radio { flex:1; display:flex; align-items:center; gap:6px; padding:11px 14px; border:1.5px solid #e5e5e5; border-radius:8px; cursor:pointer; font-size:13px; font-weight:600; color:#404040; transition:all .15s; }
   .tipe-radio.active { border-color:#c9a961; background:rgba(201,169,97,0.08); color:#0f2647; }
   .tipe-radio [data-lucide] { width:15px; height:15px; }
-  .konten-admin-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:16px; }
-  .konten-admin-card { background:#fff; border:1px solid #e5e5e5; border-radius:12px; overflow:hidden; }
-  .konten-admin-thumb { position:relative; width:100%; aspect-ratio:4/5; background:#f5f5f5; overflow:hidden; }
+  .konten-admin-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:22px; }
+  .konten-admin-card { background:#fff; border:1px solid #e5e5e5; border-radius:12px; overflow:hidden; transition:box-shadow .15s; }
+  .konten-admin-card:hover { box-shadow:0 6px 18px rgba(15,38,71,0.10); }
+  /* Tinggi thumbnail dibatasi supaya grid lega (admin = manajemen, bukan preview detail) */
+  .konten-admin-thumb { position:relative; width:100%; height:170px; background:#f5f5f5; overflow:hidden; }
   .konten-admin-thumb img { width:100%; height:100%; object-fit:cover; }
-  .konten-admin-thumb.story { aspect-ratio:9/16; }
   .konten-carousel-count { position:absolute; top:8px; right:8px; background:rgba(15,38,71,0.85); color:#fff; font-size:11px; font-weight:600; padding:3px 8px; border-radius:999px; display:inline-flex; align-items:center; gap:3px; }
   .konten-carousel-count [data-lucide] { width:11px; height:11px; }
   .konten-admin-type { position:absolute; top:8px; left:8px; background:rgba(255,255,255,0.92); color:#0f2647; font-size:10px; font-weight:700; padding:3px 8px; border-radius:999px; text-transform:uppercase; }
