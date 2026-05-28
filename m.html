@@ -1545,8 +1545,16 @@ window.addEventListener('DOMContentLoaded', () => {
     syariah:    { name:'Asuransi Syariah', desc:'Proteksi berbasis prinsip syariah, dikelola sesuai fatwa DSN-MUI.', icon:'moon' }
   };
 
-  function getParam(name) {
-    return new URLSearchParams(window.location.search).get(name);
+  function getUsername() {
+    // 1. Coba dari query string ?u=username (kalau diakses m.html?u=x langsung)
+    const fromQuery = new URLSearchParams(window.location.search).get('u');
+    if (fromQuery) return fromQuery;
+    // 2. Dari path URL bersih /username (hasil rewrite Vercel, address bar tetap /username)
+    const path = window.location.pathname.replace(/^\/+|\/+$/g, ''); // buang slash depan/belakang
+    if (path && path !== 'm.html' && path !== 'm' && !path.includes('/') && !path.includes('.')) {
+      return path;
+    }
+    return null;
   }
   function setText(id, val) { const el = document.getElementById(id); if (el && val != null && val !== '') el.textContent = val; }
   function waLink(wa) {
@@ -1556,7 +1564,7 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   async function load() {
-    const username = getParam('u');
+    const username = getUsername();
     if (!username) { showError('Mini-site tidak ditemukan.'); return; }
 
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
