@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kuis Risiko Penyakit Kritis | AKPAgenku</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0f2647;
+    --navy-dark: #081a33;
+    --gold: #c9a961;
+    --gold-light: #d9bd7f;
+    --gold-dark: #a88a45;
+    --cream: #faf8f3;
+    --gray-50: #fafafa;
+    --gray-100: #f5f5f5;
+    --gray-200: #e5e5e5;
+    --gray-300: #d4d4d4;
+    --gray-500: #737373;
+    --gray-700: #404040;
+    --gray-900: #171717;
+    --white: #ffffff;
+    --green: #059669;
+    --amber: #f59e0b;
+    --red: #dc2626;
+    --red-dark: #991b1b;
+    --serif: 'Playfair Display', serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--cream);
+    color: var(--gray-900);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ===== HEADER ===== */
+  .quiz-header { background: var(--navy); color: var(--white); padding: 16px 20px; }
+  .quiz-header-inner { max-width: 680px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .agent-info { display: flex; align-items: center; gap: 10px; font-size: 13px; }
+  .agent-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--gold); color: var(--navy); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink: 0; }
+  .agent-name { font-weight: 600; }
+  .agent-tag { color: var(--gold); font-size: 11px; letter-spacing: 1px; text-transform: uppercase; }
+  .logo { font-family: var(--serif); font-size: 18px; font-weight: 700; color: var(--white); text-decoration: none; }
+  .logo .accent { color: var(--gold); }
+
+  /* ===== MAIN ===== */
+  .container { max-width: 680px; margin: 0 auto; padding: 32px 20px 80px; }
+  .card { background: var(--white); border-radius: 16px; border: 1px solid var(--gray-200); box-shadow: 0 4px 14px rgba(15, 38, 71, 0.04); overflow: hidden; }
+
+  /* ===== HERO ===== */
+  .hero { position: relative; width: 100%; aspect-ratio: 16 / 9; background: linear-gradient(135deg, var(--red) 0%, var(--red-dark) 100%); overflow: hidden; }
+  .hero-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(15,38,71,0.1) 0%, rgba(15,38,71,0.4) 100%); z-index: 1; }
+  .hero-icon { position: absolute; bottom: 16px; left: 28px; z-index: 2; width: 56px; height: 56px; border-radius: 14px; background: rgba(255,255,255,0.18); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; font-size: 28px; border: 1px solid rgba(255,255,255,0.25); }
+  .body { padding: 28px 28px 32px; }
+  .title { font-family: var(--serif); font-size: 27px; font-weight: 700; color: var(--navy); line-height: 1.2; margin-bottom: 10px; }
+  .subtitle { font-size: 15px; color: var(--gray-700); margin-bottom: 26px; }
+
+  /* ===== QUIZ ===== */
+  .question { margin-bottom: 26px; }
+  .question-num { font-size: 12px; font-weight: 700; color: var(--gold-dark); letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 8px; }
+  .question-text { font-size: 16px; font-weight: 600; color: var(--navy); margin-bottom: 14px; line-height: 1.4; }
+  .options { display: flex; flex-direction: column; gap: 8px; }
+  .option { display: flex; align-items: center; gap: 12px; padding: 13px 16px; border: 1.5px solid var(--gray-200); border-radius: 10px; cursor: pointer; transition: all 0.15s; font-size: 14px; }
+  .option:hover { border-color: var(--gold); background: rgba(201,169,97,0.04); }
+  .option.selected { border-color: var(--red); background: rgba(220,38,38,0.05); }
+  .option-radio { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--gray-300); flex-shrink: 0; position: relative; transition: all 0.15s; }
+  .option.selected .option-radio { border-color: var(--red); }
+  .option.selected .option-radio::after { content: ''; position: absolute; inset: 3px; background: var(--red); border-radius: 50%; }
+
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 15px 24px; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; font-family: inherit; width: 100%; }
+  .btn-primary { background: var(--navy); color: var(--white); }
+  .btn-primary:hover { background: var(--navy-dark); transform: translateY(-1px); }
+  .btn-primary:disabled { background: var(--gray-300); cursor: not-allowed; transform: none; }
+  .btn-gold { background: var(--gold); color: var(--navy); }
+  .btn-gold:hover { background: var(--gold-light); transform: translateY(-1px); box-shadow: 0 6px 16px rgba(201,169,97,0.25); }
+
+  .form-input { width: 100%; padding: 13px 14px; border: 1.5px solid var(--gray-200); border-radius: 9px; font-size: 14px; font-family: inherit; background: var(--white); color: var(--gray-900); }
+  .form-input:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201, 169, 97, 0.15); }
+  .form-label { display: block; font-size: 14px; font-weight: 600; color: var(--navy); margin-bottom: 8px; }
+  .input-money { position: relative; }
+  .input-money .prefix { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--gray-500); font-size: 14px; font-weight: 600; pointer-events: none; }
+
+  /* ===== RESULT ===== */
+  .result-section { display: none; }
+  .result-section.show { display: block; animation: slideIn 0.5s; }
+  @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* Gauge */
+  .gauge-wrap { text-align: center; padding: 16px 0 8px; }
+  .gauge-label-top { font-size: 13px; color: var(--gray-700); margin-bottom: 12px; }
+  .gauge { position: relative; width: 200px; height: 110px; margin: 0 auto 8px; }
+  .gauge svg { width: 100%; height: 100%; }
+  .gauge-value { font-family: var(--serif); font-size: 38px; font-weight: 700; line-height: 1; }
+  .gauge-level { font-size: 15px; font-weight: 700; margin-top: 2px; }
+
+  .result-row { display: flex; gap: 12px; margin: 20px 0; }
+  .result-box { flex: 1; border-radius: 12px; padding: 18px 14px; text-align: center; }
+  .result-box.biaya { background: var(--gray-50); border: 1px solid var(--gray-200); }
+  .result-box.gap { background: var(--navy); color: var(--white); }
+  .result-box-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+  .result-box.biaya .result-box-label { color: var(--gray-500); }
+  .result-box.gap .result-box-label { color: rgba(255,255,255,0.7); }
+  .result-box-value { font-family: var(--serif); font-size: 22px; font-weight: 700; }
+  .result-box.biaya .result-box-value { color: var(--navy); }
+  .result-box.gap .result-box-value { color: var(--gold); }
+
+  /* Faktor risiko */
+  .faktor-block { background: var(--gray-50); border-radius: 12px; padding: 18px; margin: 20px 0; }
+  .faktor-title { font-size: 13px; font-weight: 600; color: var(--navy); margin-bottom: 12px; }
+  .faktor-item { display: flex; align-items: center; gap: 10px; padding: 7px 0; font-size: 13px; color: var(--gray-700); }
+  .faktor-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .faktor-dot.high { background: var(--red); }
+  .faktor-dot.mid { background: var(--amber); }
+  .faktor-dot.low { background: var(--green); }
+
+  /* Capture */
+  .capture-block { background: var(--cream); border: 1.5px solid var(--gold); border-radius: 12px; padding: 22px; margin-top: 22px; }
+  .capture-title { font-family: var(--serif); font-size: 18px; font-weight: 600; color: var(--navy); margin-bottom: 6px; }
+  .capture-sub { font-size: 13px; color: var(--gray-700); margin-bottom: 16px; }
+  .form-group { margin-bottom: 12px; }
+  .privacy-note { margin-top: 12px; font-size: 11px; color: var(--gray-500); text-align: center; line-height: 1.5; }
+  .form-error { background: #fee2e2; border: 1px solid #fca5a5; color: #991b1b; padding: 10px 14px; border-radius: 8px; font-size: 13px; margin: 12px 0; display: none; }
+  .form-error.show { display: block; }
+
+  /* Detail */
+  .detail-section { display: none; margin-top: 22px; padding-top: 22px; border-top: 1px solid var(--gray-200); }
+  .detail-section.show { display: block; animation: slideIn 0.5s; }
+  .insight-card { background: var(--white); border: 1px solid var(--gray-200); border-left: 4px solid var(--gold); border-radius: 8px; padding: 16px 18px; margin-bottom: 12px; }
+  .insight-card-title { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+  .insight-card-text { font-size: 13px; color: var(--gray-700); line-height: 1.6; }
+
+  .cta-block { background: var(--navy); color: var(--white); border-radius: 12px; padding: 22px; margin-top: 20px; text-align: center; }
+  .cta-title { font-family: var(--serif); font-size: 19px; font-weight: 600; margin-bottom: 8px; }
+  .cta-sub { font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 16px; }
+  .cta-block .btn-gold { width: 100%; }
+
+  .disclaimer { font-size: 11px; color: var(--gray-500); text-align: center; margin-top: 20px; line-height: 1.5; }
+
+  @media (max-width: 600px) {
+    .title { font-size: 23px; }
+    .agent-info { display: none; }
+    .result-row { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="quiz-header">
+  <div class="quiz-header-inner">
+    <a href="#" class="logo">AKP<span class="accent">Agenku</span></a>
+    <div class="agent-info" id="agentInfo" style="display:none;">
+      <div class="agent-avatar" id="agentAvatar">?</div>
+      <div>
+        <div class="agent-tag">Kuis dari</div>
+        <div class="agent-name" id="agentName">-</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- MAIN -->
+<div class="container">
+  <div class="card">
+    <div class="hero">
+      <img class="hero-img" src="/img/magnet-kritis.png" alt="Risiko Penyakit Kritis" onerror="this.style.display='none'">
+      <div class="hero-icon">🩺</div>
+    </div>
+    <div class="body">
+
+      <!-- INPUT VIEW -->
+      <div id="inputView">
+        <h1 class="title">Kuis Risiko Penyakit Kritis</h1>
+        <p class="subtitle">Jawab 6 pertanyaan singkat untuk tahu tingkat risiko Anda + estimasi biaya pengobatan + apakah proteksi Anda sudah cukup.</p>
+
+        <div id="questionsContainer"></div>
+
+        <button class="btn btn-primary" id="submitQuizBtn" onclick="hitung()" disabled>Lihat Hasil →</button>
+      </div>
+
+      <!-- RESULT VIEW -->
+      <div class="result-section" id="resultView">
+        <div class="gauge-wrap">
+          <div class="gauge-label-top">Tingkat Risiko Penyakit Kritis Anda:</div>
+          <div class="gauge">
+            <svg viewBox="0 0 200 110">
+              <path d="M 15 100 A 85 85 0 0 1 185 100" fill="none" stroke="#e5e5e5" stroke-width="16" stroke-linecap="round"/>
+              <path id="gaugeArc" d="M 15 100 A 85 85 0 0 1 185 100" fill="none" stroke="#dc2626" stroke-width="16" stroke-linecap="round" stroke-dasharray="267" stroke-dashoffset="267" style="transition: stroke-dashoffset 1.2s cubic-bezier(0.4,0,0.2,1);"/>
+            </svg>
+          </div>
+          <div class="gauge-value" id="gaugeValue">0%</div>
+          <div class="gauge-level" id="gaugeLevel">-</div>
+        </div>
+
+        <div class="result-row">
+          <div class="result-box biaya">
+            <div class="result-box-label">Estimasi biaya pengobatan</div>
+            <div class="result-box-value" id="biayaVal">Rp 0</div>
+          </div>
+          <div class="result-box gap">
+            <div class="result-box-label">Gap proteksi Anda</div>
+            <div class="result-box-value" id="gapVal">Rp 0</div>
+          </div>
+        </div>
+
+        <div class="faktor-block">
+          <div class="faktor-title">📋 Faktor yang Memengaruhi Risiko Anda</div>
+          <div id="faktorList"></div>
+        </div>
+
+        <!-- CAPTURE -->
+        <div class="capture-block" id="captureBlock">
+          <div class="capture-title">Mau tahu cara menutup gap proteksi ini?</div>
+          <div class="capture-sub">Masukkan kontak untuk lihat penjelasan lengkap + konsultasi gratis dengan agen tentang proteksi yang sesuai.</div>
+
+          <div class="form-group">
+            <label class="form-label">Nama Lengkap *</label>
+            <input type="text" class="form-input" id="capNama" placeholder="Nama Anda">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email *</label>
+            <input type="email" class="form-input" id="capEmail" placeholder="nama@email.com">
+          </div>
+          <div class="form-group">
+            <label class="form-label">No. WhatsApp *</label>
+            <div class="input-money">
+              <span class="prefix">+62</span>
+              <input type="tel" class="form-input" id="capWA" placeholder="81234567890" style="padding-left:48px;">
+            </div>
+          </div>
+
+          <div class="form-error" id="formError"></div>
+
+          <button class="btn btn-gold" onclick="submitCapture()">Lihat Penjelasan Lengkap →</button>
+          <div class="privacy-note">🔒 Data Anda hanya digunakan oleh agen terkait untuk follow-up. Tidak dibagikan ke pihak ketiga.</div>
+        </div>
+
+        <!-- DETAIL -->
+        <div class="detail-section" id="detailSection">
+          <div class="insight-card">
+            <div class="insight-card-title">💡 Apa Itu Asuransi Penyakit Kritis?</div>
+            <div class="insight-card-text">Asuransi penyakit kritis (Critical Illness) memberi <strong>santunan tunai</strong> begitu Anda didiagnosis penyakit kritis tertentu (kanker, jantung, stroke, gagal ginjal, dll). Ini berbeda dengan asuransi kesehatan biasa — uangnya bisa dipakai untuk apa saja: biaya pengobatan, mengganti penghasilan yang hilang, atau kebutuhan keluarga selama masa pemulihan.</div>
+          </div>
+
+          <div class="insight-card">
+            <div class="insight-card-title">⏰ Kenapa Sebaiknya Sekarang?</div>
+            <div class="insight-card-text" id="strategiText">Premi asuransi penyakit kritis dihitung berdasarkan usia & kondisi kesehatan saat mendaftar. Makin muda & sehat saat mendaftar, makin murah preminya — dan makin besar kemungkinan diterima tanpa pengecualian.</div>
+          </div>
+
+          <div class="cta-block">
+            <div class="cta-title">Mau cek opsi proteksi yang sesuai?</div>
+            <div class="cta-sub">Agen <strong id="ctaAgentName">Anda</strong> bisa bantu Anda memahami pilihan proteksi penyakit kritis sesuai kebutuhan & budget. Gratis konsultasi, tanpa hardsell.</div>
+            <button class="btn btn-gold" onclick="contactAgent()">Konsultasi via WhatsApp</button>
+          </div>
+        </div>
+
+        <div class="disclaimer">
+          *Kuis ini bersifat edukatif untuk meningkatkan kesadaran, <strong>bukan diagnosis atau penilaian medis</strong>. Tingkat risiko dihitung dari faktor umum dan tidak menggantikan pemeriksaan dokter. Estimasi biaya adalah perkiraan rata-rata pengobatan penyakit kritis di RS swasta. Bukan saran finansial atau medis yang mengikat.
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function() {
+  'use strict';
+
+  const SUPABASE_URL = 'https://bfydtsfekvueqzvuschp.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_3Xec3HYKViIiuX99hHxHqg_Ih8ABX_T';
+
+  let supabase = null;
+  let agentData = null;
+  let calcResult = null;
+  let leadId = null;
+
+  const BIAYA_ESTIMASI = 500000000; // Rp 500 juta patokan tengah
+
+  // 6 pertanyaan
+  const questions = [
+    { id: 'q1_usia', text: 'Berapa usia Anda sekarang?', opts: [
+      { label: 'Di bawah 30 tahun', poin: 0 },
+      { label: '30 - 40 tahun', poin: 1 },
+      { label: '41 - 50 tahun', poin: 2 },
+      { label: 'Di atas 50 tahun', poin: 3 }
+    ]},
+    { id: 'q2_merokok', text: 'Apakah Anda merokok / pernah merokok rutin?', opts: [
+      { label: 'Tidak pernah', poin: 0 },
+      { label: 'Dulu pernah, sudah berhenti', poin: 1 },
+      { label: 'Ya, masih merokok', poin: 3 }
+    ]},
+    { id: 'q3_riwayat', text: 'Adakah riwayat penyakit kritis di keluarga inti (orang tua/saudara)?', opts: [
+      { label: 'Tidak ada', poin: 0 },
+      { label: 'Ada 1 orang', poin: 2 },
+      { label: 'Ada lebih dari 1 orang', poin: 3 }
+    ]},
+    { id: 'q4_gayahidup', text: 'Seberapa rutin Anda olahraga & menjaga pola makan sehat?', opts: [
+      { label: 'Rutin (3x+ seminggu, makan terjaga)', poin: 0 },
+      { label: 'Kadang-kadang', poin: 1 },
+      { label: 'Jarang / hampir tidak pernah', poin: 2 }
+    ]},
+    { id: 'q5_stres', text: 'Bagaimana tingkat stres / tekanan pekerjaan Anda?', opts: [
+      { label: 'Rendah & terkendali', poin: 0 },
+      { label: 'Sedang', poin: 1 },
+      { label: 'Tinggi / sering tertekan', poin: 2 }
+    ]},
+    { id: 'q6_proteksi', text: 'Apakah Anda sudah punya asuransi penyakit kritis?', opts: [
+      { label: 'Sudah, dengan nilai yang cukup besar', poin: 0 },
+      { label: 'Ada, tapi nilainya kecil', poin: 1 },
+      { label: 'Belum punya', poin: 3 }
+    ]}
+  ];
+
+  const MAX_POIN = 16;
+  const answers = {};
+
+  function fmtMoney(num) { return 'Rp ' + Math.round(num).toLocaleString('id-ID'); }
+  function fmtShort(num) {
+    if (num >= 1000000000) return 'Rp ' + (num / 1000000000).toFixed(num % 1000000000 === 0 ? 0 : 1) + ' M';
+    if (num >= 1000000) return 'Rp ' + Math.round(num / 1000000) + ' jt';
+    return 'Rp ' + num;
+  }
+
+  function renderQuestions() {
+    const c = document.getElementById('questionsContainer');
+    c.innerHTML = questions.map((q, qi) => `
+      <div class="question">
+        <div class="question-num">Pertanyaan ${qi + 1} dari ${questions.length}</div>
+        <div class="question-text">${q.text}</div>
+        <div class="options">
+          ${q.opts.map((o, oi) => `
+            <div class="option" data-q="${q.id}" data-poin="${o.poin}" data-qi="${qi}" data-oi="${oi}" onclick="selectOption(this)">
+              <div class="option-radio"></div>
+              <span>${o.label}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  window.selectOption = function(el) {
+    const qid = el.getAttribute('data-q');
+    const poin = parseInt(el.getAttribute('data-poin'), 10);
+    const oi = parseInt(el.getAttribute('data-oi'), 10);
+    // Clear siblings
+    document.querySelectorAll('.option[data-q="' + qid + '"]').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    answers[qid] = { poin, oi };
+    // Enable submit when all answered
+    if (Object.keys(answers).length === questions.length) {
+      document.getElementById('submitQuizBtn').disabled = false;
+    }
+  };
+
+  function calculate() {
+    let totalPoin = 0;
+    questions.forEach(q => { if (answers[q.id]) totalPoin += answers[q.id].poin; });
+
+    const riskPct = Math.round((totalPoin / MAX_POIN) * 100);
+    let level, levelColor;
+    if (riskPct <= 33) { level = 'Rendah'; levelColor = '#059669'; }
+    else if (riskPct <= 66) { level = 'Sedang'; levelColor = '#f59e0b'; }
+    else { level = 'Tinggi'; levelColor = '#dc2626'; }
+
+    // Gap proteksi berdasarkan Q6
+    const q6 = answers['q6_proteksi'] ? answers['q6_proteksi'].poin : 3;
+    let gapProteksi, proteksiStatus;
+    if (q6 === 0) { gapProteksi = 0; proteksiStatus = 'cukup'; }
+    else if (q6 === 1) { gapProteksi = Math.round(BIAYA_ESTIMASI * 0.7); proteksiStatus = 'kecil'; }
+    else { gapProteksi = BIAYA_ESTIMASI; proteksiStatus = 'belum'; }
+
+    return {
+      totalPoin, riskPct, level, levelColor,
+      biayaEstimasi: BIAYA_ESTIMASI,
+      gapProteksi, proteksiStatus,
+      rawAnswers: {
+        q1_usia: answers['q1_usia'] ? answers['q1_usia'].oi : null,
+        q2_merokok: answers['q2_merokok'] ? answers['q2_merokok'].oi : null,
+        q3_riwayat: answers['q3_riwayat'] ? answers['q3_riwayat'].oi : null,
+        q4_gayahidup: answers['q4_gayahidup'] ? answers['q4_gayahidup'].oi : null,
+        q5_stres: answers['q5_stres'] ? answers['q5_stres'].oi : null,
+        q6_proteksi: answers['q6_proteksi'] ? answers['q6_proteksi'].oi : null
+      }
+    };
+  }
+
+  window.hitung = function() {
+    calcResult = calculate();
+
+    document.getElementById('inputView').style.display = 'none';
+    document.getElementById('resultView').classList.add('show');
+
+    // Gauge
+    document.getElementById('gaugeValue').textContent = calcResult.riskPct + '%';
+    document.getElementById('gaugeValue').style.color = calcResult.levelColor;
+    const lvl = document.getElementById('gaugeLevel');
+    lvl.textContent = 'Risiko ' + calcResult.level;
+    lvl.style.color = calcResult.levelColor;
+    document.getElementById('gaugeArc').setAttribute('stroke', calcResult.levelColor);
+    setTimeout(() => {
+      const offset = 267 - (267 * calcResult.riskPct / 100);
+      document.getElementById('gaugeArc').style.strokeDashoffset = offset;
+    }, 200);
+
+    // Boxes
+    document.getElementById('biayaVal').textContent = fmtShort(calcResult.biayaEstimasi);
+    document.getElementById('gapVal').textContent = calcResult.gapProteksi > 0 ? fmtShort(calcResult.gapProteksi) : 'Rp 0 ✓';
+
+    // Faktor risiko
+    renderFaktor();
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  function renderFaktor() {
+    const faktorList = document.getElementById('faktorList');
+    const items = [];
+    const a = answers;
+
+    const usiaLabels = ['Usia muda — risiko lebih rendah', 'Usia produktif', 'Usia 41-50 — risiko meningkat', 'Usia di atas 50 — risiko lebih tinggi'];
+    if (a.q1_usia) items.push({ txt: usiaLabels[a.q1_usia.oi], level: a.q1_usia.poin >= 2 ? 'high' : (a.q1_usia.poin === 1 ? 'mid' : 'low') });
+
+    if (a.q2_merokok) {
+      const m = ['Tidak merokok — baik', 'Mantan perokok', 'Masih merokok — faktor risiko besar'];
+      items.push({ txt: m[a.q2_merokok.oi], level: a.q2_merokok.poin >= 3 ? 'high' : (a.q2_merokok.poin === 1 ? 'mid' : 'low') });
+    }
+    if (a.q3_riwayat) {
+      const r = ['Tanpa riwayat keluarga — baik', 'Ada riwayat keluarga', 'Riwayat keluarga signifikan'];
+      items.push({ txt: r[a.q3_riwayat.oi], level: a.q3_riwayat.poin >= 2 ? 'high' : 'low' });
+    }
+    if (a.q4_gayahidup) {
+      const g = ['Gaya hidup sehat — baik', 'Gaya hidup cukup', 'Gaya hidup kurang aktif'];
+      items.push({ txt: g[a.q4_gayahidup.oi], level: a.q4_gayahidup.poin >= 2 ? 'high' : (a.q4_gayahidup.poin === 1 ? 'mid' : 'low') });
+    }
+    if (a.q5_stres) {
+      const s = ['Stres terkendali — baik', 'Stres sedang', 'Stres tinggi'];
+      items.push({ txt: s[a.q5_stres.oi], level: a.q5_stres.poin >= 2 ? 'high' : (a.q5_stres.poin === 1 ? 'mid' : 'low') });
+    }
+
+    faktorList.innerHTML = items.map(i => `
+      <div class="faktor-item">
+        <span class="faktor-dot ${i.level}"></span>
+        <span>${i.txt}</span>
+      </div>
+    `).join('');
+  }
+
+  async function loadAgent(username) {
+    try {
+      const { data } = await supabase
+        .from('users')
+        .select('id, nama_lengkap, nama_panggilan, username, whatsapp')
+        .eq('username', username)
+        .eq('subscription_status', 'active')
+        .maybeSingle();
+      if (data) {
+        agentData = data;
+        const name = data.nama_panggilan || data.nama_lengkap.split(' ')[0];
+        document.getElementById('agentInfo').style.display = 'flex';
+        document.getElementById('agentName').textContent = name;
+        document.getElementById('agentAvatar').textContent = name[0].toUpperCase();
+        document.getElementById('ctaAgentName').textContent = name;
+        trackClick();
+      }
+    } catch (e) { console.warn('Agent load failed:', e); }
+  }
+
+  // Catat klik/buka halaman (fire-and-forget)
+  function trackClick() {
+    if (!agentData) return;
+    try {
+      const params = new URLSearchParams(window.location.search);
+      supabase.from('magnet_clicks').insert({
+        user_id: agentData.id,
+        magnet_slug: 'risiko-kritis',
+        referrer: document.referrer || null,
+        user_agent: navigator.userAgent || null,
+        utm_source: params.get('utm_source') || null
+      }).then(() => {}).catch(err => console.warn('Click track failed:', err));
+    } catch (e) { console.warn('Click track error:', e); }
+  }
+
+  window.submitCapture = async function() {
+    const nama = document.getElementById('capNama').value.trim();
+    const email = document.getElementById('capEmail').value.trim();
+    const wa = document.getElementById('capWA').value.trim();
+    const errEl = document.getElementById('formError');
+    errEl.classList.remove('show');
+
+    if (!nama || !email || !wa) { errEl.textContent = 'Mohon lengkapi semua field.'; errEl.classList.add('show'); return; }
+    if (!email.includes('@')) { errEl.textContent = 'Email tidak valid.'; errEl.classList.add('show'); return; }
+    if (wa.length < 9) { errEl.textContent = 'No. WhatsApp tidak valid.'; errEl.classList.add('show'); return; }
+
+    if (agentData) {
+      try {
+        const { data: leadData, error: leadError } = await supabase
+          .from('leads')
+          .insert({
+            owner_id: agentData.id,
+            nama: nama,
+            email: email,
+            whatsapp: wa,
+            stage: 'new',
+            source_magnet: 'kritis',
+            score: calcResult.riskPct,
+            result_json: calcResult
+          })
+          .select()
+          .single();
+
+        if (!leadError && leadData) {
+          leadId = leadData.id;
+          await supabase.from('lead_magnet_responses').insert({
+            lead_id: leadId,
+            magnet_slug: 'risiko-kritis',
+            raw_answers: calcResult.rawAnswers,
+            scores: {
+              risk_pct: calcResult.riskPct,
+              total_poin: calcResult.totalPoin,
+              biaya_estimasi: calcResult.biayaEstimasi,
+              gap_proteksi: calcResult.gapProteksi
+            },
+            priority_areas: ['risiko-kritis']
+          });
+
+          // Send result email to prospek (fire-and-forget)
+          try {
+            fetch(SUPABASE_URL + '/functions/v1/send-magnet-result', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + SUPABASE_ANON_KEY
+              },
+              body: JSON.stringify({
+                prospek_nama: nama,
+                prospek_email: email,
+                magnet_slug: 'risiko-kritis',
+                scores: {
+                  risk_pct: calcResult.riskPct,
+                  total_poin: calcResult.totalPoin,
+                  biaya_estimasi: calcResult.biayaEstimasi,
+                  gap_proteksi: calcResult.gapProteksi,
+                  level_text: calcResult.level
+                },
+                priority_areas: ['risiko-kritis'],
+                agen_nama: agentData.nama_panggilan || agentData.nama_lengkap.split(' ')[0],
+                agen_whatsapp: agentData.whatsapp || ''
+              })
+            }).catch(err => console.warn('Email send failed:', err));
+          } catch (e) { console.warn('Email trigger failed:', e); }
+        } else if (leadError) {
+          console.error('Lead insert error:', leadError);
+        }
+      } catch (e) { console.warn('Save failed:', e); }
+    }
+
+    document.getElementById('captureBlock').style.display = 'none';
+    showDetail();
+  };
+
+  function showDetail() {
+    let strategi;
+    if (calcResult.proteksiStatus === 'cukup') {
+      strategi = 'Bagus! Anda sudah punya proteksi penyakit kritis yang memadai. Tetap pastikan nilai pertanggungannya sesuai dengan estimasi biaya pengobatan terkini & kebutuhan keluarga Anda. Review berkala bersama agen sangat membantu.';
+    } else if (calcResult.proteksiStatus === 'kecil') {
+      strategi = 'Anda sudah punya proteksi, tapi nilainya mungkin belum cukup untuk menutup estimasi biaya pengobatan penyakit kritis (sekitar ' + fmtMoney(calcResult.biayaEstimasi) + '). Premi untuk menambah proteksi biasanya lebih murah saat masih sehat & muda — ini saat yang baik untuk meninjau ulang.';
+    } else {
+      strategi = 'Anda belum punya proteksi penyakit kritis. Mengingat estimasi biaya pengobatan bisa mencapai ' + fmtMoney(calcResult.biayaEstimasi) + ', proteksi ini penting agar tabungan & aset keluarga tidak terkuras saat hal tak terduga terjadi. Premi paling terjangkau saat Anda masih sehat & usia muda.';
+    }
+    document.getElementById('strategiText').textContent = strategi;
+
+    document.getElementById('detailSection').classList.add('show');
+    window.scrollTo({ top: document.getElementById('detailSection').offsetTop - 20, behavior: 'smooth' });
+  }
+
+  window.contactAgent = function() {
+    if (!agentData || !agentData.whatsapp) {
+      alert('Agen akan menghubungi Anda dalam 24 jam. Terima kasih!');
+      return;
+    }
+    const nama = document.getElementById('capNama').value.trim() || 'Saya';
+    const text = encodeURIComponent('Halo ' + (agentData.nama_panggilan || agentData.nama_lengkap.split(' ')[0]) + ', saya ' + nama + '. Saya baru ikut kuis risiko penyakit kritis di mini-site Anda — hasilnya risiko ' + calcResult.level + '. Mau diskusi soal proteksi yang sesuai.');
+    const phone = '62' + agentData.whatsapp.replace(/^0/, '').replace(/^62/, '');
+    window.open('https://wa.me/' + phone + '?text=' + text, '_blank');
+  };
+
+  async function init() {
+    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    renderQuestions();
+    const urlParams = new URLSearchParams(window.location.search);
+    const ref = urlParams.get('ref');
+    if (ref) await loadAgent(ref);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+
+</body>
+</html>

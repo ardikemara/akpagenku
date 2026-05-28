@@ -885,20 +885,50 @@
         </div>
       </div>
 
-      <!-- ===== COMING SOON: Kuis Risiko Penyakit Kritis ===== -->
-      <div class="magnet-item coming-soon">
-        <div class="magnet-thumb cs">
-          <img class="magnet-thumb-img" src="/img/magnet-kritis.jpg" alt="Kuis Risiko Penyakit Kritis" onerror="this.style.display='none'" style="filter:grayscale(0.4) opacity(0.85);">
-          <span class="magnet-badge-soon"><i data-lucide="clock" style="width:10px;height:10px;display:inline;margin-right:2px;"></i> COMING SOON</span>
+      <!-- ===== MAGNET #5: KUIS RISIKO PENYAKIT KRITIS (AKTIF) ===== -->
+      <div class="magnet-item">
+        <div class="magnet-thumb kritis">
+          <img class="magnet-thumb-img" src="/img/magnet-kritis.png" alt="Kuis Risiko Penyakit Kritis" onerror="this.style.display='none'">
+          <span class="magnet-badge-primary"><i data-lucide="check-circle-2" style="width:10px;height:10px;display:inline;margin-right:2px;"></i> AKTIF</span>
           <span class="magnet-badge-type">KUIS</span>
           <div class="magnet-thumb-icon"><i data-lucide="heart-pulse"></i></div>
         </div>
         <div class="magnet-body">
           <div class="magnet-name">Kuis Risiko Penyakit Kritis</div>
-          <div class="magnet-desc">"Seberapa siap saya hadapi sakit kritis?" 10 pertanyaan menghasilkan risk score + estimasi biaya pengobatan penyakit kritis.</div>
+          <div class="magnet-desc">"Seberapa besar risiko saya kena penyakit kritis?" 6 pertanyaan singkat &rarr; skor risiko + estimasi biaya pengobatan + gap proteksi. Lead masuk ke CRM dengan rekomendasi produk CI &amp; script WhatsApp.</div>
 
-          <div class="cs-overlay">
-            <span class="cs-badge-text"><i data-lucide="hammer"></i> Sedang dikembangkan</span>
+          <div class="magnet-stats-row">
+            <div class="magnet-stat-item">
+              <div class="magnet-stat-icon"><i data-lucide="mouse-pointer-click"></i></div>
+              <div class="magnet-stat-text">
+                <div class="magnet-stat-value" id="kritisKlik">0</div>
+                <div class="magnet-stat-label">KLIK</div>
+              </div>
+            </div>
+            <div class="magnet-stat-item">
+              <div class="magnet-stat-icon"><i data-lucide="users"></i></div>
+              <div class="magnet-stat-text">
+                <div class="magnet-stat-value" id="kritisLead">0</div>
+                <div class="magnet-stat-label">LEAD</div>
+              </div>
+            </div>
+            <div class="magnet-stat-item">
+              <div class="magnet-stat-icon"><i data-lucide="percent"></i></div>
+              <div class="magnet-stat-text">
+                <div class="magnet-stat-value" id="kritisKonv">—</div>
+                <div class="magnet-stat-label">KONVERSI</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="magnet-link-row">
+            <span class="magnet-link-text">akpagenku.com/risiko-kritis?ref=cristine</span>
+            <button class="magnet-copy-btn" onclick="copyLink(this, 'akpagenku.com/risiko-kritis?ref=cristine')"><i data-lucide="copy"></i> Salin</button>
+          </div>
+
+          <div class="magnet-actions">
+            <a href="/risiko-kritis.html?ref=cristine" target="_blank" class="magnet-btn ghost"><i data-lucide="eye"></i> Preview</a>
+            <button class="magnet-btn primary" onclick="shareWA('Kuis Risiko Penyakit Kritis', 'akpagenku.com/risiko-kritis?ref=cristine')"><i data-lucide="message-circle"></i> Share ke WhatsApp</button>
           </div>
         </div>
       </div>
@@ -1047,7 +1077,8 @@
       const leadPend = leads.filter(l => l.source_magnet === 'pendidikan').length;
       const leadPensiun = leads.filter(l => l.source_magnet === 'pensiun').length;
       const leadDarurat = leads.filter(l => l.source_magnet === 'darurat').length;
-      const totalLeadAll = leadSkor + leadPend + leadPensiun + leadDarurat;
+      const leadKritis = leads.filter(l => l.source_magnet === 'kritis').length;
+      const totalLeadAll = leadSkor + leadPend + leadPensiun + leadDarurat + leadKritis;
 
       // ===== CLICKS per magnet (magnet_slug pakai slug panjang) =====
       const { data: allClicks, error: clickErr } = await supabaseClient
@@ -1061,7 +1092,8 @@
       const klikPend = clicks.filter(c => c.magnet_slug === 'dana-pendidikan').length;
       const klikPensiun = clicks.filter(c => c.magnet_slug === 'dana-pensiun').length;
       const klikDarurat = clicks.filter(c => c.magnet_slug === 'dana-darurat').length;
-      const totalKlikAll = klikSkor + klikPend + klikPensiun + klikDarurat;
+      const klikKritis = clicks.filter(c => c.magnet_slug === 'risiko-kritis').length;
+      const totalKlikAll = klikSkor + klikPend + klikPensiun + klikDarurat + klikKritis;
       const klikThisMonth = clicks.filter(c => new Date(c.clicked_at) >= monthStart).length;
 
       // ===== Helper: konversi =====
@@ -1080,7 +1112,8 @@
         { name: 'Skor', n: leadSkor },
         { name: 'Pendidikan', n: leadPend },
         { name: 'Pensiun', n: leadPensiun },
-        { name: 'Darurat', n: leadDarurat }
+        { name: 'Darurat', n: leadDarurat },
+        { name: 'Kritis', n: leadKritis }
       ].sort((a, b) => b.n - a.n);
       if (ranking[0].n > 0) setVal('statTop', ranking[0].name, true);
 
@@ -1100,6 +1133,10 @@
       setVal('daruratKlik', klikDarurat, false);
       setVal('daruratLead', leadDarurat, false);
       setVal('daruratKonv', konv(leadDarurat, klikDarurat), false);
+
+      setVal('kritisKlik', klikKritis, false);
+      setVal('kritisLead', leadKritis, false);
+      setVal('kritisKonv', konv(leadKritis, klikKritis), false);
 
     } catch (e) {
       console.warn('loadRealStats failed:', e);

@@ -1893,6 +1893,107 @@ const PENSIUN_PRODUCTS = {
   'default': { name: 'Unit Link / Anuitas Pensiun', meta: 'Sesuaikan dengan produk yang Anda jual' }
 };
 
+const KRITIS_PRODUCTS = {
+  'Allianz': { name: 'Allianz Critical Illness / CI Rider', meta: 'Santunan tunai saat diagnosis penyakit kritis' },
+  'Prudential': { name: 'PRUCrisis Cover / PRUEarly Stage Crisis Cover', meta: 'Perlindungan penyakit kritis tahap awal & lanjut' },
+  'AIA': { name: 'AIA Critical Protection / CI Rider', meta: 'Santunan penyakit kritis' },
+  'Manulife': { name: 'Manulife Critical Illness Protection', meta: 'Perlindungan penyakit kritis' },
+  'default': { name: 'Asuransi Penyakit Kritis (CI)', meta: 'Santunan tunai saat diagnosis \u2014 sesuaikan dengan produk Anda' }
+};
+
+function renderKritisRecommendation(lead, magnetResponse) {
+  const scores = magnetResponse.scores || {};
+  const raw = magnetResponse.raw_answers || {};
+  const session = JSON.parse(sessionStorage.getItem('akp_session') || '{}');
+  const principal = getPrincipalKey(session.perusahaan);
+
+  const riskPct = scores.risk_pct || 0;
+  const biaya = scores.biaya_estimasi || 0;
+  const gap = scores.gap_proteksi || 0;
+
+  let level, levelTag;
+  if (riskPct <= 33) { level = 'Rendah'; levelTag = ''; }
+  else if (riskPct <= 66) { level = 'Sedang'; levelTag = '<span class="pilar-tag-cm urgent">PERHATIAN</span>'; }
+  else { level = 'Tinggi'; levelTag = '<span class="pilar-tag-cm urgent">URGENT</span>'; }
+
+  // Breakdown
+  const breakdownEl = document.getElementById('pilarBreakdownCM');
+  breakdownEl.innerHTML = `
+    <div class="pilar-row-cm" style="background:rgba(220,38,38,0.05);">
+      <div class="pilar-icon-cm">\ud83e\ude7a</div>
+      <div class="pilar-info-cm"><div class="pilar-name-cm">Tingkat Risiko${levelTag}</div></div>
+      <div class="pilar-score-cm" style="color:${riskPct > 66 ? 'var(--red, #dc2626)' : 'var(--navy)'};">${riskPct}% (${level})</div>
+    </div>
+    <div class="pilar-row-cm">
+      <div class="pilar-icon-cm">\ud83d\udcb0</div>
+      <div class="pilar-info-cm"><div class="pilar-name-cm">Estimasi biaya pengobatan</div></div>
+      <div class="pilar-score-cm" style="font-size:12px;">${fmtRupiah(biaya)}</div>
+    </div>
+    <div class="pilar-row-cm" style="background:rgba(201,169,97,0.1);border-color:var(--gold);">
+      <div class="pilar-icon-cm">\u26a0\ufe0f</div>
+      <div class="pilar-info-cm"><div class="pilar-name-cm"><strong>Gap proteksi</strong></div></div>
+      <div class="pilar-score-cm" style="color:var(--gold-dark);">${gap > 0 ? fmtRupiah(gap) : 'Terproteksi'}</div>
+    </div>
+  `;
+  document.getElementById('recommendationSection').style.display = '';
+
+  // Products
+  const product = KRITIS_PRODUCTS[principal] || KRITIS_PRODUCTS['default'];
+  const productsEl = document.getElementById('productsListCM');
+  if (gap > 0) {
+    productsEl.innerHTML = `
+      <div class="product-card">
+        <div class="product-card-name"><span class="product-card-num">1.</span> ${product.name}</div>
+        <div class="product-card-addr">\u2192 Gap proteksi: <strong>${fmtRupiah(gap)}</strong> (risiko ${level})</div>
+        <div class="product-card-meta">${product.meta}</div>
+      </div>
+      <div class="product-card" style="border-left-color:var(--navy);">
+        <div class="product-card-name"><span class="product-card-num" style="color:var(--navy);">\ud83d\udca1</span> Angle pendekatan</div>
+        <div class="product-card-addr">Empati, JANGAN menakut-nakuti. Fokus: premi murah saat sehat & muda.</div>
+        <div class="product-card-meta">Prospek risiko ${level} + belum/kurang proteksi = paling butuh edukasi proteksi CI.</div>
+      </div>`;
+  } else {
+    productsEl.innerHTML = `
+      <div class="product-card">
+        <div class="product-card-name"><span class="product-card-num" style="color:var(--navy);">\u2705</span> Sudah terproteksi</div>
+        <div class="product-card-addr">Prospek sudah punya proteksi CI yang cukup</div>
+        <div class="product-card-meta">ANGLE: Review berkala \u2014 pastikan nilai pertanggungan sesuai biaya pengobatan terkini. Bisa tawarkan top-up atau produk lain (kesehatan, jiwa).</div>
+      </div>`;
+  }
+  document.getElementById('productsSection').style.display = '';
+
+  // Script
+  const agenName = session.nama_panggilan || (session.nama_lengkap ? session.nama_lengkap.split(' ')[0] : 'Saya');
+  const leadFirstName = (lead.name || 'Bapak/Ibu').split(' ')[0];
+
+  let scriptBody;
+  if (gap > 0) {
+    scriptBody = `Saya lihat dari kuis, ada baiknya kita ngobrol soal proteksi penyakit kritis. Estimasi biaya pengobatan penyakit kritis sekarang bisa mencapai ${fmtRupiah(biaya)} \u2014 cukup besar kalau harus ditanggung dari tabungan sendiri.
+
+Kabar baiknya, proteksi untuk ini preminya paling terjangkau saat kita masih sehat. Boleh saya jelaskan opsinya tanpa kewajiban apa-apa?`;
+  } else {
+    scriptBody = `Saya lihat Anda sudah punya proteksi penyakit kritis \u2014 bagus banget! \ud83d\udc4d Mungkin kita bisa review bareng untuk memastikan nilai perlindungannya masih sesuai dengan biaya pengobatan terkini. Boleh saya bantu cek?`;
+  }
+
+  const script = `Halo ${leadFirstName} \ud83d\ude4f Saya ${agenName}.
+
+${scriptBody}
+
+Saya gak akan hardsell \u2014 tujuan saya cuma bantu Anda paham opsi proteksi yang ada \ud83d\ude42`;
+
+  document.getElementById('scriptTextCM').textContent = script;
+  window.currentScript = script;
+  document.getElementById('scriptSection').style.display = '';
+
+  const copyBtn = document.getElementById('copyScriptBtn');
+  if (copyBtn) {
+    copyBtn.classList.remove('copied');
+    document.getElementById('copyBtnText').textContent = 'Copy Script';
+  }
+
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+
 function renderDaruratRecommendation(lead, magnetResponse) {
   const scores = magnetResponse.scores || {};
   const raw = magnetResponse.raw_answers || {};
@@ -2269,6 +2370,10 @@ async function renderRecommendations(lead) {
   }
   if (magnetResponse.magnet_slug === 'dana-darurat') {
     renderDaruratRecommendation(lead, magnetResponse);
+    return;
+  }
+  if (magnetResponse.magnet_slug === 'risiko-kritis') {
+    renderKritisRecommendation(lead, magnetResponse);
     return;
   }
   // Default: skor-kesehatan-keuangan (4-pilar)
