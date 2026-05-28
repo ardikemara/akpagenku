@@ -636,6 +636,168 @@
     position: relative;
   }
 
+  /* ===== RECOMMENDATION ENGINE ===== */
+  .pilar-breakdown {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .pilar-row-cm {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: var(--gray-50);
+    border-radius: 8px;
+    border: 1px solid var(--gray-200);
+  }
+  .pilar-icon-cm {
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .pilar-info-cm {
+    flex: 1;
+    min-width: 0;
+  }
+  .pilar-name-cm {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 3px;
+  }
+  .pilar-bar-cm {
+    height: 5px;
+    background: var(--gray-200);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .pilar-fill-cm {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.6s ease;
+  }
+  .pilar-fill-cm.red { background: #dc2626; }
+  .pilar-fill-cm.amber { background: #f59e0b; }
+  .pilar-fill-cm.green { background: #059669; }
+  .pilar-fill-cm.gold { background: var(--gold); }
+  .pilar-score-cm {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--navy);
+    min-width: 44px;
+    text-align: right;
+  }
+  .pilar-tag-cm {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+    margin-left: 4px;
+  }
+  .pilar-tag-cm.urgent { background: #fee2e2; color: #991b1b; }
+
+  /* Produk rekomendasi */
+  .product-card {
+    background: var(--white);
+    border: 1.5px solid var(--gray-200);
+    border-left: 3px solid var(--gold);
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+  }
+  .product-card-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--gold);
+    margin-right: 8px;
+  }
+  .product-card-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 4px;
+    display: flex;
+    align-items: baseline;
+  }
+  .product-card-addr {
+    font-size: 12px;
+    color: var(--gray-700);
+    line-height: 1.5;
+    margin-bottom: 4px;
+  }
+  .product-card-meta {
+    font-size: 11px;
+    color: var(--gray-500);
+    background: var(--gray-50);
+    padding: 4px 8px;
+    border-radius: 4px;
+    display: inline-block;
+    margin-top: 4px;
+  }
+
+  /* Suggested script */
+  .script-block {
+    background: linear-gradient(135deg, rgba(15,38,71,0.04) 0%, rgba(201,169,97,0.06) 100%);
+    border: 1.5px solid var(--gold);
+    border-radius: 10px;
+    padding: 16px;
+    position: relative;
+  }
+  .script-text {
+    font-size: 13px;
+    color: var(--navy);
+    line-height: 1.7;
+    margin-bottom: 12px;
+    white-space: pre-wrap;
+    font-family: inherit;
+  }
+  .script-actions {
+    display: flex;
+    gap: 8px;
+  }
+  .script-btn {
+    flex: 1;
+    padding: 9px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all 0.2s;
+  }
+  .script-btn-copy {
+    background: var(--white);
+    color: var(--navy);
+    border: 1.5px solid var(--gray-300);
+  }
+  .script-btn-copy:hover { border-color: var(--gold); }
+  .script-btn-copy.copied { background: var(--green); color: white; border-color: var(--green); }
+  .script-btn-wa {
+    background: #25d366;
+    color: white;
+  }
+  .script-btn-wa:hover { background: #1ebe57; }
+
+  /* Empty state for no-magnet leads */
+  .no-magnet-msg {
+    padding: 14px;
+    background: var(--cream);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--gray-700);
+    text-align: center;
+    line-height: 1.5;
+  }
+
+
   /* Tags */
   .tag-list {
     display: flex;
@@ -1085,6 +1247,34 @@
       </div>
     </div>
 
+    <!-- ===== RECOMMENDATION ENGINE (cond.) ===== -->
+    <div class="modal-section" id="recommendationSection" style="display:none;">
+      <div class="modal-section-title">📊 Breakdown Per Pilar</div>
+      <div class="pilar-breakdown" id="pilarBreakdownCM"></div>
+    </div>
+
+    <div class="modal-section" id="productsSection" style="display:none;">
+      <div class="modal-section-title">🎯 Produk Rekomendasi</div>
+      <div id="productsListCM"></div>
+    </div>
+
+    <div class="modal-section" id="scriptSection" style="display:none;">
+      <div class="modal-section-title">💬 Script Pembuka WhatsApp</div>
+      <div class="script-block">
+        <div class="script-text" id="scriptTextCM"></div>
+        <div class="script-actions">
+          <button class="script-btn script-btn-copy" id="copyScriptBtn" onclick="copyScript()">
+            <i data-lucide="copy" style="width:14px;height:14px"></i>
+            <span id="copyBtnText">Copy Script</span>
+          </button>
+          <button class="script-btn script-btn-wa" onclick="sendScriptWA()">
+            <i data-lucide="message-circle" style="width:14px;height:14px"></i>
+            Chat WhatsApp
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- Info -->
     <div class="modal-section">
       <div class="modal-section-title">Informasi Kontak</div>
@@ -1176,6 +1366,7 @@
 
     // 2. Init Supabase
     supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  window._sb = supabase;
 
     // 3. Render user info
     const name = session.nama_panggilan || session.nama_lengkap.split(' ')[0];
@@ -1537,7 +1728,7 @@ document.getElementById('searchInput').addEventListener('input', applyFilters);
 // ===== MODAL =====
 let currentLead = null;
 
-function openModal(lead) {
+async function openModal(lead) {
   currentLead = lead;
 
   document.getElementById('modalName').textContent = lead.name;
@@ -1607,7 +1798,246 @@ function openModal(lead) {
   document.getElementById('modalOverlay').classList.add('show');
   document.getElementById('modalPanel').classList.add('show');
 
+  // ===== RECOMMENDATION ENGINE: fetch magnet response & render =====
+  window.currentLead = lead;
+  await renderRecommendations(lead);
+
   if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+
+// ===== RECOMMENDATION ENGINE =====
+
+// Product matrix: pilar -> principal -> recommended products
+const PRODUCT_MATRIX = {
+  pilar1: {
+    name: 'Proteksi Jiwa',
+    insight: 'UP & dana darurat untuk lindungi keluarga saat pendapatan berhenti',
+    addressText: 'Proteksi Jiwa',
+    products: {
+      'Allianz': { name: 'Allianz PASTI', meta: 'Term Life entry-level' },
+      'Prudential': { name: 'PRULink Generasi Baru', meta: 'Unit Link family-oriented' },
+      'AIA': { name: 'AIA Premier Family Plus', meta: 'Unit Link family-oriented' },
+      'Manulife': { name: 'MiSmart Insurance Solution', meta: 'Unit Link multi-tujuan' },
+      'default': { name: 'Term Life / Unit Link dengan UP 5x Penghasilan', meta: 'Sesuaikan dengan produk yang Anda jual' }
+    }
+  },
+  pilar2: {
+    name: 'Proteksi Kesehatan',
+    insight: 'BPJS sering tidak cukup untuk RS swasta as-charged',
+    addressText: 'Proteksi Kesehatan',
+    products: {
+      'Allianz': { name: 'SmartHealth Maxi Violet', meta: 'As-charged premium, RS swasta' },
+      'Prudential': { name: 'PRUSolusi Sehat', meta: 'Asuransi kesehatan' },
+      'AIA': { name: 'AIA Medi Care', meta: 'Asuransi kesehatan' },
+      'Manulife': { name: 'MiUltimate HealthCare', meta: 'As-charged kesehatan' },
+      'default': { name: 'Asuransi Kesehatan As-Charged', meta: 'Sesuaikan dengan produk yang Anda jual' }
+    }
+  },
+  pilar3: {
+    name: 'Proteksi Penyakit Kritis',
+    insight: 'Pengobatan kanker/jantung bisa ratusan juta',
+    addressText: 'Proteksi Penyakit Kritis',
+    products: {
+      'Allianz': { name: 'Allianz Critical Plus (ACP)', meta: 'Standalone 100 kondisi kritis' },
+      'Prudential': { name: 'PRUCritical Benefit 88', meta: '88 kondisi kritis standalone' },
+      'AIA': { name: 'AIA Sakit Kritis Plus', meta: 'Asuransi kritis standalone' },
+      'Manulife': { name: 'MiUltimate Critical Care', meta: 'Multi-condition kritis' },
+      'default': { name: 'Asuransi Penyakit Kritis Standalone', meta: 'UP suggestion: Rp 500jt+' }
+    }
+  },
+  pilar4: {
+    name: 'Dana Darurat & Long-term',
+    insight: 'Foundation finansial untuk tujuan jangka panjang',
+    addressText: 'Dana Darurat & Long-term',
+    products: {
+      'Allianz': { name: 'Smartlink Protection Life (SPL)', meta: 'Unit Link untuk Dana Pendidikan/Pensiun' },
+      'Prudential': { name: 'PRULink Generasi Baru', meta: 'Unit Link goal-based' },
+      'AIA': { name: 'AIA Premier Family Plus', meta: 'Unit Link long-term goal' },
+      'Manulife': { name: 'MiSmart Insurance Solution', meta: 'Unit Link goal-based' },
+      'default': { name: 'Unit Link Goal-based', meta: 'Sesuaikan target & jangka waktu' }
+    }
+  }
+};
+
+function getPrincipalKey(perusahaan) {
+  if (!perusahaan) return 'default';
+  const p = perusahaan.toLowerCase();
+  if (p.includes('allianz')) return 'Allianz';
+  if (p.includes('prudential')) return 'Prudential';
+  if (p.includes('aia')) return 'AIA';
+  if (p.includes('manulife')) return 'Manulife';
+  return 'default';
+}
+
+async function renderRecommendations(lead) {
+  // Hide all recommendation sections by default
+  document.getElementById('recommendationSection').style.display = 'none';
+  document.getElementById('productsSection').style.display = 'none';
+  document.getElementById('scriptSection').style.display = 'none';
+
+  // Only proceed if lead has score from magnet
+  if (!lead.id || !lead.source_magnet) return;
+
+  // Fetch lead_magnet_response
+  let magnetResponse = null;
+  try {
+    const session = JSON.parse(sessionStorage.getItem('akp_session') || '{}');
+    const { data, error } = await window._sb
+      .from('lead_magnet_responses')
+      .select('scores, priority_areas, raw_answers, magnet_slug')
+      .eq('lead_id', lead.id)
+      .maybeSingle();
+    if (!error && data) magnetResponse = data;
+  } catch (e) {
+    console.warn('Magnet response fetch failed:', e);
+  }
+
+  if (!magnetResponse || !magnetResponse.scores) {
+    // No magnet response — leave sections hidden
+    return;
+  }
+
+  const scores = magnetResponse.scores;
+  const priorityKeys = magnetResponse.priority_areas || [];
+
+  // ===== Render breakdown per pilar =====
+  const pilarOrder = ['pilar1', 'pilar2', 'pilar3', 'pilar4'];
+  const pilarLabels = {
+    pilar1: 'Proteksi Jiwa',
+    pilar2: 'Proteksi Kesehatan',
+    pilar3: 'Proteksi Penyakit Kritis',
+    pilar4: 'Dana Darurat & Long-term'
+  };
+
+  function scoreColor(s) {
+    if (s < 40) return 'red';
+    if (s < 60) return 'amber';
+    if (s < 80) return 'green';
+    return 'gold';
+  }
+  function scoreIcon(s) {
+    if (s < 40) return '❌';
+    if (s < 60) return '⚠️';
+    if (s < 80) return '✅';
+    return '🌟';
+  }
+
+  const breakdownEl = document.getElementById('pilarBreakdownCM');
+  breakdownEl.innerHTML = pilarOrder.map(k => {
+    const s = scores[k] || 0;
+    const color = scoreColor(s);
+    const icon = scoreIcon(s);
+    const isUrgent = priorityKeys.includes(k) && s < 40;
+    return `
+      <div class="pilar-row-cm">
+        <div class="pilar-icon-cm">${icon}</div>
+        <div class="pilar-info-cm">
+          <div class="pilar-name-cm">${pilarLabels[k]}${isUrgent ? '<span class="pilar-tag-cm urgent">URGENT</span>' : ''}</div>
+          <div class="pilar-bar-cm"><div class="pilar-fill-cm ${color}" style="width:${s}%"></div></div>
+        </div>
+        <div class="pilar-score-cm">${s}</div>
+      </div>
+    `;
+  }).join('');
+  document.getElementById('recommendationSection').style.display = '';
+
+  // ===== Render produk rekomendasi =====
+  // Get agen's perusahaan from session
+  const session = JSON.parse(sessionStorage.getItem('akp_session') || '{}');
+  const principal = getPrincipalKey(session.perusahaan);
+
+  // Pick top 3 priority areas (lowest scores)
+  const top3 = priorityKeys.slice(0, 3);
+  if (top3.length === 0) {
+    // Fallback: pick 3 lowest pilars
+    const sorted = pilarOrder.map(k => ({k, s: scores[k] || 0})).sort((a,b) => a.s - b.s);
+    top3.push(...sorted.slice(0, 3).map(x => x.k));
+  }
+
+  const productsEl = document.getElementById('productsListCM');
+  productsEl.innerHTML = top3.map((pilarKey, idx) => {
+    const config = PRODUCT_MATRIX[pilarKey];
+    if (!config) return '';
+    const product = (config.products[principal] || config.products['default']);
+    const pilarScore = scores[pilarKey] || 0;
+    return `
+      <div class="product-card">
+        <div class="product-card-name">
+          <span class="product-card-num">${idx + 1}.</span>
+          ${product.name}
+        </div>
+        <div class="product-card-addr">
+          → Address: <strong>${config.addressText}</strong> (skor ${pilarScore}/100)
+        </div>
+        <div class="product-card-meta">${product.meta}</div>
+      </div>
+    `;
+  }).join('');
+  document.getElementById('productsSection').style.display = '';
+
+  // ===== Generate suggested script =====
+  const agenName = session.nama_panggilan || (session.nama_lengkap ? session.nama_lengkap.split(' ')[0] : 'Saya');
+  const leadFirstName = (lead.name || 'Bapak/Ibu').split(' ')[0];
+  const areaTexts = top3.map(k => PRODUCT_MATRIX[k] ? PRODUCT_MATRIX[k].addressText.toLowerCase() : '').filter(Boolean);
+
+  let areaPhrase = '';
+  if (areaTexts.length === 1) areaPhrase = areaTexts[0];
+  else if (areaTexts.length === 2) areaPhrase = areaTexts[0] + ' dan ' + areaTexts[1];
+  else if (areaTexts.length >= 3) areaPhrase = areaTexts.slice(0,2).join(', ') + ', dan ' + areaTexts[2];
+
+  const overall = scores.overall || 0;
+  let labelText;
+  if (overall < 40) labelText = 'masih perlu perhatian segera';
+  else if (overall < 60) labelText = 'cukup baik tapi ada beberapa area yang bisa diperkuat';
+  else if (overall < 80) labelText = 'sudah cukup sehat';
+  else labelText = 'sangat baik';
+
+  const script = `Halo ${leadFirstName} 🙏 Saya ${agenName}.
+
+Saya lihat Anda baru cek Skor Kesehatan Keuangan di mini-site saya — hasilnya ${overall}/100, ${labelText}.
+
+Saya notice ada ${top3.length} area yang bisa kita kuatkan: ${areaPhrase}.
+
+Boleh saya kirim ringkasan opsi via WA, atau kita ngobrol 15 menit lewat call? Saya gak akan hardsell — tujuan saya cuma kasih opsi yang Anda bisa pilih sendiri 🙂`;
+
+  document.getElementById('scriptTextCM').textContent = script;
+  window.currentScript = script;
+  document.getElementById('scriptSection').style.display = '';
+
+  // Reset copy button state
+  const copyBtn = document.getElementById('copyScriptBtn');
+  if (copyBtn) {
+    copyBtn.classList.remove('copied');
+    document.getElementById('copyBtnText').textContent = 'Copy Script';
+  }
+
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+
+function copyScript() {
+  if (!window.currentScript) return;
+  navigator.clipboard.writeText(window.currentScript).then(() => {
+    const btn = document.getElementById('copyScriptBtn');
+    btn.classList.add('copied');
+    document.getElementById('copyBtnText').textContent = '✓ Copied!';
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      document.getElementById('copyBtnText').textContent = 'Copy Script';
+    }, 2500);
+  }).catch(() => {
+    alert('Gagal copy. Coba pilih manual.');
+  });
+}
+
+function sendScriptWA() {
+  const lead = window.currentLead;
+  if (!lead || !lead.wa) {
+    alert('WhatsApp tidak tersedia untuk lead ini');
+    return;
+  }
+  const script = window.currentScript || '';
+  const phone = '62' + lead.wa.replace(/^0/, '').replace(/^62/, '');
+  window.open(`https://wa.me/${phone}?text=${encodeURIComponent(script)}`, '_blank');
 }
 
 function closeModal() {
