@@ -914,7 +914,7 @@
                 <label class="form-label">WhatsApp Business</label>
                 <div class="input-with-prefix">
                   <span class="input-prefix">+62</span>
-                  <input type="tel" class="form-input" value="81234567890">
+                  <input type="tel" class="form-input" id="settingsWhatsapp" value="">
                 </div>
               </div>
             </div>
@@ -922,17 +922,17 @@
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label">Kota</label>
-                <input type="text" class="form-input" value="Jakarta">
+                <input type="text" class="form-input" id="settingsKota" value="">
               </div>
               <div class="form-group">
                 <label class="form-label">Perusahaan Asuransi</label>
-                <input type="text" class="form-input" value="Prudential Indonesia">
+                <input type="text" class="form-input" id="settingsPerusahaan" value="">
               </div>
             </div>
 
             <div class="save-bar">
-              <button class="btn btn-ghost">Batal</button>
-              <button class="btn btn-primary" onclick="showToast('Profil berhasil diperbarui')"><i data-lucide="save"></i> Simpan Perubahan</button>
+              <button class="btn btn-ghost" onclick="init()">Batal</button>
+              <button class="btn btn-primary" id="btnSaveProfil" onclick="saveProfil()"><i data-lucide="save"></i> Simpan Perubahan</button>
             </div>
           </div>
         </div>
@@ -1216,22 +1216,22 @@
 
             <div class="form-group">
               <label class="form-label">Password Saat Ini</label>
-              <input type="password" class="form-input" placeholder="••••••••">
+              <input type="password" class="form-input" id="pwCurrent" placeholder="••••••••">
             </div>
 
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label">Password Baru</label>
-                <input type="password" class="form-input" placeholder="Minimal 8 karakter">
+                <input type="password" class="form-input" id="pwNew" placeholder="Minimal 8 karakter">
               </div>
               <div class="form-group">
                 <label class="form-label">Konfirmasi Password Baru</label>
-                <input type="password" class="form-input" placeholder="Ulang password baru">
+                <input type="password" class="form-input" id="pwConfirm" placeholder="Ulang password baru">
               </div>
             </div>
 
             <div class="save-bar">
-              <button class="btn btn-primary" onclick="showToast('Password berhasil diubah')"><i data-lucide="key"></i> Ubah Password</button>
+              <button class="btn btn-primary" id="btnChangePw" onclick="changePassword()"><i data-lucide="key"></i> Ubah Password</button>
             </div>
           </div>
 
@@ -1312,9 +1312,20 @@
 
 <!-- Supabase JS Library -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/bcryptjs@2.4.3/dist/bcrypt.min.js"></script>
 <script>
 (function() {
   'use strict';
+
+  const SUPABASE_URL = 'https://bfydtsfekvueqzvuschp.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_3Xec3HYKViIiuX99hHxHqg_Ih8ABX_T';
+  let supabase = null;
+  let currentSession = null;
+
+  function getSupabase() {
+    if (!supabase) supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    return supabase;
+  }
 
   function init() {
     let session;
@@ -1325,6 +1336,7 @@
     } catch (e) {
       window.location.href = '/login.html'; return;
     }
+    currentSession = session;
 
     const name = session.nama_panggilan || session.nama_lengkap.split(' ')[0];
     const fullName = session.nama_lengkap;
@@ -1334,7 +1346,7 @@
 
     // Sidebar
     const set = (id, val) => { const e = document.getElementById(id); if (e) e.textContent = val; };
-    const setVal = (id, val) => { const e = document.getElementById(id); if (e) e.value = val; };
+    const setVal = (id, val) => { const e = document.getElementById(id); if (e) e.value = (val == null ? '' : val); };
 
     set('userName', sidebarName);
     set('userAvatar', firstInitial);
@@ -1350,6 +1362,10 @@
     setVal('settingsNamaPanggilan', name);
     setVal('settingsUsername', session.username);
     setVal('settingsEmail', session.email);
+    // Field profil (dari session) - sekarang fungsional
+    setVal('settingsWhatsapp', session.whatsapp);
+    setVal('settingsKota', session.kota);
+    setVal('settingsPerusahaan', session.perusahaan);
 
     // Notification email info
     set('notifEmailInfo', 'Email yang dikirim ke ' + session.email);
@@ -1362,11 +1378,7 @@
 
   async function updateNavBadge(session) {
     try {
-      const supabase = window.supabase.createClient(
-        'https://bfydtsfekvueqzvuschp.supabase.co',
-        'sb_publishable_3Xec3HYKViIiuX99hHxHqg_Ih8ABX_T'
-      );
-      const { data, error } = await supabase
+      const { data, error } = await getSupabase()
         .from('leads')
         .select('stage')
         .eq('owner_id', session.id)
@@ -1388,6 +1400,97 @@
       console.warn('Badge update failed:', e);
     }
   }
+
+  // ===== SIMPAN PROFIL =====
+  async function saveProfil() {
+    if (!currentSession) return;
+    const btn = document.getElementById('btnSaveProfil');
+    const val = (id) => { const e = document.getElementById(id); return e ? e.value.trim() : ''; };
+
+    const namaLengkap = val('settingsNamaLengkap');
+    const namaPanggilan = val('settingsNamaPanggilan');
+    let whatsapp = val('settingsWhatsapp').replace(/[^0-9]/g, '').replace(/^0/, '').replace(/^62/, '');
+    const kota = val('settingsKota');
+    const perusahaan = val('settingsPerusahaan');
+
+    if (!namaLengkap) { window.showToast('Nama lengkap wajib diisi'); return; }
+
+    if (btn) { btn.disabled = true; btn.textContent = 'Menyimpan...'; }
+    try {
+      const payload = {
+        nama_lengkap: namaLengkap,
+        nama_panggilan: namaPanggilan || namaLengkap.split(' ')[0],
+        whatsapp: whatsapp || null,
+        kota: kota || null,
+        perusahaan: perusahaan || null,
+        updated_at: new Date().toISOString()
+      };
+      const { error } = await getSupabase().from('users').update(payload).eq('id', currentSession.id);
+      if (error) throw error;
+
+      // Update session lokal supaya konsisten tanpa harus login ulang
+      currentSession.nama_lengkap = payload.nama_lengkap;
+      currentSession.nama_panggilan = payload.nama_panggilan;
+      currentSession.whatsapp = payload.whatsapp;
+      currentSession.kota = payload.kota;
+      currentSession.perusahaan = payload.perusahaan;
+      sessionStorage.setItem('akp_session', JSON.stringify(currentSession));
+
+      window.showToast('Profil berhasil diperbarui');
+      init();
+    } catch (e) {
+      window.showToast('Gagal menyimpan: ' + (e.message || 'coba lagi'));
+    } finally {
+      if (btn) { btn.disabled = false; btn.innerHTML = '<i data-lucide="save"></i> Simpan Perubahan'; if (typeof lucide !== 'undefined') lucide.createIcons(); }
+    }
+  }
+
+  // ===== GANTI PASSWORD =====
+  async function changePassword() {
+    if (!currentSession) return;
+    const btn = document.getElementById('btnChangePw');
+    const cur = (document.getElementById('pwCurrent') || {}).value || '';
+    const nw = (document.getElementById('pwNew') || {}).value || '';
+    const cf = (document.getElementById('pwConfirm') || {}).value || '';
+
+    if (!cur || !nw || !cf) { window.showToast('Semua kolom password wajib diisi'); return; }
+    if (nw.length < 8) { window.showToast('Password baru minimal 8 karakter'); return; }
+    if (nw !== cf) { window.showToast('Konfirmasi password tidak cocok'); return; }
+    if (nw === cur) { window.showToast('Password baru harus berbeda dari yang lama'); return; }
+
+    if (btn) { btn.disabled = true; btn.textContent = 'Memproses...'; }
+    try {
+      const sb = getSupabase();
+      // Ambil hash terbaru dari DB
+      const { data: u, error: qErr } = await sb.from('users').select('password_hash').eq('id', currentSession.id).maybeSingle();
+      if (qErr || !u) throw new Error('Gagal memuat data akun');
+
+      const stored = u.password_hash || '';
+      const isBcrypt = /^\$2[aby]\$/.test(stored);
+      let valid = false;
+      if (isBcrypt) valid = dcodeIO.bcrypt.compareSync(cur, stored);
+      else valid = (stored === cur);
+
+      if (!valid) { window.showToast('Password saat ini salah'); if (btn){btn.disabled=false; btn.innerHTML='<i data-lucide="key"></i> Ubah Password'; if(typeof lucide!=='undefined')lucide.createIcons();} return; }
+
+      const newHash = dcodeIO.bcrypt.hashSync(nw, 10);
+      const { error: upErr } = await sb.from('users').update({ password_hash: newHash, updated_at: new Date().toISOString() }).eq('id', currentSession.id);
+      if (upErr) throw upErr;
+
+      // Reset field
+      ['pwCurrent','pwNew','pwConfirm'].forEach(id => { const e = document.getElementById(id); if (e) e.value = ''; });
+      window.showToast('Password berhasil diubah');
+    } catch (e) {
+      window.showToast('Gagal mengubah password: ' + (e.message || 'coba lagi'));
+    } finally {
+      if (btn) { btn.disabled = false; btn.innerHTML = '<i data-lucide="key"></i> Ubah Password'; if (typeof lucide !== 'undefined') lucide.createIcons(); }
+    }
+  }
+
+  // Expose handler yang dipanggil dari onclick inline
+  window.init = init;
+  window.saveProfil = saveProfil;
+  window.changePassword = changePassword;
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);

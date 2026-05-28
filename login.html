@@ -415,6 +415,7 @@
 
 <!-- Supabase JS Library -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/bcryptjs@2.4.3/dist/bcrypt.min.js"></script>
 <script>
 (function() {
   'use strict';
@@ -494,12 +495,40 @@
           return;
         }
 
-        // Check password (Phase 1: plain text comparison)
-        if (user.password_hash !== password) {
+        // Check password (bcrypt-aware + auto-upgrade dari plain text lama)
+        const stored = user.password_hash || '';
+        const isBcrypt = /^\$2[aby]\$/.test(stored);
+        let passwordValid = false;
+        try {
+          if (isBcrypt) {
+            passwordValid = dcodeIO.bcrypt.compareSync(password, stored);
+          } else {
+            // Format lama (plain text) - bandingkan langsung
+            passwordValid = (stored === password);
+          }
+        } catch (cmpErr) {
+          console.error('[AKP Login] Password compare error:', cmpErr);
+          passwordValid = false;
+        }
+
+        if (!passwordValid) {
           showError('Password salah.');
           submitBtn.disabled = false;
           submitBtn.textContent = originalText;
           return;
+        }
+
+        // Auto-upgrade: kalau password masih plain text, hash ke bcrypt diam-diam
+        if (!isBcrypt) {
+          try {
+            const lib = dcodeIO.bcrypt;
+            const newHash = lib.hashSync(password, 10);
+            await supabase.from('users').update({ password_hash: newHash }).eq('id', user.id);
+            console.log('[AKP Login] Password upgraded to bcrypt for', user.email);
+          } catch (upErr) {
+            // Kalau gagal upgrade, jangan blokir login - cukup log
+            console.warn('[AKP Login] Password upgrade failed (non-blocking):', upErr);
+          }
         }
 
         // Check subscription status

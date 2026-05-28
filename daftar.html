@@ -579,6 +579,7 @@
 
 <!-- Supabase JS Library -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/bcryptjs@2.4.3/dist/bcrypt.min.js"></script>
 <script>
 (function() {
   'use strict';
@@ -668,7 +669,7 @@
           .from('users')
           .insert({
             email: email,
-            password_hash: password,
+            password_hash: dcodeIO.bcrypt.hashSync(password, 10),
             nama_lengkap: nama,
             nama_panggilan: nama.split(' ')[0],
             whatsapp: whatsapp,
