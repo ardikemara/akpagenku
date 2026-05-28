@@ -847,6 +847,8 @@
   .tipe-radio.active { border-color:#c9a961; background:rgba(201,169,97,0.08); color:#0f2647; }
   .tipe-radio [data-lucide] { width:15px; height:15px; }
   /* Maks 6 kartu per baris, sisanya turun otomatis (grid rapi seragam) */
+  .konten-body-wrap { padding: 0 32px 40px; }
+  @media (max-width: 768px) { .konten-body-wrap { padding: 0 20px 32px; } }
   .konten-admin-grid { display:grid; grid-template-columns:repeat(6, 1fr); gap:22px; }
   @media (max-width:1400px) { .konten-admin-grid { grid-template-columns:repeat(5, 1fr); } }
   @media (max-width:1100px) { .konten-admin-grid { grid-template-columns:repeat(4, 1fr); } }
@@ -1038,22 +1040,24 @@
         <p class="view-sub">Upload konten siap pakai (Story 9:16 &amp; Feed carousel 4:5) untuk agen. Dikategorikan per 7 kategori produk.</p>
       </div>
 
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap;">
-        <div class="filter-tabs" id="kontenKatFilter">
-          <button class="tab active" data-kat="all" onclick="filterKontenAdmin('all', event)">Semua</button>
-          <button class="tab" data-kat="term_life" onclick="filterKontenAdmin('term_life', event)">Term Life</button>
-          <button class="tab" data-kat="whole_life" onclick="filterKontenAdmin('whole_life', event)">Whole Life</button>
-          <button class="tab" data-kat="unit_link" onclick="filterKontenAdmin('unit_link', event)">Unit Link</button>
-          <button class="tab" data-kat="endowment" onclick="filterKontenAdmin('endowment', event)">Endowment</button>
-          <button class="tab" data-kat="kesehatan" onclick="filterKontenAdmin('kesehatan', event)">Kesehatan</button>
-          <button class="tab" data-kat="penyakit_kritis" onclick="filterKontenAdmin('penyakit_kritis', event)">Penyakit Kritis</button>
-          <button class="tab" data-kat="syariah" onclick="filterKontenAdmin('syariah', event)">Syariah</button>
+      <div class="konten-body-wrap">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap;">
+          <div class="filter-tabs" id="kontenKatFilter">
+            <button class="tab active" data-kat="all" onclick="filterKontenAdmin('all', event)">Semua</button>
+            <button class="tab" data-kat="term_life" onclick="filterKontenAdmin('term_life', event)">Term Life</button>
+            <button class="tab" data-kat="whole_life" onclick="filterKontenAdmin('whole_life', event)">Whole Life</button>
+            <button class="tab" data-kat="unit_link" onclick="filterKontenAdmin('unit_link', event)">Unit Link</button>
+            <button class="tab" data-kat="endowment" onclick="filterKontenAdmin('endowment', event)">Endowment</button>
+            <button class="tab" data-kat="kesehatan" onclick="filterKontenAdmin('kesehatan', event)">Kesehatan</button>
+            <button class="tab" data-kat="penyakit_kritis" onclick="filterKontenAdmin('penyakit_kritis', event)">Penyakit Kritis</button>
+            <button class="tab" data-kat="syariah" onclick="filterKontenAdmin('syariah', event)">Syariah</button>
+          </div>
+          <button class="btn-primary" onclick="openKontenUpload()"><i data-lucide="upload"></i> Upload Konten</button>
         </div>
-        <button class="btn-primary" onclick="openKontenUpload()"><i data-lucide="upload"></i> Upload Konten</button>
-      </div>
 
-      <div id="kontenAdminList">
-        <div class="loading">Loading...</div>
+        <div id="kontenAdminList">
+          <div class="loading">Loading...</div>
+        </div>
       </div>
     </div>
 
