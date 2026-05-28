@@ -846,7 +846,12 @@
   .tipe-radio { flex:1; display:flex; align-items:center; gap:6px; padding:11px 14px; border:1.5px solid #e5e5e5; border-radius:8px; cursor:pointer; font-size:13px; font-weight:600; color:#404040; transition:all .15s; }
   .tipe-radio.active { border-color:#c9a961; background:rgba(201,169,97,0.08); color:#0f2647; }
   .tipe-radio [data-lucide] { width:15px; height:15px; }
-  .konten-admin-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:22px; }
+  /* Maks 6 kartu per baris, sisanya turun otomatis (grid rapi seragam) */
+  .konten-admin-grid { display:grid; grid-template-columns:repeat(6, 1fr); gap:22px; }
+  @media (max-width:1400px) { .konten-admin-grid { grid-template-columns:repeat(5, 1fr); } }
+  @media (max-width:1100px) { .konten-admin-grid { grid-template-columns:repeat(4, 1fr); } }
+  @media (max-width:850px)  { .konten-admin-grid { grid-template-columns:repeat(3, 1fr); } }
+  @media (max-width:600px)  { .konten-admin-grid { grid-template-columns:repeat(2, 1fr); } }
   .konten-admin-card { background:#fff; border:1px solid #e5e5e5; border-radius:12px; overflow:hidden; transition:box-shadow .15s; }
   .konten-admin-card:hover { box-shadow:0 6px 18px rgba(15,38,71,0.10); }
   /* Tinggi thumbnail dibatasi supaya grid lega (admin = manajemen, bukan preview detail) */
