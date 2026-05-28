@@ -728,6 +728,191 @@
     .footer-inner { grid-template-columns: 1fr; }
     .hero h1 { font-size: 32px; }
   }
+
+  /* ===== RECOMMENDATION ENGINE ===== */
+  .re-tagline {
+    text-align: center;
+    font-size: 17px;
+    color: var(--gray-700);
+    max-width: 720px;
+    margin: -6px auto 56px;
+    line-height: 1.7;
+  }
+  .re-tagline strong { color: var(--navy); font-weight: 600; }
+
+  /* split: penjelasan kiri + alur kanan */
+  .re-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: center;
+    margin-bottom: 72px;
+  }
+  .re-explain h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--navy);
+    line-height: 1.3;
+    margin-bottom: 16px;
+  }
+  .re-explain p {
+    font-size: 15px;
+    color: var(--gray-700);
+    line-height: 1.7;
+    margin-bottom: 16px;
+  }
+  .re-explain p strong { color: var(--navy); font-weight: 600; }
+
+  /* alur 4 langkah dalam kartu navy */
+  .re-flow-card {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+    border-radius: 16px;
+    padding: 36px 32px;
+    color: var(--white);
+    box-shadow: 0 30px 60px -25px rgba(15, 38, 71, 0.45);
+  }
+  .re-flow-card .re-flow-label {
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 600;
+    margin-bottom: 24px;
+    display: block;
+  }
+  .re-flow-step {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    padding: 14px 0;
+    position: relative;
+  }
+  .re-flow-step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 17px;
+    top: 44px;
+    bottom: -10px;
+    width: 2px;
+    background: rgba(201, 169, 97, 0.25);
+  }
+  .re-flow-step .n {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(201, 169, 97, 0.15);
+    border: 1.5px solid var(--gold);
+    color: var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    font-weight: 700;
+    z-index: 1;
+  }
+  .re-flow-step .t { padding-top: 4px; }
+  .re-flow-step .t b {
+    display: block;
+    font-size: 15px;
+    color: var(--white);
+    margin-bottom: 2px;
+    font-weight: 600;
+  }
+  .re-flow-step .t span {
+    font-size: 13.5px;
+    color: rgba(255,255,255,0.7);
+    line-height: 1.6;
+  }
+
+  /* tujuan / benefit grid */
+  .re-goals-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    margin-bottom: 64px;
+  }
+  .re-goal-card {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: 14px;
+    padding: 32px;
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    transition: all 0.3s;
+  }
+  .re-goal-card:hover {
+    border-color: var(--gold);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px -10px rgba(15, 38, 71, 0.15);
+  }
+  .re-goal-card .ico {
+    flex-shrink: 0;
+    width: 52px;
+    height: 52px;
+    background: linear-gradient(135deg, var(--cream) 0%, rgba(201,169,97,0.15) 100%);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+  }
+  .re-goal-card h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 19px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 6px;
+    line-height: 1.3;
+  }
+  .re-goal-card p {
+    font-size: 14.5px;
+    color: var(--gray-700);
+    line-height: 1.65;
+  }
+
+  /* killer feature banner */
+  .re-killer {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-left: 4px solid var(--gold);
+    border-radius: 14px;
+    padding: 40px 44px;
+    box-shadow: 0 4px 14px rgba(15, 38, 71, 0.06);
+  }
+  .re-killer h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 14px;
+    line-height: 1.3;
+  }
+  .re-killer p {
+    font-size: 15.5px;
+    color: var(--gray-700);
+    line-height: 1.75;
+    margin-bottom: 14px;
+  }
+  .re-killer p strong { color: var(--navy); font-weight: 600; }
+  .re-killer .quote {
+    margin-top: 22px;
+    padding-top: 22px;
+    border-top: 1px dashed var(--gray-200);
+    font-style: italic;
+    font-size: 15px;
+    color: var(--gray-500);
+  }
+  .re-killer .quote b { color: var(--navy); font-style: normal; }
+
+  @media (max-width: 900px) {
+    .re-split { grid-template-columns: 1fr; gap: 32px; }
+    .re-goals-grid { grid-template-columns: 1fr; }
+    .re-killer { padding: 32px 26px; }
+  }
 </style>
 </head>
 <body>
@@ -739,6 +924,7 @@
       <div class="logo">AKP<span class="accent">Agenku</span></div>
       <div class="nav-links">
         <a href="#fitur">Fitur</a>
+        <a href="#recommendation-engine">Recommendation Engine</a>
         <a href="#cara-kerja">Cara Kerja</a>
         <a href="#harga">Harga</a>
         <a href="#faq">FAQ</a>
@@ -891,6 +1077,111 @@
           <p>Posisi Anda berubah: dari "agen yang nawarin produk" menjadi <strong>edukator yang dipercaya</strong>. Closing jadi lebih mudah.</p>
         </div>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== RECOMMENDATION ENGINE ===== -->
+<section class="section section-cream" id="recommendation-engine">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">⭐ Fitur Pembeda</span>
+      <h2 class="section-title">Recommendation Engine:<br>"Otak" di Balik Setiap Lead</h2>
+    </div>
+    <p class="re-tagline">
+      Begitu prospek selesai isi kuis, sistem otomatis kasih saran ke agen:
+      <strong>"Untuk lead ini, produk yang paling cocok adalah X — dan ini script pembukanya."</strong>
+      Agen tidak perlu lagi menebak harus menawarkan apa.
+    </p>
+
+    <!-- Penjelasan + Alur -->
+    <div class="re-split">
+      <div class="re-explain">
+        <h3>Lead sudah masuk. Lalu harus jual apa?</h3>
+        <p>
+          Ini masalah yang sering terlupakan. Banyak agen sudah dapat lead, tapi bingung:
+          <strong>"Orang ini sebenarnya butuh apa? Harus tawarin produk yang mana? Gimana cara buka obrolan tanpa terkesan maksa?"</strong>
+        </p>
+        <p>
+          Akibatnya lead yang panas jadi dingin — bukan karena kurang prospek, tapi karena agen tidak tahu cara approach yang tepat.
+        </p>
+        <p>
+          Recommendation Engine yang menjawab semuanya: ia membaca hasil kuis, mencocokkan dengan produk yang Anda jual, lalu menyiapkan rekomendasi <strong>plus draft pesan WhatsApp siap kirim.</strong>
+        </p>
+      </div>
+
+      <div class="re-flow-card">
+        <span class="re-flow-label">Cara Kerjanya</span>
+        <div class="re-flow-step">
+          <div class="n">1</div>
+          <div class="t">
+            <b>Prospek isi kuis</b>
+            <span>Calon nasabah mengisi Kuis Skor Kesehatan Keuangan di mini-site Anda.</span>
+          </div>
+        </div>
+        <div class="re-flow-step">
+          <div class="n">2</div>
+          <div class="t">
+            <b>Sistem analisa hasil</b>
+            <span>Skor dibaca, area finansial yang lemah teridentifikasi otomatis.</span>
+          </div>
+        </div>
+        <div class="re-flow-step">
+          <div class="n">3</div>
+          <div class="t">
+            <b>Cocokkan dengan produk Anda</b>
+            <span>Rekomendasi produk yang relevan + alasannya, disusun untuk Anda.</span>
+          </div>
+        </div>
+        <div class="re-flow-step">
+          <div class="n">4</div>
+          <div class="t">
+            <b>Follow-up dengan percaya diri</b>
+            <span>Lihat rekomendasi + script siap pakai di dashboard, tinggal kirim.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tujuan / Benefit -->
+    <div class="re-goals-grid">
+      <div class="re-goal-card">
+        <div class="ico">🎯</div>
+        <div>
+          <h4>Langsung tahu harus ngapain</h4>
+          <p>Begitu lead masuk, Anda lihat area yang lemah, produk yang cocok, dan script yang tinggal kirim. Tidak ada lagi momen "bingung mulai dari mana".</p>
+        </div>
+      </div>
+      <div class="re-goal-card">
+        <div class="ico">📈</div>
+        <div>
+          <h4>Naikkan tingkat closing</h4>
+          <p>Saat Anda tahu persis kebutuhan prospek dan cara approach-nya, peluang closing jauh lebih tinggi dibanding menebak-nebak.</p>
+        </div>
+      </div>
+      <div class="re-goal-card">
+        <div class="ico">💼</div>
+        <div>
+          <h4>Pemula pun terlihat profesional</h4>
+          <p>Agen baru bisa memberi rekomendasi tepat & terstruktur karena "otaknya" disediakan platform — bikin percaya diri dan kredibel di mata prospek.</p>
+        </div>
+      </div>
+      <div class="re-goal-card">
+        <div class="ico">🤝</div>
+        <div>
+          <h4>Edukatif, bukan maksa</h4>
+          <p>Script selalu bertone "kasih opsi, bukan hardsell" — sesuai filosofi platform: edukasi dulu, jualan mengikuti.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Killer feature -->
+    <div class="re-killer">
+      <h3>Inilah yang bikin AKPAgenku bukan sekadar pengumpul lead</h3>
+      <p>
+        Kebanyakan tools lead-gen di pasaran berhenti di "kasih lead". Setelah itu, agen ditinggal sendiri.
+        AKPAgenku berbeda: kami <strong>menemani Anda sampai tahu harus jual apa & bagaimana caranya</strong> — bukan sekadar tools, tapi <strong>partner jualan</strong>.
+      </p>
     </div>
   </div>
 </section>
