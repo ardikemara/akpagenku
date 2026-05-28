@@ -1288,48 +1288,10 @@
         <div class="tab-content" id="tab-konten">
           <div class="field-group">
             <label class="field-label">Pilih Artikel Edukasi</label>
-            <div class="field-help" style="margin-top: 0; margin-bottom: 12px;">Pilih artikel yang ditampilkan di mini-site Anda. Disarankan 3-6 artikel.</div>
+            <div class="field-help" style="margin-top: 0; margin-bottom: 12px;">Pilih artikel yang ditampilkan di mini-site Anda. Disarankan 3-6 artikel. <span id="article-counter" style="font-weight:600;color:var(--gold);"></span></div>
 
-            <div class="check-list">
-              <div class="check-item checked" onclick="toggleArticleCheck(this)">
-                <div class="check-box"><i data-lucide="check"></i></div>
-                <div class="check-body">
-                  <div class="check-title">Cara Hitung Dana Darurat Ideal untuk Keluarga Muda</div>
-                  <div class="check-desc">Artikel · 5 menit baca</div>
-                </div>
-              </div>
-
-              <div class="check-item checked" onclick="toggleArticleCheck(this)">
-                <div class="check-box"><i data-lucide="check"></i></div>
-                <div class="check-body">
-                  <div class="check-title">Biaya Kuliah Anak 18 Tahun Lagi, Berapa yang Harus Disiapkan?</div>
-                  <div class="check-desc">Artikel · 7 menit baca</div>
-                </div>
-              </div>
-
-              <div class="check-item checked" onclick="toggleArticleCheck(this)">
-                <div class="check-box"><i data-lucide="check"></i></div>
-                <div class="check-body">
-                  <div class="check-title">BPJS Saja Cukup? Mari Hitung Biaya Sakit Kritis Sebenarnya</div>
-                  <div class="check-desc">Artikel · 6 menit baca</div>
-                </div>
-              </div>
-
-              <div class="check-item" onclick="toggleArticleCheck(this)">
-                <div class="check-box"><i data-lucide="check"></i></div>
-                <div class="check-body">
-                  <div class="check-title">5 Mitos Asuransi Pendidikan yang Sering Disalahpahami</div>
-                  <div class="check-desc">Artikel · 4 menit baca</div>
-                </div>
-              </div>
-
-              <div class="check-item" onclick="toggleArticleCheck(this)">
-                <div class="check-box"><i data-lucide="check"></i></div>
-                <div class="check-body">
-                  <div class="check-title">Term Life vs Whole Life: Mana yang Cocok untuk Anda?</div>
-                  <div class="check-desc">Artikel · 5 menit baca</div>
-                </div>
-              </div>
+            <div class="check-list" id="article-checklist">
+              <div style="padding:16px;color:var(--gray-500);font-size:13px;">Memuat artikel…</div>
             </div>
           </div>
 
@@ -1689,6 +1651,49 @@
     document.getElementById('previewBrowserUrl').textContent = url;
   }
 
+  // Daftar artikel dari DB + slug yang sedang aktif (dipakai saat save)
+  let ALL_ARTICLES = [];
+  let activeArticleSlugs = [];
+
+  async function loadArticles(selectedSlugs) {
+    activeArticleSlugs = Array.isArray(selectedSlugs) ? selectedSlugs.slice() : [];
+    const wrap = document.getElementById('article-checklist');
+    if (!wrap) return;
+    try {
+      const { data, error } = await supabase
+        .from('articles').select('slug,title,read_minutes,sort_order')
+        .eq('is_published', true).order('sort_order', { ascending: true });
+      if (error) throw error;
+      ALL_ARTICLES = data || [];
+    } catch (e) {
+      wrap.innerHTML = '<div style="padding:16px;color:#b91c1c;font-size:13px;">Gagal memuat artikel. Coba refresh.</div>';
+      return;
+    }
+    if (!ALL_ARTICLES.length) {
+      wrap.innerHTML = '<div style="padding:16px;color:var(--gray-500);font-size:13px;">Belum ada artikel. Admin bisa menambah di panel Konten.</div>';
+      updateArticleCounter();
+      return;
+    }
+    wrap.innerHTML = ALL_ARTICLES.map(a => {
+      const on = activeArticleSlugs.includes(a.slug) ? ' checked' : '';
+      return '<div class="check-item' + on + '" data-slug="' + a.slug + '" onclick="toggleArticleCheck(this)">' +
+        '<div class="check-box"><i data-lucide="check"></i></div>' +
+        '<div class="check-body"><div class="check-title">' + a.title + '</div>' +
+        '<div class="check-desc">Artikel · ' + (a.read_minutes || 5) + ' menit baca</div></div></div>';
+    }).join('');
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+    updateArticleCounter();
+  }
+  window.loadArticles = loadArticles;
+
+  function updateArticleCounter() {
+    const counter = document.getElementById('article-counter');
+    if (!counter) return;
+    const n = document.querySelectorAll('#article-checklist .check-item.checked').length;
+    counter.textContent = n + ' terpilih';
+  }
+  window.updateArticleCounter = updateArticleCounter;
+
   async function loadMiniSiteData() {
     try {
       const { data, error } = await supabase
@@ -1800,6 +1805,10 @@
     }
     if (typeof updatePainCounter === 'function') updatePainCounter();
 
+    // Restore ARTIKEL (load dari DB + centang yang aktif)
+    const savedArticles = Array.isArray(data.articles_aktif) ? data.articles_aktif : [];
+    if (typeof loadArticles === 'function') loadArticles(savedArticles);
+
     // Restore MAGNET (utama + supporting)
     if (data.magnet_utama || Array.isArray(data.magnet_supporting)) {
       const supporting = Array.isArray(data.magnet_supporting) ? data.magnet_supporting : [];
@@ -1859,6 +1868,9 @@
     // Baca pain-point aktif (checkbox)
     const painPoints = Array.from(document.querySelectorAll('#pain-checklist .check-item.checked'))
       .map(el => el.getAttribute('data-pain')).filter(Boolean);
+    // Baca artikel aktif (checkbox, urutan sesuai tampilan)
+    const articlesAktif = Array.from(document.querySelectorAll('#article-checklist .check-item.checked'))
+      .map(el => el.getAttribute('data-slug')).filter(Boolean);
     // Baca magnet utama + supporting
     const utamaEl = document.querySelector('.magnet-pick.is-utama');
     const magnetUtama = utamaEl?.dataset.id || 'skor';
@@ -1878,6 +1890,7 @@
       font_style: font,
       produk_aktif: produkAktif,
       pain_points: painPoints,
+      articles_aktif: articlesAktif,
       magnet_utama: magnetUtama,
       magnet_supporting: magnetSupporting,
       updated_at: new Date().toISOString()
@@ -2133,6 +2146,7 @@ function updateProductsPreview() {
 // Toggle artikel
 function toggleArticleCheck(el) {
   el.classList.toggle('checked');
+  if (typeof window.updateArticleCounter === 'function') window.updateArticleCounter();
 }
 
 // Theme switcher

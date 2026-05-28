@@ -914,6 +914,11 @@
         <span>Konten Library</span>
         <span class="sidebar-count" id="sidebarCountKonten">0</span>
       </button>
+      <button class="sidebar-item" data-view="artikel" onclick="setView('artikel')">
+        <i data-lucide="file-text"></i>
+        <span>Artikel</span>
+        <span class="sidebar-count" id="sidebarCountArtikel">0</span>
+      </button>
     </nav>
 
     <div class="sidebar-footer">
@@ -1061,6 +1066,71 @@
       </div>
     </div>
 
+    <!-- ===== VIEW: ARTIKEL ===== -->
+    <div class="view" id="viewArtikel">
+      <div class="view-header">
+        <h1 class="view-title">Artikel Edukasi</h1>
+        <p class="view-sub">Artikel siap pakai yang bisa dipilih agen untuk ditampilkan di mini-site mereka. Tiap artikel terhubung ke satu kuis/kalkulator.</p>
+      </div>
+      <div class="konten-body-wrap">
+        <div style="display:flex;justify-content:flex-end;margin-bottom:18px;">
+          <button class="btn-primary" onclick="openArtikelForm()"><i data-lucide="plus"></i> Tambah Artikel</button>
+        </div>
+        <div id="artikelAdminList">
+          <div class="loading">Loading...</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== ARTIKEL FORM MODAL ===== -->
+<div class="modal-overlay" id="artikelFormModal">
+  <div class="modal" style="max-width:640px;">
+    <div class="modal-header">
+      <div class="modal-title" id="artikelFormTitle">Tambah Artikel</div>
+      <button class="modal-close" onclick="closeArtikelForm()"><i data-lucide="x"></i></button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="artikelId">
+      <div class="form-field">
+        <label class="form-label">Judul Artikel *</label>
+        <input type="text" class="form-input" id="artikelJudul" placeholder="Contoh: Cara Hitung Dana Darurat Ideal">
+        <div style="font-size:11px;color:#737373;margin-top:4px;">URL otomatis dibuat dari judul.</div>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Ringkasan singkat (excerpt)</label>
+        <input type="text" class="form-input" id="artikelExcerpt" placeholder="1 kalimat ringkas untuk preview">
+      </div>
+      <div class="form-field">
+        <label class="form-label">Isi Artikel *</label>
+        <textarea class="form-input" id="artikelBody" rows="12" placeholder="Tulis isi artikel di sini. Pisahkan paragraf dengan baris kosong. Untuk subjudul, awali baris dengan ## (contoh: ## Kenapa ini penting)" style="resize:vertical;line-height:1.6;font-family:inherit;"></textarea>
+        <div style="font-size:11px;color:#737373;margin-top:4px;">Tips: baris kosong = paragraf baru. Awali baris dengan <strong>##</strong> untuk subjudul. Awali dengan <strong>-</strong> untuk poin/list.</div>
+      </div>
+      <div style="display:flex;gap:14px;">
+        <div class="form-field" style="flex:1;">
+          <label class="form-label">Terhubung ke Kuis *</label>
+          <select class="form-input" id="artikelMagnet">
+            <option value="skor">Skor Kesehatan Keuangan</option>
+            <option value="pendidikan">Kalkulator Dana Pendidikan</option>
+            <option value="pensiun">Kalkulator Dana Pensiun</option>
+            <option value="darurat">Kalkulator Dana Darurat</option>
+            <option value="kritis">Kuis Risiko Penyakit Kritis</option>
+            <option value="up">Kalkulator Uang Pertanggungan</option>
+            <option value="kesehatan">Kuis Coverage Kesehatan</option>
+          </select>
+        </div>
+        <div class="form-field" style="width:140px;">
+          <label class="form-label">Menit baca</label>
+          <input type="number" class="form-input" id="artikelMenit" value="5" min="1" max="30">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer" style="display:flex;justify-content:flex-end;gap:10px;padding:16px 20px;border-top:1px solid #e5e5e5;">
+      <button class="btn-secondary" onclick="closeArtikelForm()" style="padding:9px 16px;border:1px solid #e5e5e5;background:#fff;border-radius:8px;cursor:pointer;font-weight:600;">Batal</button>
+      <button class="btn-primary" id="artikelSaveBtn" onclick="saveArtikel()"><i data-lucide="save"></i> Simpan</button>
+    </div>
   </div>
 </div>
 
@@ -1322,6 +1392,164 @@ function updateStats() {
   set('countAll', total);
 }
 
+// ===== ARTIKEL CRUD =====
+let ARTIKEL_CACHE = [];
+
+function slugify(s) {
+  return String(s || '').toLowerCase().trim()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 80);
+}
+
+// Ubah teks editor sederhana (## subjudul, - list, baris kosong = paragraf) jadi HTML
+function articleTextToHtml(text) {
+  const lines = String(text || '').split('\n');
+  let html = '', inList = false;
+  const flushList = () => { if (inList) { html += '</ul>'; inList = false; } };
+  let para = [];
+  const flushPara = () => {
+    if (para.length) { html += '<p>' + para.join(' ').trim() + '</p>'; para = []; }
+  };
+  for (let raw of lines) {
+    const line = raw.trim();
+    if (line === '') { flushList(); flushPara(); continue; }
+    if (line.startsWith('## ')) {
+      flushList(); flushPara();
+      html += '<h2>' + escapeHtml(line.slice(3).trim()) + '</h2>';
+    } else if (line.startsWith('- ')) {
+      flushPara();
+      if (!inList) { html += '<ul>'; inList = true; }
+      html += '<li>' + escapeHtml(line.slice(2).trim()) + '</li>';
+    } else {
+      flushList();
+      para.push(escapeHtml(line));
+    }
+  }
+  flushList(); flushPara();
+  return html;
+}
+
+// Kebalikannya: HTML -> teks editor (buat edit)
+function articleHtmlToText(html) {
+  let t = String(html || '');
+  t = t.replace(/<h2>(.*?)<\/h2>/gis, '\n## $1\n');
+  t = t.replace(/<li>(.*?)<\/li>/gis, '\n- $1');
+  t = t.replace(/<\/ul>/gis, '\n');
+  t = t.replace(/<ul>/gis, '');
+  t = t.replace(/<\/p>/gis, '\n\n');
+  t = t.replace(/<p>/gis, '');
+  t = t.replace(/<strong>(.*?)<\/strong>/gis, '$1');
+  t = t.replace(/<[^>]+>/g, '');
+  t = t.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+  return t.replace(/\n{3,}/g, '\n\n').trim();
+}
+
+async function loadArtikelAdmin() {
+  const list = document.getElementById('artikelAdminList');
+  list.innerHTML = '<div class="loading">Loading...</div>';
+  const { data, error } = await supabase
+    .from('articles').select('*').order('sort_order', { ascending: true });
+  if (error) { list.innerHTML = '<div class="loading">Gagal memuat: ' + escapeHtml(error.message) + '</div>'; return; }
+  ARTIKEL_CACHE = data || [];
+  const cnt = document.getElementById('sidebarCountArtikel');
+  if (cnt) cnt.textContent = ARTIKEL_CACHE.length;
+  if (!ARTIKEL_CACHE.length) {
+    list.innerHTML = '<div class="loading">Belum ada artikel. Klik "Tambah Artikel" untuk membuat.</div>';
+    return;
+  }
+  const magnetNames = { skor:'Skor Kesehatan', pendidikan:'Dana Pendidikan', pensiun:'Dana Pensiun', darurat:'Dana Darurat', kritis:'Risiko Kritis', up:'Uang Pertanggungan', kesehatan:'Coverage Kesehatan' };
+  list.innerHTML = ARTIKEL_CACHE.map(a =>
+    '<div style="background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:16px 18px;margin-bottom:12px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;">' +
+      '<div style="flex:1;min-width:0;">' +
+        '<div style="font-weight:600;color:#0f2647;font-size:15px;margin-bottom:4px;">' + escapeHtml(a.title) + '</div>' +
+        '<div style="font-size:12px;color:#737373;margin-bottom:8px;">' + escapeHtml(a.excerpt || '') + '</div>' +
+        '<div style="display:flex;gap:8px;flex-wrap:wrap;font-size:11px;">' +
+          '<span style="background:#f5f5f5;padding:2px 8px;border-radius:999px;color:#525252;"><i data-lucide="clock" style="width:11px;height:11px;vertical-align:-1px;"></i> ' + (a.read_minutes||5) + ' mnt</span>' +
+          '<span style="background:#eef2f7;padding:2px 8px;border-radius:999px;color:#0f2647;">→ ' + escapeHtml(magnetNames[a.related_magnet] || a.related_magnet) + '</span>' +
+          '<span style="background:#f5f5f5;padding:2px 8px;border-radius:999px;color:#a3a3a3;">/' + escapeHtml(a.slug) + '</span>' +
+        '</div>' +
+      '</div>' +
+      '<div style="display:flex;gap:6px;flex-shrink:0;">' +
+        '<button onclick="editArtikel(\'' + a.id + '\')" title="Edit" style="background:none;border:1px solid #e5e5e5;border-radius:8px;padding:7px 9px;cursor:pointer;color:#0f2647;"><i data-lucide="pencil" style="width:15px;height:15px;"></i></button>' +
+        '<button onclick="deleteArtikel(\'' + a.id + '\',\'' + escapeHtml(a.title).replace(/\'/g,"") + '\')" title="Hapus" style="background:none;border:1px solid #fecaca;border-radius:8px;padding:7px 9px;cursor:pointer;color:#dc2626;"><i data-lucide="trash-2" style="width:15px;height:15px;"></i></button>' +
+      '</div>' +
+    '</div>'
+  ).join('');
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+
+function openArtikelForm() {
+  document.getElementById('artikelFormTitle').textContent = 'Tambah Artikel';
+  document.getElementById('artikelId').value = '';
+  document.getElementById('artikelJudul').value = '';
+  document.getElementById('artikelExcerpt').value = '';
+  document.getElementById('artikelBody').value = '';
+  document.getElementById('artikelMagnet').value = 'skor';
+  document.getElementById('artikelMenit').value = 5;
+  document.getElementById('artikelFormModal').classList.add('show');
+}
+function closeArtikelForm() {
+  document.getElementById('artikelFormModal').classList.remove('show');
+}
+function editArtikel(id) {
+  const a = ARTIKEL_CACHE.find(x => x.id === id);
+  if (!a) return;
+  document.getElementById('artikelFormTitle').textContent = 'Edit Artikel';
+  document.getElementById('artikelId').value = a.id;
+  document.getElementById('artikelJudul').value = a.title || '';
+  document.getElementById('artikelExcerpt').value = a.excerpt || '';
+  document.getElementById('artikelBody').value = articleHtmlToText(a.body);
+  document.getElementById('artikelMagnet').value = a.related_magnet || 'skor';
+  document.getElementById('artikelMenit').value = a.read_minutes || 5;
+  document.getElementById('artikelFormModal').classList.add('show');
+}
+
+async function saveArtikel() {
+  const id = document.getElementById('artikelId').value;
+  const title = document.getElementById('artikelJudul').value.trim();
+  const excerpt = document.getElementById('artikelExcerpt').value.trim();
+  const rawBody = document.getElementById('artikelBody').value.trim();
+  const magnet = document.getElementById('artikelMagnet').value;
+  const menit = parseInt(document.getElementById('artikelMenit').value) || 5;
+  if (!title || !rawBody) { alert('Judul dan isi artikel wajib diisi.'); return; }
+
+  const btn = document.getElementById('artikelSaveBtn');
+  btn.disabled = true;
+  const bodyHtml = articleTextToHtml(rawBody);
+
+  let result;
+  if (id) {
+    // Update (slug tidak diubah agar link lama tetap valid)
+    result = await supabase.from('articles').update({
+      title, excerpt, body: bodyHtml, related_magnet: magnet, read_minutes: menit, updated_at: new Date().toISOString()
+    }).eq('id', id);
+  } else {
+    // Insert baru: buat slug unik
+    let slug = slugify(title);
+    const exists = ARTIKEL_CACHE.some(a => a.slug === slug);
+    if (exists || !slug) slug = slug + '-' + Date.now().toString().slice(-5);
+    const maxOrder = ARTIKEL_CACHE.reduce((m, a) => Math.max(m, a.sort_order || 0), 0);
+    result = await supabase.from('articles').insert({
+      slug, title, excerpt, body: bodyHtml, related_magnet: magnet, read_minutes: menit,
+      icon: 'file-text', is_published: true, sort_order: maxOrder + 1
+    });
+  }
+  btn.disabled = false;
+  if (result.error) { alert('Gagal menyimpan: ' + result.error.message); return; }
+  closeArtikelForm();
+  loadArtikelAdmin();
+}
+
+async function deleteArtikel(id, title) {
+  if (!confirm('Hapus artikel "' + title + '"? Artikel yang sudah dipilih agen akan hilang dari mini-site mereka.')) return;
+  const { error } = await supabase.from('articles').delete().eq('id', id);
+  if (error) { alert('Gagal menghapus: ' + error.message); return; }
+  loadArtikelAdmin();
+}
+
 // ===== FILTER =====
 function setView(view) {
   window.currentView = view;
@@ -1341,6 +1569,12 @@ function setView(view) {
   } else if (view === 'konten') {
     document.getElementById('viewKonten').classList.add('active');
     loadKontenAdmin();
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+    return;
+  }
+  else if (view === 'artikel') {
+    document.getElementById('viewArtikel').classList.add('active');
+    loadArtikelAdmin();
     if (typeof lucide !== 'undefined') lucide.createIcons();
     return;
   }
@@ -1857,6 +2091,24 @@ window.confirmReject = confirmReject;
 window.extendActive = extendActive;
 window.restoreAgent = restoreAgent;
 window.closeModal = closeModal;
+// ============ ARTIKEL ADMIN exports ============
+window.openArtikelForm = openArtikelForm;
+window.closeArtikelForm = closeArtikelForm;
+window.editArtikel = editArtikel;
+window.saveArtikel = saveArtikel;
+window.deleteArtikel = deleteArtikel;
+window.loadArtikelAdmin = loadArtikelAdmin;
+// Muat jumlah artikel untuk badge sidebar saat awal (best-effort)
+window.addEventListener('DOMContentLoaded', () => {
+  setTimeout(async () => {
+    try {
+      if (typeof supabase === 'undefined' || !supabase) return;
+      const { count } = await supabase.from('articles').select('id', { count: 'exact', head: true });
+      const el = document.getElementById('sidebarCountArtikel');
+      if (el && typeof count === 'number') el.textContent = count;
+    } catch (e) {}
+  }, 1200);
+});
 // ============ KONTEN LIBRARY ADMIN ============
 let allKontenAdmin = [];
 let currentKontenKat = 'all';

@@ -1,7 +1,11 @@
 {
   "rewrites": [
     {
-      "source": "/:username((?!login|daftar|bayar|admin|dashboard|settings|lead-crm|lead-magnet|konten-library|mini-site-editor|skor-kesehatan-keuangan|dana-pendidikan|dana-pensiun|dana-darurat|risiko-kritis|uang-pertanggungan|coverage-kesehatan|m|index|api|img|assets|favicon)[^/.]+)",
+      "source": "/artikel/:slug",
+      "destination": "/artikel.html?slug=:slug"
+    },
+    {
+      "source": "/:username((?!login|daftar|bayar|admin|dashboard|settings|lead-crm|lead-magnet|konten-library|mini-site-editor|skor-kesehatan-keuangan|dana-pendidikan|dana-pensiun|dana-darurat|risiko-kritis|uang-pertanggungan|coverage-kesehatan|artikel|m|index|api|img|assets|favicon)[^/.]+)",
       "destination": "/m.html?u=:username"
     }
   ]

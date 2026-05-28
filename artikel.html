@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Artikel — AKPAgenku</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  :root {
+    --navy: #0f2647;
+    --navy-light: #1e3a5f;
+    --navy-dark: #081a33;
+    --gold: #c9a961;
+    --gold-light: #d9bd7f;
+    --gold-dark: #a88a45;
+    --cream: #faf8f3;
+    --gray-200: #e5e5e5;
+    --gray-500: #737373;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--cream);
+    color: var(--navy);
+    line-height: 1.6;
+  }
+  [data-lucide] { stroke-width: 2; flex-shrink: 0; }
+
+  /* NAV */
+  .nav {
+    background: #fff;
+    border-bottom: 1px solid var(--gray-200);
+    padding: 16px 0;
+    position: sticky; top: 0; z-index: 50;
+  }
+  .container { max-width: 760px; margin: 0 auto; padding: 0 24px; }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+  .nav-avatar {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+    color: var(--navy); display: flex; align-items: center; justify-content: center;
+    font-family: 'Playfair Display', serif; font-weight: 700; font-size: 20px;
+  }
+  .nav-name { font-family: 'Playfair Display', serif; font-weight: 600; font-size: 16px; color: var(--navy); }
+  .nav-role { font-size: 12px; color: var(--gray-500); }
+  .nav-cta {
+    background: var(--navy); color: #fff; text-decoration: none;
+    padding: 9px 16px; border-radius: 10px; font-size: 13px; font-weight: 600;
+    display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
+  }
+  .nav-cta:hover { background: var(--navy-dark); }
+  .nav-cta [data-lucide] { width: 15px; height: 15px; }
+
+  /* ARTICLE */
+  .article-wrap { padding: 48px 0 40px; }
+  .back-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    color: var(--gray-500); text-decoration: none; font-size: 13px; font-weight: 500;
+    margin-bottom: 24px;
+  }
+  .back-link:hover { color: var(--navy); }
+  .back-link [data-lucide] { width: 14px; height: 14px; }
+  .article-eyebrow {
+    color: var(--gold-dark); font-size: 12px; font-weight: 700;
+    letter-spacing: 1px; text-transform: uppercase; margin-bottom: 14px;
+  }
+  .article-title {
+    font-family: 'Playfair Display', serif; font-weight: 700;
+    font-size: 38px; line-height: 1.2; color: var(--navy); margin-bottom: 16px;
+  }
+  .article-meta {
+    display: flex; align-items: center; gap: 16px;
+    color: var(--gray-500); font-size: 13px; margin-bottom: 32px;
+    padding-bottom: 24px; border-bottom: 1px solid var(--gray-200);
+  }
+  .article-meta span { display: inline-flex; align-items: center; gap: 5px; }
+  .article-meta [data-lucide] { width: 14px; height: 14px; }
+  .article-body { font-size: 17px; color: #2d3a4d; }
+  .article-body p { margin-bottom: 20px; }
+  .article-body h2 {
+    font-family: 'Playfair Display', serif; font-weight: 600;
+    font-size: 23px; color: var(--navy); margin: 32px 0 14px;
+  }
+  .article-body ul { margin: 0 0 20px; padding-left: 22px; }
+  .article-body li { margin-bottom: 10px; }
+  .article-body strong { color: var(--navy); font-weight: 600; }
+
+  /* CTA box */
+  .cta-box {
+    background: var(--navy); border-radius: 18px; padding: 36px 32px;
+    margin-top: 48px; text-align: center; color: #fff;
+  }
+  .cta-eyebrow {
+    color: var(--gold-light); font-size: 12px; font-weight: 700;
+    letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px;
+  }
+  .cta-title {
+    font-family: 'Playfair Display', serif; font-weight: 600;
+    font-size: 26px; line-height: 1.3; margin-bottom: 12px;
+  }
+  .cta-sub { color: rgba(255,255,255,0.8); font-size: 15px; margin-bottom: 24px; }
+  .cta-btn {
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+    color: var(--navy); text-decoration: none; font-weight: 700; font-size: 15px;
+    padding: 14px 28px; border-radius: 12px; display: inline-flex; align-items: center; gap: 8px;
+  }
+  .cta-btn:hover { filter: brightness(1.05); }
+  .cta-btn [data-lucide] { width: 18px; height: 18px; }
+  .cta-wa {
+    display: block; margin-top: 16px; color: rgba(255,255,255,0.85);
+    text-decoration: none; font-size: 14px; font-weight: 500;
+  }
+  .cta-wa:hover { color: #fff; }
+
+  /* FOOTER */
+  .footer {
+    text-align: center; padding: 40px 24px; color: var(--gray-500);
+    font-size: 13px; border-top: 1px solid var(--gray-200); margin-top: 40px;
+  }
+  .footer-brand { font-family: 'Playfair Display', serif; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+  .footer-brand .accent { color: var(--gold); }
+
+  /* loading / error */
+  .state-msg { max-width: 480px; margin: 80px auto; padding: 40px; text-align: center; }
+  .state-msg h1 { font-family: 'Playfair Display', serif; color: var(--navy); font-size: 24px; margin-bottom: 8px; }
+  .state-msg p { color: var(--gray-500); font-size: 15px; }
+
+  @media (max-width: 600px) {
+    .article-title { font-size: 28px; }
+    .article-body { font-size: 16px; }
+    .nav-role { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="app">
+  <div class="state-msg"><p>Memuat artikel…</p></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function () {
+  const SUPABASE_URL = 'https://bfydtsfekvueqzvuschp.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_3Xec3HYKViIiuX99hHxHqg_Ih8ABX_T';
+
+  // Magnet -> judul + url (selaras dengan m.html)
+  const MAGNET_INFO = {
+    skor:       { title:'Skor Kesehatan Keuangan Anda', url:'/skor-kesehatan-keuangan.html' },
+    pendidikan: { title:'Kalkulator Dana Pendidikan', url:'/dana-pendidikan.html' },
+    pensiun:    { title:'Kalkulator Dana Pensiun', url:'/dana-pensiun.html' },
+    darurat:    { title:'Kalkulator Dana Darurat', url:'/dana-darurat.html' },
+    kritis:     { title:'Kuis Risiko Penyakit Kritis', url:'/risiko-kritis.html' },
+    up:         { title:'Kalkulator Uang Pertanggungan', url:'/uang-pertanggungan.html' },
+    kesehatan:  { title:'Kuis Coverage Kesehatan', url:'/coverage-kesehatan.html' }
+  };
+
+  // slug dari query ?slug= ATAU dari path /artikel/<slug> (rewrite Vercel, address bar tetap bersih)
+  function getSlug() {
+    const fromQuery = new URLSearchParams(window.location.search).get('slug');
+    if (fromQuery) return fromQuery;
+    const parts = window.location.pathname.replace(/^\/+|\/+$/g, '').split('/');
+    // /artikel/<slug>
+    if (parts[0] === 'artikel' && parts[1]) return parts[1];
+    return null;
+  }
+  function getRef() {
+    return new URLSearchParams(window.location.search).get('ref') || null;
+  }
+  function waLink(wa) {
+    if (!wa) return null;
+    const phone = '62' + String(wa).replace(/^0/, '').replace(/^62/, '');
+    return 'https://wa.me/' + phone;
+  }
+  const THEME_COLORS = {
+    navy_gold: { navy:'#0f2647', gold:'#c9a961', navyDark:'#081a33' },
+    green:     { navy:'#065f46', gold:'#fbbf24', navyDark:'#064e3b' },
+    rose:      { navy:'#881337', gold:'#fde047', navyDark:'#6f1029' },
+    purple:    { navy:'#4c1d95', gold:'#fbbf24', navyDark:'#3b1578' }
+  };
+
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function renderError(msg) {
+    document.getElementById('app').innerHTML =
+      '<div class="state-msg"><div style="font-size:48px;margin-bottom:16px;">🔍</div>' +
+      '<h1>Artikel Tidak Ditemukan</h1><p>' + esc(msg) + '</p>' +
+      '<a href="/" style="display:inline-block;margin-top:20px;color:#c9a961;font-weight:600;text-decoration:none;">← Kembali ke AKPAgenku</a></div>';
+  }
+
+  async function load() {
+    const slug = getSlug();
+    if (!slug) { renderError('Artikel tidak dikenali.'); return; }
+
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // Ambil artikel
+    const { data: article, error: aErr } = await supabase
+      .from('articles').select('*').eq('slug', slug).eq('is_published', true).maybeSingle();
+    if (aErr || !article) { renderError('Artikel "' + slug + '" tidak ditemukan.'); return; }
+
+    // Ambil agen (ref) bila ada — untuk branding + WA + tracking
+    const ref = getRef();
+    let agen = null, site = null;
+    if (ref) {
+      const { data: user } = await supabase
+        .from('users').select('id, nama_lengkap, nama_panggilan, username, whatsapp, perusahaan')
+        .eq('username', ref).maybeSingle();
+      if (user) {
+        agen = user;
+        const { data: ms } = await supabase
+          .from('mini_sites').select('theme').eq('user_id', user.id).maybeSingle();
+        site = ms;
+      }
+    }
+
+    // Theme (ikut agen kalau ada)
+    const theme = (site && site.theme) || 'navy_gold';
+    const colors = THEME_COLORS[theme] || THEME_COLORS.navy_gold;
+    document.documentElement.style.setProperty('--navy', colors.navy);
+    document.documentElement.style.setProperty('--gold', colors.gold);
+    document.documentElement.style.setProperty('--navy-dark', colors.navyDark);
+
+    const nama = agen ? (agen.nama_lengkap || agen.nama_panggilan || agen.username) : null;
+    const inisial = nama ? (nama[0] || 'A').toUpperCase() : 'A';
+    const homeHref = ref ? ('/' + ref) : '/';
+
+    // Magnet terkait artikel (opsi A)
+    const minfo = MAGNET_INFO[article.related_magnet] || MAGNET_INFO.skor;
+    const magnetUrl = minfo.url + (ref ? ('?ref=' + encodeURIComponent(ref)) : '');
+    const wa = agen ? waLink(agen.whatsapp) : null;
+
+    // NAV (hanya tampil kalau ada agen)
+    const navHtml = agen ? (
+      '<nav class="nav"><div class="container"><div class="nav-inner">' +
+        '<a class="nav-brand" href="' + homeHref + '">' +
+          '<div class="nav-avatar">' + esc(inisial) + '</div>' +
+          '<div><div class="nav-name">' + esc(nama) + '</div>' +
+          '<div class="nav-role">Perencana Keuangan Keluarga</div></div>' +
+        '</a>' +
+        '<a class="nav-cta" href="' + magnetUrl + '"><i data-lucide="sparkles"></i> ' + esc(minfo.title.length > 22 ? 'Cek Sekarang' : minfo.title) + '</a>' +
+      '</div></div></nav>'
+    ) : '';
+
+    // CTA WhatsApp (kalau ada agen)
+    const waHtml = wa ? ('<a class="cta-wa" href="' + wa + '"><i data-lucide="message-circle"></i> Atau tanya langsung ke ' + esc(nama) + ' via WhatsApp</a>') : '';
+
+    document.getElementById('app').innerHTML =
+      navHtml +
+      '<div class="article-wrap"><div class="container">' +
+        '<a class="back-link" href="' + homeHref + '"><i data-lucide="arrow-left"></i> ' + (agen ? 'Kembali ke halaman ' + esc(nama) : 'Kembali') + '</a>' +
+        '<div class="article-eyebrow">Artikel Edukasi</div>' +
+        '<h1 class="article-title">' + esc(article.title) + '</h1>' +
+        '<div class="article-meta">' +
+          '<span><i data-lucide="clock"></i> ' + esc(article.read_minutes) + ' menit baca</span>' +
+          (agen ? '<span><i data-lucide="user"></i> ' + esc(nama) + '</span>' : '') +
+        '</div>' +
+        '<div class="article-body">' + (article.body || '') + '</div>' +
+        '<div class="cta-box">' +
+          '<div class="cta-eyebrow">Langkah Selanjutnya</div>' +
+          '<div class="cta-title">Mau tahu posisi keuangan Anda sendiri?</div>' +
+          '<div class="cta-sub">Coba ' + esc(minfo.title) + ' — gratis, tanpa daftar, hasil langsung.</div>' +
+          '<a class="cta-btn" href="' + magnetUrl + '"><i data-lucide="sparkles"></i> Mulai ' + esc(minfo.title) + '</a>' +
+          waHtml +
+        '</div>' +
+      '</div></div>' +
+      '<footer class="footer"><div class="footer-brand">AKP<span class="accent">Agenku</span></div>' +
+        '<div>' + (agen ? 'akpagenku.com/' + esc(ref) : 'akpagenku.com') + '</div></footer>';
+
+    document.title = article.title + (agen ? ' — ' + nama : ' — AKPAgenku');
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+
+    // Tracking buka artikel (best-effort, tidak blocking)
+    if (agen) {
+      try {
+        supabase.from('magnet_clicks').insert({
+          user_id: agen.id,
+          magnet_slug: 'artikel:' + slug,
+          referrer: document.referrer || null
+        });
+      } catch (e) { /* abaikan */ }
+    }
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', load);
+  else load();
+})();
+</script>
+</body>
+</html>

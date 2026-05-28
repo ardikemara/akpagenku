@@ -1391,7 +1391,7 @@
 <!-- ============================ -->
 <!-- 7. ARTIKEL (bonus - untuk yang belum siap) -->
 <!-- ============================ -->
-<section class="section">
+<section class="section" id="m-article-section">
   <div class="container">
     <div class="section-eyebrow">Artikel Edukasi</div>
     <h2 class="section-title">Belum Siap? Baca Dulu</h2>
@@ -1399,33 +1399,8 @@
       Bacaan singkat yang membantu Anda paham kondisi keuangan sendiri sebelum mengambil keputusan
     </div>
 
-    <div class="article-grid">
-      <a href="#" class="article-card">
-        <div class="article-icon"><i data-lucide="file-text"></i></div>
-        <div class="article-title">Cara Hitung Dana Darurat Ideal untuk Keluarga Muda</div>
-        <div class="article-meta">
-          <i data-lucide="clock"></i> 5 menit baca
-          <span class="article-arrow"><i data-lucide="arrow-right"></i></span>
-        </div>
-      </a>
-
-      <a href="#" class="article-card">
-        <div class="article-icon"><i data-lucide="file-text"></i></div>
-        <div class="article-title">Biaya Kuliah Anak 18 Tahun Lagi, Berapa yang Harus Disiapkan?</div>
-        <div class="article-meta">
-          <i data-lucide="clock"></i> 7 menit baca
-          <span class="article-arrow"><i data-lucide="arrow-right"></i></span>
-        </div>
-      </a>
-
-      <a href="#" class="article-card">
-        <div class="article-icon"><i data-lucide="file-text"></i></div>
-        <div class="article-title">BPJS Saja Cukup? Mari Hitung Biaya Sakit Kritis Sebenarnya</div>
-        <div class="article-meta">
-          <i data-lucide="clock"></i> 6 menit baca
-          <span class="article-arrow"><i data-lucide="arrow-right"></i></span>
-        </div>
-      </a>
+    <div class="article-grid" id="m-articles">
+      <!-- diisi dinamis oleh loader dari articles_aktif -->
     </div>
   </div>
 </section>
@@ -1618,6 +1593,35 @@ window.addEventListener('DOMContentLoaded', () => {
       if (painQuoteSub) {
         const peranAgen = (site && site.peran) || 'Perencana Keuangan Keluarga';
         painQuoteSub.textContent = '— ' + nama + ', ' + peranAgen;
+      }
+
+      // Artikel edukasi (agen pilih dari library)
+      const artGrid = document.getElementById('m-articles');
+      const artSection = document.getElementById('m-article-section');
+      if (artGrid) {
+        const slugs = Array.isArray(site.articles_aktif) ? site.articles_aktif.filter(Boolean) : [];
+        if (slugs.length) {
+          const { data: arts } = await supabase
+            .from('articles').select('slug,title,icon,read_minutes')
+            .in('slug', slugs).eq('is_published', true);
+          if (arts && arts.length) {
+            // Urutkan sesuai urutan pilihan agen
+            const order = {}; slugs.forEach((s, i) => order[s] = i);
+            arts.sort((a, b) => (order[a.slug] ?? 99) - (order[b.slug] ?? 99));
+            artGrid.innerHTML = arts.map(a =>
+              '<a href="/artikel/' + a.slug + '?ref=' + encodeURIComponent(username) + '" class="article-card">' +
+              '<div class="article-icon"><i data-lucide="' + (a.icon || 'file-text') + '"></i></div>' +
+              '<div class="article-title">' + a.title + '</div>' +
+              '<div class="article-meta"><i data-lucide="clock"></i> ' + (a.read_minutes || 5) + ' menit baca' +
+              '<span class="article-arrow"><i data-lucide="arrow-right"></i></span></div></a>'
+            ).join('');
+          } else if (artSection) {
+            artSection.style.display = 'none';
+          }
+        } else if (artSection) {
+          // Agen belum pilih artikel -> sembunyikan section
+          artSection.style.display = 'none';
+        }
       }
 
       // Magnet utama
