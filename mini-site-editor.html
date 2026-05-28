@@ -1526,7 +1526,7 @@
 
     // URLs
     const url = 'akpagenku.com/' + session.username;
-    const previewHref = '/' + session.username + '.html';
+    const previewHref = '/' + session.username;  // URL bersih (di-rewrite ke m.html oleh vercel.json)
 
     document.getElementById('topbarUrlText').textContent = url;
     document.getElementById('topbarUrlLink').href = previewHref;
