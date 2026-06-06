@@ -1083,7 +1083,7 @@
     if (miniSiteUrlEl) miniSiteUrlEl.textContent = miniSiteUrl;
 
     const miniSiteLinkBox = document.getElementById('miniSiteLinkBox');
-    if (miniSiteLinkBox) miniSiteLinkBox.href = '/' + session.username + '.html';
+    if (miniSiteLinkBox) miniSiteLinkBox.href = '/' + session.username;
   }
 
   async function loadDashboardData() {
@@ -1226,7 +1226,7 @@
       copyBtn.addEventListener('click', function(e) {
         e.preventDefault();
         e.stopPropagation();
-        const link = window.location.origin + '/' + session.username + '.html';
+        const link = window.location.origin + '/' + session.username;
         navigator.clipboard.writeText(link).then(() => {
           const original = copyBtn.innerHTML;
           copyBtn.innerHTML = '<i data-lucide="check"></i> Tersalin!';
