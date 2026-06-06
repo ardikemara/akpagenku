@@ -1171,6 +1171,7 @@
     .akp-chat-panel { bottom: 0; right: 0; left: 0; width: 100%; max-width: 100%; height: 90vh; max-height: 90vh; border-radius: 18px 18px 0 0; }
     .akp-chat-fab { bottom: 18px; right: 18px; }
   }
+  #m-asisten-hero [data-lucide]{ color: var(--navy); }
 </style>
 </head>
 <body>
@@ -1214,7 +1215,7 @@
 
         <div class="hero-cta-group">
           <a href="#kuis" class="btn-primary"><i data-lucide="sparkles"></i> <span id="m-cta">Cek Skor Kesehatan Keuangan</span></a>
-          <a href="https://wa.me/6281234567890" class="btn-secondary" id="m-wa-hero"><i data-lucide="message-circle"></i> Chat WhatsApp</a>
+          <a href="javascript:void(0)" role="button" class="btn-secondary" id="m-asisten-hero" onclick="if(window.openAkpChat){window.openAkpChat();}return false;"><i data-lucide="bot"></i> Asisten AI</a>
         </div>
 
         <div class="hero-trust" id="m-hero-trust" style="display:none;"></div>
@@ -1547,6 +1548,8 @@ window.addEventListener('DOMContentLoaded', () => {
     const firstName = opts.firstName || 'kami';
     const waUrl = opts.waUrl || null;
     const magnets = opts.magnets || [];
+    const chatApi = opts.chatApi || null;   // endpoint Edge Function chat-agent (LLM)
+    const username = opts.username || '';
     const panel = document.getElementById('akpPanel');
     const fab = document.getElementById('akpFab');
     const cbody = document.getElementById('akpBody');
@@ -1585,16 +1588,50 @@ window.addEventListener('DOMContentLoaded', () => {
       window.open(waUrl + sep + 'text=' + msg, '_blank');
       addBot('Saya bukakan WhatsApp ya. Kalau belum terbuka, ketuk lagi tombol di atas. \uD83D\uDE0A', showMenu);
     }
+    let convo = [];     // riwayat ketik bebas untuk konteks LLM
+    let busy = false;   // cegah kirim ganda saat menunggu jawaban
     function handleFreeText(text){
+      if (busy) return;
       addUser(text);
-      addBot('Pertanyaan bagus! Untuk jawaban yang lebih pas dengan kondisi Anda, paling enak ngobrol langsung dengan '+firstName+', atau pilih kebutuhan di bawah biar saya arahkan ke kalkulator yang tepat.', function(){
-        const chips=[];
+      convo.push({ role:'user', content: text });
+      if (convo.length > 8) convo = convo.slice(-8);
+      if (!chatApi) { fallbackFreeText(); return; }   // kalau endpoint belum diset
+      busy = true;
+      const typing = document.createElement('div');
+      typing.className = 'akp-typing'; typing.innerHTML = '<span></span><span></span><span></span>';
+      cbody.appendChild(typing); sc();
+      const ctrl = new AbortController();
+      const to = setTimeout(function(){ ctrl.abort(); }, 20000);
+      fetch(chatApi, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ username: username, message: text, history: convo.slice(0, -1) }),
+        signal: ctrl.signal
+      })
+      .then(function(r){ return r.json().then(function(d){ return { ok: r.ok, d: d }; }); })
+      .then(function(res){
+        clearTimeout(to); typing.remove(); busy = false;
+        if (!res.ok || !res.d || !res.d.reply) { fallbackFreeText(); return; }
+        const m = document.createElement('div'); m.className = 'akp-msg bot'; m.textContent = res.d.reply;
+        cbody.appendChild(m); sc();
+        convo.push({ role:'assistant', content: res.d.reply });
+        if (convo.length > 8) convo = convo.slice(-8);
+        const chips = [{ text:'\uD83D\uDCCA Lihat pilihan kalkulator', style:'primary', action: showMenu }];
+        if (waUrl) chips.push({ text:'\uD83D\uDCAC Chat '+firstName, style:'wa', action: goWA });
+        addChips(chips);
+      })
+      .catch(function(){ clearTimeout(to); typing.remove(); busy = false; fallbackFreeText(); });
+    }
+    function fallbackFreeText(){
+      addBot('Maaf, saya lagi sulit menjawab itu. Paling enak ngobrol langsung dengan '+firstName+', atau pilih kebutuhan di bawah biar saya arahkan ke kalkulator yang tepat.', function(){
+        const chips = [];
         if (waUrl) chips.push({ text:'\uD83D\uDCAC Chat '+firstName, style:'wa', action: goWA });
         chips.push({ text:'\u21A9 Lihat semua kebutuhan', style:'primary', action: function(){ addBot('Silakan pilih:', showMenu); } });
         addChips(chips);
       });
     }
     function openPanel(){ panel.classList.add('open'); fab.style.display='none'; if(!started){ started=true; greet(); } }
+    window.openAkpChat = function(){ userToggled = true; openPanel(); }; // dipakai tombol "Asisten AI" di hero
     function closePanel(){ panel.classList.remove('open'); fab.style.display='flex'; }
     fab.onclick=function(){ userToggled=true; openPanel(); };
     document.getElementById('akpClose').onclick=function(){ userToggled=true; closePanel(); };
@@ -1816,7 +1853,7 @@ window.addEventListener('DOMContentLoaded', () => {
     // === WHATSAPP LINKS ===
     const wa = waLink(user.whatsapp);
     if (wa) {
-      ['m-wa-hero','m-wa-cta'].forEach(id => { const el = document.getElementById(id); if (el) el.href = wa; });
+      ['m-wa-cta'].forEach(id => { const el = document.getElementById(id); if (el) el.href = wa; });
     }
     const emailCta = document.getElementById('m-email-cta');
     if (emailCta && user.email) emailCta.href = 'mailto:' + user.email;
@@ -1839,7 +1876,7 @@ window.addEventListener('DOMContentLoaded', () => {
           url: ((m && m.url) || '/skor-kesehatan-keuangan.html') + '?ref=' + encodeURIComponent(username)
         };
       });
-      initAkpChat({ firstName: FIRST, waUrl: wa, magnets: chatMagnets });
+      initAkpChat({ firstName: FIRST, waUrl: wa, magnets: chatMagnets, chatApi: SUPABASE_URL + '/functions/v1/chat-agent', username: username });
     } catch (e) { console.error('chat widget init gagal', e); }
 
     document.title = nama + ' — AKPAgenku';
