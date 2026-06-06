@@ -1124,6 +1124,53 @@
     .product-grid { grid-template-columns: 1fr; }
     .article-grid { grid-template-columns: 1fr; }
   }
+
+  /* ============================================================
+     ===== WIDGET CHATBOT EDUKASI AKPAGENKU =====
+     ============================================================ */
+  .akp-chat-fab { position: fixed; bottom: 24px; right: 24px; z-index: 9999; width: 64px; height: 64px; border-radius: 50%; border: none; cursor: pointer; background: var(--navy); color: var(--gold); box-shadow: 0 8px 24px rgba(15, 38, 71, 0.35); display: flex; align-items: center; justify-content: center; transition: transform 0.25s cubic-bezier(.34,1.56,.64,1), box-shadow 0.25s; }
+  .akp-chat-fab:hover { transform: scale(1.07); box-shadow: 0 12px 30px rgba(15, 38, 71, 0.45); }
+  .akp-chat-fab svg { width: 28px; height: 28px; }
+  .akp-chat-fab .akp-dot { position: absolute; top: 12px; right: 12px; width: 12px; height: 12px; background: var(--gold); border-radius: 50%; border: 2px solid var(--navy); animation: akpPulse 2s infinite; }
+  @keyframes akpPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(201,169,97,.6);} 50% { box-shadow: 0 0 0 6px rgba(201,169,97,0);} }
+  .akp-chat-panel { position: fixed; bottom: 100px; right: 24px; z-index: 9999; width: 380px; max-width: calc(100vw - 32px); height: 560px; max-height: calc(100vh - 130px); background: var(--white); border-radius: 18px; overflow: hidden; box-shadow: 0 20px 60px rgba(15, 38, 71, 0.28); display: flex; flex-direction: column; transform: translateY(20px) scale(0.96); opacity: 0; pointer-events: none; transition: transform 0.28s cubic-bezier(.34,1.56,.64,1), opacity 0.2s; }
+  .akp-chat-panel.open { transform: translateY(0) scale(1); opacity: 1; pointer-events: auto; }
+  .akp-head { background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%); color: var(--white); padding: 18px 20px; display: flex; align-items: center; gap: 12px; }
+  .akp-avatar { width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0; background: var(--gold); color: var(--navy); font-family: 'Playfair Display', serif; font-weight: 700; font-size: 20px; display: flex; align-items: center; justify-content: center; }
+  .akp-head-info h4 { font-size: 15px; font-weight: 600; margin: 0; }
+  .akp-head-info span { font-size: 12px; color: rgba(255,255,255,.7); display: flex; align-items: center; gap: 6px; margin-top: 2px;}
+  .akp-head-info span::before { content:''; width: 7px; height: 7px; background: #25d366; border-radius: 50%; display:inline-block;}
+  .akp-close { margin-left: auto; background: none; border: none; color: rgba(255,255,255,.7); cursor: pointer; font-size: 22px; line-height: 1; padding: 4px; }
+  .akp-close:hover { color: var(--white); }
+  .akp-body { flex: 1; overflow-y: auto; padding: 20px 18px; background: var(--cream); display: flex; flex-direction: column; gap: 12px; }
+  .akp-body::-webkit-scrollbar { width: 6px; }
+  .akp-body::-webkit-scrollbar-thumb { background: var(--gray-300); border-radius: 3px; }
+  .akp-msg { max-width: 82%; font-size: 14px; line-height: 1.55; animation: akpIn 0.3s ease; }
+  @keyframes akpIn { from { opacity: 0; transform: translateY(8px);} to { opacity: 1; transform: translateY(0);} }
+  .akp-msg.bot { align-self: flex-start; background: var(--white); color: var(--gray-900); padding: 12px 15px; border-radius: 4px 16px 16px 16px; box-shadow: 0 2px 6px rgba(15,38,71,.06); }
+  .akp-msg.user { align-self: flex-end; background: var(--navy); color: var(--white); padding: 12px 15px; border-radius: 16px 16px 4px 16px; }
+  .akp-chips { display: flex; flex-wrap: wrap; gap: 8px; align-self: flex-start; max-width: 100%; }
+  .akp-chip { background: var(--white); border: 1.5px solid var(--gold); color: var(--navy); font-family: inherit; font-size: 13px; font-weight: 600; padding: 9px 14px; border-radius: 20px; cursor: pointer; transition: all 0.18s; animation: akpIn 0.3s ease; text-align: left; }
+  .akp-chip:hover { background: var(--gold); color: var(--navy); transform: translateY(-1px); }
+  .akp-chip.primary { background: var(--navy); border-color: var(--navy); color: var(--gold); }
+  .akp-chip.primary:hover { background: var(--navy-dark); }
+  .akp-chip.wa { border-color: #25d366; color: #128c4e; }
+  .akp-chip.wa:hover { background: #25d366; color: var(--white); }
+  .akp-typing { align-self: flex-start; background: var(--white); padding: 14px 16px; border-radius: 4px 16px 16px 16px; display: flex; gap: 4px; box-shadow: 0 2px 6px rgba(15,38,71,.06);}
+  .akp-typing span { width: 7px; height: 7px; background: var(--gray-300); border-radius: 50%; animation: akpBounce 1.2s infinite; }
+  .akp-typing span:nth-child(2){ animation-delay: .15s;} .akp-typing span:nth-child(3){ animation-delay: .3s;}
+  @keyframes akpBounce { 0%,60%,100%{transform: translateY(0);} 30%{transform: translateY(-5px);} }
+  .akp-input-wrap { padding: 12px 14px; background: var(--white); border-top: 1px solid var(--gray-200); display: flex; gap: 8px; align-items: center; }
+  .akp-input { flex: 1; border: 1px solid var(--gray-200); border-radius: 22px; padding: 11px 16px; font-family: inherit; font-size: 14px; outline: none; transition: border 0.18s; }
+  .akp-input:focus { border-color: var(--gold); }
+  .akp-send { width: 40px; height: 40px; border-radius: 50%; border: none; background: var(--gold); color: var(--navy); cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: background 0.18s; }
+  .akp-send svg { width: 18px; height: 18px; }
+  .akp-foot { text-align: center; font-size: 10px; color: var(--gray-500); padding: 0 0 8px; background: var(--white); letter-spacing: .3px; }
+  .akp-foot b { color: var(--navy); }
+  @media (max-width: 480px) {
+    .akp-chat-panel { bottom: 0; right: 0; left: 0; width: 100%; max-width: 100%; height: 90vh; max-height: 90vh; border-radius: 18px 18px 0 0; }
+    .akp-chat-fab { bottom: 18px; right: 18px; }
+  }
 </style>
 </head>
 <body>
@@ -1403,9 +1450,29 @@
   </div>
 </footer>
 
-<a href="https://wa.me/6281234567890" class="wa-float" id="m-wa-float" title="Chat WhatsApp">
-  <i data-lucide="message-circle"></i>
-</a>
+<!-- ===== WIDGET CHATBOT EDUKASI (diisi otomatis oleh loader) ===== -->
+<button class="akp-chat-fab" id="akpFab" aria-label="Buka chat">
+  <span class="akp-dot"></span>
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+</button>
+<div class="akp-chat-panel" id="akpPanel">
+  <div class="akp-head">
+    <div class="akp-avatar" id="akpAvatar">A</div>
+    <div class="akp-head-info">
+      <h4>Asisten <span id="akpHeadName">kami</span></h4>
+      <span>Online &middot; biasanya balas cepat</span>
+    </div>
+    <button class="akp-close" id="akpClose" aria-label="Tutup">&times;</button>
+  </div>
+  <div class="akp-body" id="akpBody"></div>
+  <div class="akp-input-wrap">
+    <input class="akp-input" id="akpInput" type="text" placeholder="Tulis pertanyaan Anda...">
+    <button class="akp-send" id="akpSend" aria-label="Kirim">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+  </div>
+  <div class="akp-foot">Powered by <b>AKPAgenku</b> &middot; Edukasi keuangan, bukan rekomendasi produk</div>
+</div>
 
 <script>
 window.addEventListener('DOMContentLoaded', () => {
@@ -1459,6 +1526,85 @@ window.addEventListener('DOMContentLoaded', () => {
     warisan:      { icon:'scroll-text',     title:'"Aset saya nanti aman buat anak-anak?"', desc:'Tanpa perencanaan warisan yang rapi, aset bisa terhambat proses atau terbagi tidak sesuai keinginan. Persiapan sejak dini bikin semuanya lebih tenang.' }
   };
   const PAINPOINT_DEFAULT = ['sakit','pendidikan','pensiun','pilihasuransi'];
+
+  // ===== Chatbot edukasi: label, emoji, dan teks edukasi per magnet =====
+  const CHAT_LABEL = {
+    skor:'Cek skor keuangan saya', pendidikan:'Dana pendidikan anak', pensiun:'Persiapan pensiun',
+    darurat:'Dana darurat', kritis:'Proteksi penyakit kritis', up:'Uang pertanggungan jiwa', kesehatan:'Coverage kesehatan'
+  };
+  const CHAT_EMOJI = { skor:'\uD83D\uDCCA', pendidikan:'\uD83C\uDF93', pensiun:'\uD83C\uDF34', darurat:'\uD83D\uDEDF', kritis:'\uD83E\uDE7A', up:'\uD83D\uDEE1\uFE0F', kesehatan:'\uD83C\uDFE5' };
+  const CHAT_EDU = {
+    skor:'Sebelum bicara solusi, enaknya pahami dulu kondisi keuangan keluarga Anda secara menyeluruh. Skor Kesehatan Keuangan kasih gambaran objektif plus area mana yang perlu diperhatikan. Gratis dan cuma sebentar.',
+    pendidikan:'Biaya kuliah di Indonesia naik rata-rata di atas inflasi tiap tahun, jadi makin awal disiapkan, makin ringan cicilannya. Kuncinya tahu dulu target tahun anak masuk universitas dan perkiraan biayanya. Yuk hitung perkiraannya lewat kalkulatornya.',
+    pensiun:'Banyak orang baru kepikiran pensiun saat sudah mepet, padahal makin panjang waktu menabung, makin kecil yang perlu disisihkan tiap bulan. Langkah pertama, tahu berapa kebutuhan bulanan Anda nanti. Lihat perkiraannya lewat kalkulatornya.',
+    darurat:'Idealnya dana darurat menutup 3 sampai 6 bulan biaya hidup, supaya saat ada kejadian tak terduga Anda tidak perlu berhutang atau jual aset. Banyak keluarga belum tahu posisi dana daruratnya. Hitung target Anda lewat kalkulatornya.',
+    kritis:'Penyakit kritis seperti jantung, stroke, atau kanker bisa menguras tabungan keluarga dalam waktu singkat. Yang penting dipahami, apakah dana Anda cukup menahan kejutan sebesar itu. Lihat gambaran kebutuhannya lewat kuisnya.',
+    up:'Uang pertanggungan adalah dana yang diterima keluarga jika terjadi risiko pada pencari nafkah utama. Banyak orang menebak angkanya, padahal idealnya dihitung dari kebutuhan hidup keluarga, sisa cicilan, dan biaya masa depan. Hitung angka yang pas buat keluarga Anda lewat kalkulatornya.',
+    kesehatan:'Biaya rawat inap dan tindakan medis terus naik tiap tahun, dan menanggung semuanya dari kantong sendiri bisa terasa berat. Yang penting dipahami, seberapa besar coverage yang sesuai dengan gaya hidup dan kota tempat Anda tinggal. Lihat gambarannya lewat kuisnya.'
+  };
+
+  function initAkpChat(opts) {
+    const firstName = opts.firstName || 'kami';
+    const waUrl = opts.waUrl || null;
+    const magnets = opts.magnets || [];
+    const panel = document.getElementById('akpPanel');
+    const fab = document.getElementById('akpFab');
+    const cbody = document.getElementById('akpBody');
+    if (!panel || !fab || !cbody) return;
+    let started = false, userToggled = false;
+    document.getElementById('akpHeadName').textContent = firstName;
+    document.getElementById('akpAvatar').textContent = (firstName.charAt(0) || 'A').toUpperCase();
+
+    function sc(){ cbody.scrollTop = cbody.scrollHeight; }
+    function addBot(text, cb){
+      const t = document.createElement('div'); t.className='akp-typing'; t.innerHTML='<span></span><span></span><span></span>';
+      cbody.appendChild(t); sc();
+      setTimeout(function(){ t.remove(); const m=document.createElement('div'); m.className='akp-msg bot'; m.textContent=text; cbody.appendChild(m); sc(); if(cb) cb(); }, 650);
+    }
+    function addUser(text){ const m=document.createElement('div'); m.className='akp-msg user'; m.textContent=text; cbody.appendChild(m); sc(); }
+    function addChips(chips){
+      const wrap=document.createElement('div'); wrap.className='akp-chips';
+      chips.forEach(function(c){ const b=document.createElement('button'); b.className='akp-chip'+(c.style?' '+c.style:''); b.textContent=c.text; b.onclick=function(){ wrap.remove(); c.action(); }; wrap.appendChild(b); });
+      cbody.appendChild(wrap); sc();
+    }
+    function greet(){ addBot('Halo! \uD83D\uDC4B Saya asisten digital '+firstName+'. Saya bantu Anda pahami kondisi keuangan keluarga sebelum ambil keputusan apa pun.', function(){ addBot('Yang mana paling Anda pikirkan sekarang?', showMenu); }); }
+    function showMenu(){ addChips(magnets.map(function(m){ return { text: m.emoji+' '+m.label, action: function(){ openTopic(m); } }; })); }
+    function openTopic(m){
+      addUser(m.label);
+      addBot(m.reply, function(){
+        const chips=[{ text:'\uD83D\uDCCA Buka kalkulatornya sekarang', style:'primary', action: function(){ window.location.href=m.url; } }];
+        if (waUrl) chips.push({ text:'\uD83D\uDCAC Chat langsung '+firstName, style:'wa', action: goWA });
+        chips.push({ text:'\u21A9 Kebutuhan lain', action: function(){ addBot('Tentu, pilih kebutuhannya:', showMenu); } });
+        addChips(chips);
+      });
+    }
+    function goWA(){
+      if (!waUrl) return;
+      const sep = waUrl.indexOf('?')>=0 ? '&' : '?';
+      const msg = encodeURIComponent('Halo '+firstName+', saya dari halaman edukasi keuangan Anda. Saya mau tanya soal perencanaan keuangan keluarga.');
+      window.open(waUrl + sep + 'text=' + msg, '_blank');
+      addBot('Saya bukakan WhatsApp ya. Kalau belum terbuka, ketuk lagi tombol di atas. \uD83D\uDE0A', showMenu);
+    }
+    function handleFreeText(text){
+      addUser(text);
+      addBot('Pertanyaan bagus! Untuk jawaban yang lebih pas dengan kondisi Anda, paling enak ngobrol langsung dengan '+firstName+', atau pilih kebutuhan di bawah biar saya arahkan ke kalkulator yang tepat.', function(){
+        const chips=[];
+        if (waUrl) chips.push({ text:'\uD83D\uDCAC Chat '+firstName, style:'wa', action: goWA });
+        chips.push({ text:'\u21A9 Lihat semua kebutuhan', style:'primary', action: function(){ addBot('Silakan pilih:', showMenu); } });
+        addChips(chips);
+      });
+    }
+    function openPanel(){ panel.classList.add('open'); fab.style.display='none'; if(!started){ started=true; greet(); } }
+    function closePanel(){ panel.classList.remove('open'); fab.style.display='flex'; }
+    fab.onclick=function(){ userToggled=true; openPanel(); };
+    document.getElementById('akpClose').onclick=function(){ userToggled=true; closePanel(); };
+    const inp=document.getElementById('akpInput'), snd=document.getElementById('akpSend');
+    function send(){ const v=inp.value.trim(); if(!v) return; inp.value=''; handleFreeText(v); }
+    snd.onclick=send;
+    inp.addEventListener('keydown', function(e){ if(e.key==='Enter') send(); });
+    const AUTO_OPEN_MS = 5000; // jeda widget muncul sendiri (0 = matikan)
+    if (AUTO_OPEN_MS > 0) setTimeout(function(){ if(!userToggled) openPanel(); }, AUTO_OPEN_MS);
+  }
 
   function getUsername() {
     // 1. Coba dari query string ?u=username (kalau diakses m.html?u=x langsung)
@@ -1670,10 +1816,31 @@ window.addEventListener('DOMContentLoaded', () => {
     // === WHATSAPP LINKS ===
     const wa = waLink(user.whatsapp);
     if (wa) {
-      ['m-wa-hero','m-wa-cta','m-wa-float'].forEach(id => { const el = document.getElementById(id); if (el) el.href = wa; });
+      ['m-wa-hero','m-wa-cta'].forEach(id => { const el = document.getElementById(id); if (el) el.href = wa; });
     }
     const emailCta = document.getElementById('m-email-cta');
     if (emailCta && user.email) emailCta.href = 'mailto:' + user.email;
+
+    // ===== Inisialisasi chatbot edukasi (pakai magnet pilihan agen) =====
+    try {
+      const FIRST = user.nama_panggilan || (nama ? String(nama).split(' ')[0] : 'kami');
+      const chatIds = [];
+      const muId = (site && site.magnet_utama) ? site.magnet_utama : 'skor';
+      chatIds.push(muId);
+      if (site && Array.isArray(site.magnet_supporting)) {
+        site.magnet_supporting.forEach(function(id){ if (id && chatIds.indexOf(id) < 0) chatIds.push(id); });
+      }
+      const chatMagnets = chatIds.map(function(id){
+        const m = getMagnet(id);
+        return {
+          emoji: CHAT_EMOJI[id] || '\uD83D\uDCC4',
+          label: CHAT_LABEL[id] || (m && m.title) || 'Topik ini',
+          reply: CHAT_EDU[id] || ('Topik ini penting untuk perencanaan keuangan keluarga Anda. Lihat gambarannya lewat ' + ((m && m.title) || 'kalkulator kami') + '.'),
+          url: ((m && m.url) || '/skor-kesehatan-keuangan.html') + '?ref=' + encodeURIComponent(username)
+        };
+      });
+      initAkpChat({ firstName: FIRST, waUrl: wa, magnets: chatMagnets });
+    } catch (e) { console.error('chat widget init gagal', e); }
 
     document.title = nama + ' — AKPAgenku';
     if (typeof lucide !== 'undefined') lucide.createIcons();
