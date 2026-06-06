@@ -647,14 +647,8 @@
       try {
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         
-        const { data: existingEmail } = await supabase
-          .from('users').select('id').eq('email', email).maybeSingle();
-        if (existingEmail) {
-          alert('Email sudah terdaftar. Silakan pakai email lain atau hubungi admin via WhatsApp.');
-          btn.disabled = false;
-          btn.textContent = originalText;
-          return;
-        }
+        // Cek email duplikat diserahkan ke Supabase Auth (signUp). Profil lama tanpa akun Auth
+        // (mis. ardikemara) akan otomatis tersambung oleh trigger handle_new_auth_user.
         
         const { data: existingUsername } = await supabase
           .from('users').select('id').eq('username', username).maybeSingle();
@@ -665,22 +659,19 @@
           return;
         }
         
-        const { data, error } = await supabase
-          .from('users')
-          .insert({
-            email: email,
-            password_hash: dcodeIO.bcrypt.hashSync(password, 10),
+        const { data, error } = await supabase.auth.signUp({
+          email: email,
+          password: password,
+          options: { data: {
             nama_lengkap: nama,
             nama_panggilan: nama.split(' ')[0],
-            whatsapp: whatsapp,
             username: username,
+            whatsapp: whatsapp,
             kota: kota || null,
             perusahaan: perusahaan || null,
-            paket: paket,
-            subscription_status: 'pending_approval'
-          })
-          .select()
-          .single();
+            paket: paket
+          } }
+        });
         
         if (error) {
           console.error('[AKP] Supabase error:', error);
@@ -690,15 +681,17 @@
           return;
         }
         
-        console.log('[AKP] User created:', data.id);
+        console.log('[AKP] Auth user created:', data && data.user && data.user.id);
         
+        // Akun baru harus login setelah di-approve admin -> keluarkan sesi otomatis dari signUp
+        try { await supabase.auth.signOut(); } catch (e) {}
+
         sessionStorage.setItem('daftar_success', JSON.stringify({
-          nama: data.nama_lengkap,
-          email: data.email,
-          whatsapp: '+62 ' + data.whatsapp,
-          username: data.username,
-          paket: data.paket,
-          id: data.id
+          nama: nama,
+          email: email,
+          whatsapp: '+62 ' + whatsapp,
+          username: username,
+          paket: paket
         }));
         
         fetch(SUPABASE_URL + '/functions/v1/send-welcome-email', {
@@ -708,13 +701,13 @@
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            email: data.email,
-            nama_lengkap: data.nama_lengkap,
-            username: data.username,
-            whatsapp: data.whatsapp,
-            paket: data.paket,
-            kota: data.kota,
-            perusahaan: data.perusahaan
+            email: email,
+            nama_lengkap: nama,
+            username: username,
+            whatsapp: whatsapp,
+            paket: paket,
+            kota: kota || null,
+            perusahaan: perusahaan || null
           })
         }).catch(err => {
           console.error('[AKP] Email send error (non-blocking):', err);

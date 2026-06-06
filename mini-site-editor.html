@@ -1593,35 +1593,56 @@
   let miniSiteData = null;
   let miniSiteId = null;
 
-  function init() {
+  async function init() {
     console.log('[AKP Editor] Init started');
 
-    // 1. Check session
+    // 1. Init Supabase
+    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // 2. Cek sesi Supabase Auth
+    let authUser = null;
     try {
-      const sessionRaw = sessionStorage.getItem('akp_session');
-      if (!sessionRaw) {
+      const { data: { session: authSession } } = await supabase.auth.getSession();
+      if (!authSession) {
         window.location.href = '/login.html';
         return;
       }
-      session = JSON.parse(sessionRaw);
+      authUser = authSession.user;
     } catch (e) {
       window.location.href = '/login.html';
       return;
     }
 
-    // 2. Init Supabase
-    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    // 3. Profil: cache akp_session bila ada; kalau tidak, ambil dari DB
+    try {
+      const sessionRaw = sessionStorage.getItem('akp_session');
+      if (sessionRaw) session = JSON.parse(sessionRaw);
+    } catch (e) { session = null; }
+    if (!session || !session.id) {
+      const { data: prof } = await supabase
+        .from('users')
+        .select('id, email, nama_lengkap, nama_panggilan, username, whatsapp, paket, subscription_status, masa_aktif_sampai, kota, perusahaan, avatar_url, is_team_leader, team_leader_id')
+        .eq('auth_id', authUser.id)
+        .maybeSingle();
+      if (!prof) {
+        try { await supabase.auth.signOut(); } catch (e) {}
+        window.location.href = '/login.html';
+        return;
+      }
+      session = prof;
+      sessionStorage.setItem('akp_session', JSON.stringify(session));
+    }
 
-    // 3. Render user info
+    // 4. Render user info
     renderUserInfo();
 
-    // 4. Load mini-site data
+    // 5. Load mini-site data
     loadMiniSiteData();
 
-    // 5. Setup handlers (Save, Publish)
+    // 6. Setup handlers (Save, Publish)
     setupHandlers();
 
-    // 6. Lucide icons
+    // 7. Lucide icons
     if (typeof lucide !== 'undefined') lucide.createIcons();
 
     console.log('[AKP Editor] Init complete');

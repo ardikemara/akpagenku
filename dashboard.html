@@ -1015,37 +1015,59 @@
   let supabase = null;
   let session = null;
 
-  function init() {
+  async function init() {
     console.log('[AKP Dashboard] Init started');
 
-    // 1. CHECK SESSION
+    // 1. INIT SUPABASE
+    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // 2. CEK SESI SUPABASE AUTH
+    let authUser = null;
     try {
-      const sessionRaw = sessionStorage.getItem('akp_session');
-      if (!sessionRaw) {
-        console.warn('[AKP Dashboard] No session, redirecting to login');
+      const { data: { session: authSession } } = await supabase.auth.getSession();
+      if (!authSession) {
+        console.warn('[AKP Dashboard] No auth session, redirecting to login');
         window.location.href = '/login.html';
         return;
       }
-      session = JSON.parse(sessionRaw);
+      authUser = authSession.user;
     } catch (e) {
-      console.error('[AKP Dashboard] Session parse error:', e);
+      console.error('[AKP Dashboard] getSession error:', e);
       window.location.href = '/login.html';
       return;
     }
 
-    // 2. INIT SUPABASE
-    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    // 3. PROFIL: pakai cache akp_session bila ada; kalau tidak, ambil dari DB
+    try {
+      const sessionRaw = sessionStorage.getItem('akp_session');
+      if (sessionRaw) session = JSON.parse(sessionRaw);
+    } catch (e) { session = null; }
+    if (!session || !session.id) {
+      const { data: prof } = await supabase
+        .from('users')
+        .select('id, email, nama_lengkap, nama_panggilan, username, whatsapp, paket, subscription_status, masa_aktif_sampai, kota, perusahaan, avatar_url, is_team_leader, team_leader_id')
+        .eq('auth_id', authUser.id)
+        .maybeSingle();
+      if (!prof) {
+        console.warn('[AKP Dashboard] Profile not found, signing out');
+        try { await supabase.auth.signOut(); } catch (e) {}
+        window.location.href = '/login.html';
+        return;
+      }
+      session = prof;
+      sessionStorage.setItem('akp_session', JSON.stringify(session));
+    }
 
-    // 3. RENDER USER INFO
+    // 4. RENDER USER INFO
     renderUserInfo();
 
-    // 4. LOAD DATA
+    // 5. LOAD DATA
     loadDashboardData();
 
-    // 5. SETUP HANDLERS
+    // 6. SETUP HANDLERS
     setupHandlers();
 
-    // 6. LUCIDE ICONS
+    // 7. LUCIDE ICONS
     if (typeof lucide !== 'undefined') lucide.createIcons();
 
     console.log('[AKP Dashboard] Init complete');
@@ -1251,7 +1273,9 @@
       userMenuBtn.addEventListener('click', function() {
         if (confirm('Logout dari akun?')) {
           sessionStorage.removeItem('akp_session');
-          window.location.href = '/login.html';
+          (supabase ? supabase.auth.signOut() : Promise.resolve()).finally(function(){
+            window.location.href = '/login.html';
+          });
         }
       });
     }

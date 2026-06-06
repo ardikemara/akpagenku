@@ -473,62 +473,43 @@
       submitBtn.textContent = 'Memproses...';
 
       try {
-        // Query user by email
+        // Login via Supabase Auth (verifikasi password di server; hash tak pernah dibaca browser)
+        const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+          email: email,
+          password: password
+        });
+
+        if (authError) {
+          console.error('[AKP Login] Auth error:', authError);
+          if (/email not confirmed/i.test(authError.message || '')) {
+            showError('Email belum dikonfirmasi. Hubungi admin.');
+          } else {
+            showError('Email atau password salah.');
+          }
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalText;
+          return;
+        }
+
+        // Ambil profil milik akun ini (berdasarkan auth_id; diizinkan policy "authenticated")
         const { data: user, error } = await supabase
           .from('users')
-          .select('id, email, password_hash, nama_lengkap, nama_panggilan, username, whatsapp, paket, subscription_status, masa_aktif_sampai, kota, perusahaan, avatar_url, is_team_leader, team_leader_id')
-          .eq('email', email)
+          .select('id, email, nama_lengkap, nama_panggilan, username, whatsapp, paket, subscription_status, masa_aktif_sampai, kota, perusahaan, avatar_url, is_team_leader, team_leader_id')
+          .eq('auth_id', authData.user.id)
           .maybeSingle();
 
-        if (error) {
-          console.error('[AKP Login] Query error:', error);
-          showError('Terjadi kesalahan sistem. Coba lagi.');
+        if (error || !user) {
+          console.error('[AKP Login] Profile fetch error:', error);
+          try { await supabase.auth.signOut(); } catch (e) {}
+          showError('Profil tidak ditemukan untuk akun ini. Hubungi admin.');
           submitBtn.disabled = false;
           submitBtn.textContent = originalText;
           return;
         }
 
-        if (!user) {
-          showError('Email tidak terdaftar.');
-          submitBtn.disabled = false;
-          submitBtn.textContent = originalText;
-          return;
-        }
-
-        // Check password (bcrypt-aware + auto-upgrade dari plain text lama)
-        const stored = user.password_hash || '';
-        const isBcrypt = /^\$2[aby]\$/.test(stored);
-        let passwordValid = false;
-        try {
-          if (isBcrypt) {
-            passwordValid = dcodeIO.bcrypt.compareSync(password, stored);
-          } else {
-            // Format lama (plain text) - bandingkan langsung
-            passwordValid = (stored === password);
-          }
-        } catch (cmpErr) {
-          console.error('[AKP Login] Password compare error:', cmpErr);
-          passwordValid = false;
-        }
-
-        if (!passwordValid) {
-          showError('Password salah.');
-          submitBtn.disabled = false;
-          submitBtn.textContent = originalText;
-          return;
-        }
-
-        // Auto-upgrade: kalau password masih plain text, hash ke bcrypt diam-diam
-        if (!isBcrypt) {
-          try {
-            const lib = dcodeIO.bcrypt;
-            const newHash = lib.hashSync(password, 10);
-            await supabase.from('users').update({ password_hash: newHash }).eq('id', user.id);
-            console.log('[AKP Login] Password upgraded to bcrypt for', user.email);
-          } catch (upErr) {
-            // Kalau gagal upgrade, jangan blokir login - cukup log
-            console.warn('[AKP Login] Password upgrade failed (non-blocking):', upErr);
-          }
+        // Kalau status belum aktif, jangan biarkan sesi Auth tertinggal (pesan detail di bawah)
+        if (user.subscription_status !== 'active') {
+          try { await supabase.auth.signOut(); } catch (e) {}
         }
 
         // Check subscription status
