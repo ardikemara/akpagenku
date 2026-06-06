@@ -914,176 +914,145 @@
     .re-killer { padding: 32px 26px; }
   }
 
-  /* ===== FLAT ICON SIZING (emoji replacements) ===== */
-  .pain-card .icon svg, .re-goal-card .ico svg {
-    width: 26px; height: 26px;
-    stroke: var(--gold-dark);
+  /* ===== HERO PRINCIPALS STRIP ===== */
+  .hero-principals {
+    margin-top: 56px;
+    padding-top: 28px;
+    border-top: 1px solid var(--gray-200);
+    text-align: center;
   }
-  .floating-card .icon svg {
-    width: 17px; height: 17px;
-    stroke: var(--gold-dark);
+  .hero-principals .hp-label {
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--gray-500);
+    font-weight: 600;
+    display: block;
+    margin-bottom: 16px;
   }
-
-  /* ===== IMAGE PLACEHOLDER ===== */
-  .img-ph {
-    background: var(--gray-100, #f1f1ee);
-    border: 1.5px dashed var(--gray-300, #cfcdc6);
-    border-radius: 14px;
+  .hero-principals .hp-logos {
     display: flex;
-    flex-direction: column;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 16px 40px;
+  }
+  .hero-principals .hp-logos span {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--navy);
+    opacity: 0.5;
+    transition: opacity 0.2s;
+  }
+  .hero-principals .hp-logos span:hover { opacity: 1; }
+
+  /* ===== IMAGE FRAME (graceful placeholder) ===== */
+  .img-frame {
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--gray-200);
+    box-shadow: 0 24px 50px -24px rgba(15, 38, 71, 0.35);
+    background: linear-gradient(135deg, var(--cream) 0%, var(--white) 100%);
+    line-height: 0;
+  }
+  .img-frame img { width: 100%; height: auto; display: block; }
+  .img-frame.img-missing {
+    line-height: 1.5;
+    aspect-ratio: var(--ar, 16/10);
+    display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    color: var(--gray-500, #8a887f);
+    border-style: dashed;
+    border-color: var(--gray-300);
+  }
+  .img-frame.img-missing::after {
+    content: attr(data-label);
+    color: var(--gray-500);
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
     text-align: center;
-    padding: 24px;
+    padding: 20px;
+    font-family: 'SF Mono', monospace;
   }
-  .img-ph svg { width: 34px; height: 34px; opacity: 0.6; }
-  .img-ph .ph-label { font-size: 13px; font-weight: 600; letter-spacing: 0.02em; }
-  .img-ph .ph-hint { font-size: 11px; opacity: 0.75; }
-  .img-ph.ph-wide { aspect-ratio: 16/7; width: 100%; margin-top: 40px; }
-  .img-ph.ph-step { aspect-ratio: 16/9; width: 100%; margin-bottom: 18px; }
-  .section-navy .img-ph {
-    background: rgba(255,255,255,0.05);
-    border-color: rgba(255,255,255,0.2);
-    color: rgba(255,255,255,0.6);
-  }
+  .showcase { max-width: 960px; margin: 0 auto; }
+  .section-navy .img-frame { border-color: rgba(255,255,255,0.12); }
+  .step-card .img-frame { margin-bottom: 24px; }
 
-  /* ===== COST COMPARISON (Hitung Sendiri) ===== */
-  .cost-wrap {
-    max-width: 760px;
-    margin: 0 auto;
-  }
-  .cost-stack {
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 18px;
-    padding: 14px 28px;
-  }
-  .cost-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    padding: 20px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-  }
-  .cost-row:last-child { border-bottom: none; }
-  .cost-row-label {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-  .cost-row-icon {
-    width: 42px; height: 42px;
-    flex-shrink: 0;
-    border-radius: 10px;
-    background: rgba(201,169,97,0.15);
-    color: var(--gold-light);
-    display: flex; align-items: center; justify-content: center;
-  }
-  .cost-row-icon i, .cost-row-icon svg { width: 20px; height: 20px; }
-  .cost-row-text h4 {
-    font-family: 'Inter', sans-serif;
-    font-size: 16px; font-weight: 600;
-    color: var(--white);
-    margin: 0 0 2px;
-  }
-  .cost-row-text p {
-    font-size: 13px;
-    color: rgba(255,255,255,0.55);
-    margin: 0;
-  }
-  .cost-row-price {
-    font-family: 'Inter', sans-serif;
-    font-size: 17px; font-weight: 700;
-    color: rgba(255,255,255,0.92);
-    white-space: nowrap;
-  }
-  .cost-row-price span { font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.5); display: block; text-align: right; }
-  .cost-total {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    margin-top: 18px;
-    padding: 22px 28px;
-    background: rgba(255,255,255,0.06);
-    border: 1px dashed rgba(255,255,255,0.25);
-    border-radius: 14px;
-  }
-  .cost-total .lbl {
-    font-family: 'Inter', sans-serif;
-    font-size: 16px; font-weight: 600; color: rgba(255,255,255,0.85);
-  }
-  .cost-total .amt {
-    font-family: 'Playfair Display', serif;
-    font-size: 30px; font-weight: 700; color: var(--white);
-    white-space: nowrap;
-  }
-  .cost-verdict {
+  /* ===== RE OUTPUT SHOWCASE ===== */
+  .re-showcase { max-width: 760px; margin: 0 auto 64px; }
+  .re-showcase-cap {
     text-align: center;
-    margin-top: 38px;
-  }
-  .cost-arrow {
     font-size: 14px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--gold-light);
-    font-weight: 600;
-    margin-bottom: 18px;
-  }
-  .cost-akp {
-    display: inline-flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
-    color: var(--navy-dark);
-    padding: 28px 56px;
-    border-radius: 16px;
-    box-shadow: 0 18px 40px rgba(201,169,97,0.28);
-  }
-  .cost-akp .strike {
-    font-size: 15px;
-    color: rgba(8,26,51,0.6);
-    text-decoration: line-through;
-    font-weight: 600;
-  }
-  .cost-akp .big {
-    font-family: 'Playfair Display', serif;
-    font-size: 40px; font-weight: 700;
-    line-height: 1;
-  }
-  .cost-akp .big small { font-size: 17px; font-weight: 600; }
-  .cost-akp .tag {
-    font-family: 'Inter', sans-serif;
-    font-size: 13px; font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-top: 4px;
-  }
-  .cost-save {
-    margin-top: 26px;
-    font-size: 17px;
-    color: rgba(255,255,255,0.85);
-  }
-  .cost-save b { color: var(--gold-light); font-weight: 700; }
-  .cost-note {
-    margin-top: 14px;
-    font-size: 13px;
-    color: rgba(255,255,255,0.45);
+    color: var(--gray-500);
+    margin-top: 16px;
     font-style: italic;
   }
-  @media (max-width: 640px) {
-    .cost-stack { padding: 8px 18px; }
-    .cost-row { padding: 16px 0; flex-wrap: wrap; }
-    .cost-row-text p { display: none; }
-    .cost-total { padding: 18px 20px; flex-direction: column; align-items: flex-start; gap: 6px; }
-    .cost-total .amt { font-size: 26px; }
-    .cost-akp { padding: 24px 32px; width: 100%; }
-    .cost-akp .big { font-size: 34px; }
+
+  /* ===== FAQ ===== */
+  .faq-list { max-width: 760px; margin: 0 auto; }
+  .faq-item {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: 12px;
+    margin-bottom: 14px;
+    overflow: hidden;
+    transition: border-color 0.2s;
   }
+  .faq-item[open] { border-color: var(--gold); }
+  .faq-item summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 22px 26px;
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--navy);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+  }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item summary::after {
+    content: '+';
+    font-size: 24px;
+    color: var(--gold);
+    font-weight: 400;
+    flex-shrink: 0;
+    transition: transform 0.2s;
+  }
+  .faq-item[open] summary::after { transform: rotate(45deg); }
+  .faq-item .faq-body {
+    padding: 0 26px 22px;
+    color: var(--gray-700);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* ===== PRICE REASSURANCE ===== */
+  .price-reassure {
+    text-align: center;
+    margin: 36px auto 0;
+    max-width: 640px;
+    font-size: 15px;
+    color: var(--gray-500);
+    line-height: 1.7;
+  }
+  .price-reassure strong { color: var(--navy); }
+
+  @media (max-width: 900px) {
+    .hero-principals .hp-logos span { font-size: 17px; }
+    .re-showcase { margin-bottom: 40px; }
+  }
+
+  /* ===== FLAT ICONS ===== */
+  .pain-card .icon, .re-goal-card .ico, .floating-card .icon { color: var(--navy); }
+  .pain-card .icon svg, .re-goal-card .ico svg, .floating-card .icon svg { display: block; }
+  .hero-badge { display: inline-flex; align-items: center; gap: 7px; }
+  .hero-badge svg { color: var(--gold-dark); }
+  .hero-trust span { display: inline-flex; align-items: center; gap: 6px; }
+  .hero-trust span svg { color: var(--gold); }
+  .footer-bottom svg { vertical-align: -2px; color: var(--gold); margin: 0 2px; }
 </style>
 </head>
 <body>
@@ -1113,7 +1082,7 @@
   <div class="container">
     <div class="hero-inner">
       <div>
-        <span class="hero-badge">★ Khusus Agen Asuransi Indonesia</span>
+        <span class="hero-badge"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Khusus Agen Asuransi Indonesia</span>
         <h1>Prospek Datang Sendiri.<br><span class="gold">Tanpa Hardsell.</span></h1>
         <p class="hero-sub">
           AKPAgenku adalah sistem lead generation <strong>Done-for-You</strong> khusus agen asuransi.
@@ -1122,13 +1091,14 @@
         </p>
         <div class="hero-ctas">
           <a href="/daftar.html" class="btn btn-primary btn-lg">Daftar Sekarang →</a>
+          <a href="/cristine.html" class="btn btn-outline btn-lg">Lihat Contoh Mini-site</a>
         </div>
         <div class="hero-trust">
-          <span>✦ Tanpa kartu kredit</span>
+          <span><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Tanpa kartu kredit</span>
           <span class="dot">●</span>
-          <span>✦ Setup 30 menit</span>
+          <span><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Setup 30 menit</span>
           <span class="dot">●</span>
-          <span>✦ Cancel kapan saja</span>
+          <span><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Cancel kapan saja</span>
         </div>
       </div>
 
@@ -1144,19 +1114,29 @@
           </div>
         </div>
         <div class="floating-card float-top">
-          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg></div>
+          <div class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg></div>
           <div>
             <div class="text">3 lead baru</div>
             <div class="sub">hari ini</div>
           </div>
         </div>
         <div class="floating-card float-bottom">
-          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+          <div class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg></div>
           <div>
             <div class="text">Closing #12</div>
             <div class="sub">bulan ini</div>
           </div>
         </div>
+      </div>
+    </div>
+
+    <div class="hero-principals">
+      <span class="hp-label">Untuk agen dari principal mana pun</span>
+      <div class="hp-logos">
+        <span>Allianz</span>
+        <span>Prudential</span>
+        <span>AIA</span>
+        <span>Manulife</span>
       </div>
     </div>
   </div>
@@ -1175,17 +1155,17 @@
 
     <div class="pain-grid">
       <div class="pain-card">
-        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
+        <div class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></div>
         <h3>Susah Dapat Lead Baru</h3>
         <p>Network keluarga & kenalan sudah habis. Cold call jarang dijawab. Iklan asuransi sulit lolos di platform digital. Dari mana lagi cari prospek?</p>
       </div>
       <div class="pain-card">
-        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg></div>
+        <div class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4Z"/></svg></div>
         <h3>Konten = Beban Tambahan</h3>
         <p>Tahu harus posting edukasi, tapi tidak ada waktu menulis. Posting jualan, audiens berkurang. Posting jarang, akun jadi mati.</p>
       </div>
       <div class="pain-card">
-        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></div>
+        <div class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
         <h3>Lead Hilang Karena Lupa</h3>
         <p>Chat numpuk di WA. Lupa follow-up. Prospek panas jadi dingin. Closing yang harusnya bisa, lewat begitu saja.</p>
       </div>
@@ -1249,11 +1229,19 @@
         </div>
       </div>
     </div>
+  </div>
+</section>
 
-    <div class="img-ph ph-wide">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
-      <div class="ph-label">Screenshot Dashboard Agen</div>
-      <div class="ph-hint">Ganti dengan tangkapan layar dashboard / mini-site (rasio 16:7)</div>
+<!-- ===== PRODUK SHOWCASE ===== -->
+<section class="section section-navy">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Lihat Langsung</span>
+      <h2 class="section-title">Pegang Kendali dari Satu Dashboard</h2>
+      <p class="section-sub">Semua lead, performa funnel, dan aksi penting Anda, rapi dalam satu layar.</p>
+    </div>
+    <div class="img-frame showcase" data-label="/img/home-dashboard.png · 16:10" style="--ar:16/10;">
+      <img src="/img/home-dashboard.png" alt="Tampilan dashboard agen AKPAgenku" loading="lazy" onerror="this.style.display='none';this.parentElement.classList.add('img-missing')">
     </div>
   </div>
 </section>
@@ -1262,12 +1250,12 @@
 <section class="section section-cream" id="recommendation-engine">
   <div class="container">
     <div class="section-head">
-      <span class="eyebrow">⭐ Fitur Pembeda</span>
+      <span class="eyebrow">Fitur Pembeda</span>
       <h2 class="section-title">Recommendation Engine:<br>"Otak" di Balik Setiap Lead</h2>
     </div>
     <p class="re-tagline">
       Begitu prospek selesai isi kuis, sistem otomatis kasih saran ke agen:
-      <strong>"Untuk lead ini, produk yang paling cocok adalah X — dan ini script pembukanya."</strong>
+      <strong>"Untuk lead ini, produk yang paling cocok adalah X, dan ini script pembukanya."</strong>
       Agen tidak perlu lagi menebak harus menawarkan apa.
     </p>
 
@@ -1280,7 +1268,7 @@
           <strong>"Orang ini sebenarnya butuh apa? Harus tawarin produk yang mana? Gimana cara buka obrolan tanpa terkesan maksa?"</strong>
         </p>
         <p>
-          Akibatnya lead yang panas jadi dingin — bukan karena kurang prospek, tapi karena agen tidak tahu cara approach yang tepat.
+          Akibatnya lead yang panas jadi dingin, bukan karena kurang prospek, tapi karena agen tidak tahu cara approach yang tepat.
         </p>
         <p>
           Recommendation Engine yang menjawab semuanya: ia membaca hasil kuis, mencocokkan dengan produk yang Anda jual, lalu menyiapkan rekomendasi <strong>plus draft pesan WhatsApp siap kirim.</strong>
@@ -1320,34 +1308,42 @@
       </div>
     </div>
 
+    <!-- Output showcase -->
+    <div class="re-showcase">
+      <div class="img-frame" data-label="/img/home-reco-engine.png · 4:3" style="--ar:4/3;">
+        <img src="/img/home-reco-engine.png" alt="Contoh output Recommendation Engine: rekomendasi produk dan draft pesan WhatsApp siap kirim" loading="lazy" onerror="this.style.display='none';this.parentElement.classList.add('img-missing')">
+      </div>
+      <p class="re-showcase-cap">Contoh nyata: dari hasil kuis prospek → rekomendasi produk → draft WhatsApp siap kirim.</p>
+    </div>
+
     <!-- Tujuan / Benefit -->
     <div class="re-goals-grid">
       <div class="re-goal-card">
-        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
+        <div class="ico"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
         <div>
           <h4>Langsung tahu harus ngapain</h4>
           <p>Begitu lead masuk, Anda lihat area yang lemah, produk yang cocok, dan script yang tinggal kirim. Tidak ada lagi momen "bingung mulai dari mana".</p>
         </div>
       </div>
       <div class="re-goal-card">
-        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
+        <div class="ico"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></div>
         <div>
           <h4>Naikkan tingkat closing</h4>
           <p>Saat Anda tahu persis kebutuhan prospek dan cara approach-nya, peluang closing jauh lebih tinggi dibanding menebak-nebak.</p>
         </div>
       </div>
       <div class="re-goal-card">
-        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div>
+        <div class="ico"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div>
         <div>
           <h4>Pemula pun terlihat profesional</h4>
-          <p>Agen baru bisa memberi rekomendasi tepat & terstruktur karena "otaknya" disediakan platform — bikin percaya diri dan kredibel di mata prospek.</p>
+          <p>Agen baru bisa memberi rekomendasi tepat & terstruktur karena "otaknya" disediakan platform, bikin percaya diri dan kredibel di mata prospek.</p>
         </div>
       </div>
       <div class="re-goal-card">
-        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 17a2 2 0 0 0 2 2 2 2 0 0 0 2-2"/><path d="M7 13l3-3 4 4 3-3 2 2"/><path d="M17 7h.01"/><path d="M2 12s3-7 10-7 10 7 10 7"/></svg></div>
+        <div class="ico"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg></div>
         <div>
           <h4>Edukatif, bukan maksa</h4>
-          <p>Script selalu bertone "kasih opsi, bukan hardsell" — sesuai filosofi platform: edukasi dulu, jualan mengikuti.</p>
+          <p>Script selalu bertone "kasih opsi, bukan hardsell", sesuai filosofi platform: edukasi dulu, jualan mengikuti.</p>
         </div>
       </div>
     </div>
@@ -1357,7 +1353,10 @@
       <h3>Inilah yang bikin AKPAgenku bukan sekadar pengumpul lead</h3>
       <p>
         Kebanyakan tools lead-gen di pasaran berhenti di "kasih lead". Setelah itu, agen ditinggal sendiri.
-        AKPAgenku berbeda: kami <strong>menemani Anda sampai tahu harus jual apa & bagaimana caranya</strong> — bukan sekadar tools, tapi <strong>partner jualan</strong>.
+        AKPAgenku berbeda: kami <strong>menemani Anda sampai tahu harus jual apa & bagaimana caranya</strong>, bukan sekadar tools, tapi <strong>partner jualan</strong>.
+      </p>
+      <p class="quote">
+        <b>"Software-nya 10% dari bisnis ini. 90%-nya adalah konten + bantuan nyata ke agen."</b> Recommendation Engine adalah wujud nyata dari bantuan itu.
       </p>
     </div>
   </div>
@@ -1376,27 +1375,24 @@
 
     <div class="step-grid">
       <div class="step-card">
-        <div class="img-ph ph-step">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
-          <div class="ph-label">Gambar Langkah 1</div>
+        <div class="img-frame step-img" data-label="/img/step-1-daftar.png · 4:3" style="--ar:4/3;">
+          <img src="/img/step-1-daftar.png" alt="Langkah 1: Daftar & Bayar" loading="lazy" onerror="this.style.display='none';this.parentElement.classList.add('img-missing')">
         </div>
         <div class="step-num">1</div>
         <h3>Daftar & Bayar</h3>
         <p>Pilih paket Solo atau Team. Bayar, langsung dapat akses dashboard agen.</p>
       </div>
       <div class="step-card">
-        <div class="img-ph ph-step">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
-          <div class="ph-label">Gambar Langkah 2</div>
+        <div class="img-frame step-img" data-label="/img/step-2-setup.png · 4:3" style="--ar:4/3;">
+          <img src="/img/step-2-setup.png" alt="Langkah 2: Setup Mini-site" loading="lazy" onerror="this.style.display='none';this.parentElement.classList.add('img-missing')">
         </div>
         <div class="step-num">2</div>
         <h3>Setup Mini-site</h3>
         <p>Pilih artikel, produk, dan lead magnet yang cocok dengan target Anda. Mini-site otomatis jadi.</p>
       </div>
       <div class="step-card">
-        <div class="img-ph ph-step">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
-          <div class="ph-label">Gambar Langkah 3</div>
+        <div class="img-frame step-img" data-label="/img/step-3-lead.png · 4:3" style="--ar:4/3;">
+          <img src="/img/step-3-lead.png" alt="Langkah 3: Sebarkan & Terima Lead" loading="lazy" onerror="this.style.display='none';this.parentElement.classList.add('img-missing')">
         </div>
         <div class="step-num">3</div>
         <h3>Sebarkan, Terima Lead</h3>
@@ -1457,83 +1453,6 @@
   </div>
 </section>
 
-<!-- ===== HITUNG SENDIRI (Cost Comparison) ===== -->
-<section class="section section-navy" id="hitung-sendiri">
-  <div class="container">
-    <div class="section-head">
-      <span class="eyebrow">Bandingkan Sendiri</span>
-      <h2 class="section-title">Kalau Dikerjakan Sendiri,<br>Berapa Biayanya?</h2>
-      <p class="section-sub">
-        Untuk dapat hasil yang sama, ini yang biasanya harus Anda sewa & bayar setiap bulan.
-      </p>
-    </div>
-
-    <div class="cost-wrap">
-      <div class="cost-stack">
-        <div class="cost-row">
-          <div class="cost-row-label">
-            <div class="cost-row-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="1.5"/><circle cx="17.5" cy="10.5" r="1.5"/><circle cx="8.5" cy="7.5" r="1.5"/><circle cx="6.5" cy="12.5" r="1.5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996C18.343 15.281 22 13.5 22 9.5 22 5.36 17.5 2 12 2z"/></svg></div>
-            <div class="cost-row-text">
-              <h4>Desainer Grafis</h4>
-              <p>Konten carousel, materi promosi, feed yang rapi & konsisten</p>
-            </div>
-          </div>
-          <div class="cost-row-price">Rp 1.500.000<span>/ bulan</span></div>
-        </div>
-
-        <div class="cost-row">
-          <div class="cost-row-label">
-            <div class="cost-row-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
-            <div class="cost-row-text">
-              <h4>Web Developer</h4>
-              <p>Bikin mini-site, hosting, domain, maintenance bulanan</p>
-            </div>
-          </div>
-          <div class="cost-row-price">Rp 2.000.000<span>/ bulan</span></div>
-        </div>
-
-        <div class="cost-row">
-          <div class="cost-row-label">
-            <div class="cost-row-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v7a6 6 0 0 0 12 0V3"/><line x1="3" y1="3" x2="9" y2="3"/><line x1="15" y1="3" x2="21" y2="3"/><line x1="6" y1="10" x2="9" y2="10"/><line x1="15" y1="10" x2="18" y2="10"/></svg></div>
-            <div class="cost-row-text">
-              <h4>Lead Magnet & Copywriter</h4>
-              <p>Kuis & kalkulator interaktif + naskah edukasi yang menjual</p>
-            </div>
-          </div>
-          <div class="cost-row-price">Rp 1.500.000<span>/ bulan</span></div>
-        </div>
-
-        <div class="cost-row">
-          <div class="cost-row-label">
-            <div class="cost-row-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="20" x2="21" y2="20"/><rect x="5" y="11" width="3.5" height="6"/><rect x="10.25" y="7" width="3.5" height="10"/><rect x="15.5" y="13" width="3.5" height="4"/></svg></div>
-            <div class="cost-row-text">
-              <h4>Tools Analytics & CRM</h4>
-              <p>Lacak lead, funnel prospek, & laporan performa</p>
-            </div>
-          </div>
-          <div class="cost-row-price">Rp 500.000<span>/ bulan</span></div>
-        </div>
-      </div>
-
-      <div class="cost-total">
-        <div class="lbl">Total kalau dikerjakan terpisah</div>
-        <div class="amt">Rp 5.500.000 <span style="font-size:15px;font-weight:500;color:rgba(255,255,255,0.5);">/ bulan</span></div>
-      </div>
-
-      <div class="cost-verdict">
-        <div class="cost-arrow">Atau, cukup dengan AKPAgenku ↓</div>
-        <div class="cost-akp">
-          <div class="strike">Rp 5.500.000 / bulan</div>
-          <div class="big">Rp 600<small>rb</small> <small>/ bulan</small></div>
-          <div class="tag">Semua Sudah Termasuk</div>
-        </div>
-        <div class="cost-save">Anda hemat <b>~Rp 4.900.000 setiap bulan</b> (sekitar 89%).</div>
-        <p class="cost-note">*Estimasi biaya sewa freelance/tools di pasaran Indonesia. Belum termasuk waktu & tenaga untuk mengelola semuanya sendiri.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- ===== HARGA ===== -->
 <section class="section" id="harga">
   <div class="container">
@@ -1585,6 +1504,45 @@
         <a href="/daftar.html" class="btn btn-primary btn-lg">Daftar Team</a>
       </div>
     </div>
+
+    <p class="price-reassure">Langganan bulanan, <strong>tanpa kontrak, berhenti kapan saja.</strong> 1 closing premium dalam setahun saja, biaya setahun sudah balik modal.</p>
+  </div>
+</section>
+
+<!-- ===== FAQ ===== -->
+<section class="section section-cream" id="faq">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">FAQ</span>
+      <h2 class="section-title">Pertanyaan yang Sering Ditanya</h2>
+      <p class="section-sub">Hal-hal yang biasanya ingin dipastikan agen sebelum mulai.</p>
+    </div>
+    <div class="faq-list">
+      <details class="faq-item">
+        <summary>Saya nggak bisa desain atau coding. Bisa pakai?</summary>
+        <div class="faq-body">Bisa banget. Semua sudah disiapkan, mini-site, konten, dan lead magnet tinggal dipilih lalu diaktifkan. Anda nggak perlu nulis kode atau mendesain apa pun.</div>
+      </details>
+      <details class="faq-item">
+        <summary>Saya agen Allianz / Prudential / AIA / Manulife. Cocok untuk principal saya?</summary>
+        <div class="faq-body">Cocok. AKPAgenku tidak terikat satu principal. Konten edukasinya bersifat umum, dan rekomendasi produk menyesuaikan produk yang Anda jual, termasuk varian syariah.</div>
+      </details>
+      <details class="faq-item">
+        <summary>Bagaimana cara bayar & kapan akun saya aktif?</summary>
+        <div class="faq-body">Setelah daftar, Anda transfer ke rekening yang tertera lalu kirim bukti lewat WhatsApp. Tim kami verifikasi dan mengaktifkan akun Anda, biasanya di hari yang sama.</div>
+      </details>
+      <details class="faq-item">
+        <summary>Apa bedanya dengan Wix, Carrd, atau Linktree?</summary>
+        <div class="faq-body">Tools itu cuma kasih halaman kosong, Anda yang mikir konten, desain, dan strategi. AKPAgenku Done-for-You: sudah lengkap dengan konten edukasi, lead magnet, CRM, dan Recommendation Engine, khusus untuk agen asuransi.</div>
+      </details>
+      <details class="faq-item">
+        <summary>Apakah data prospek saya aman?</summary>
+        <div class="faq-body">Aman. Data lead masuk ke dashboard Anda sendiri dan tidak kami bagikan ke pihak lain. Data prospek adalah milik Anda.</div>
+      </details>
+      <details class="faq-item">
+        <summary>Bisa berhenti kapan saja?</summary>
+        <div class="faq-body">Bisa. Langganan bulanan tanpa kontrak, Anda bebas berhenti kapan saja.</div>
+      </details>
+    </div>
   </div>
 </section>
 
@@ -1612,10 +1570,10 @@
       </div>
       <div class="footer-col">
         <h4>Produk</h4>
-        <a>Fitur</a>
-        <a>Harga</a>
-        <a>Demo</a>
-        <a>FAQ</a>
+        <a href="#fitur">Fitur</a>
+        <a href="#harga">Harga</a>
+        <a href="/cristine.html">Demo</a>
+        <a href="#faq">FAQ</a>
       </div>
       <div class="footer-col">
         <h4>Perusahaan</h4>
@@ -1632,7 +1590,7 @@
       </div>
     </div>
     <div class="footer-bottom">
-      © 2026 AKPAgenku. Dibuat dengan ❤ untuk agen asuransi Indonesia.
+      © 2026 AKPAgenku. Dibuat dengan <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg> untuk agen asuransi Indonesia.
     </div>
   </div>
 </footer>
