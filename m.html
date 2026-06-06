@@ -1460,8 +1460,8 @@
   <div class="akp-head">
     <div class="akp-avatar" id="akpAvatar">A</div>
     <div class="akp-head-info">
-      <h4>Asisten <span id="akpHeadName">kami</span></h4>
-      <span>Online &middot; biasanya balas cepat</span>
+      <h4>AI Perencana Keuangan</h4>
+      <span id="akpHeadSub">Online</span>
     </div>
     <button class="akp-close" id="akpClose" aria-label="Tutup">&times;</button>
   </div>
@@ -1554,9 +1554,9 @@ window.addEventListener('DOMContentLoaded', () => {
     const fab = document.getElementById('akpFab');
     const cbody = document.getElementById('akpBody');
     if (!panel || !fab || !cbody) return;
-    let started = false, userToggled = false;
-    document.getElementById('akpHeadName').textContent = firstName;
+    let started = false, userToggled = false, stage = 'chat', visitorName = '';
     document.getElementById('akpAvatar').textContent = (firstName.charAt(0) || 'A').toUpperCase();
+    (function(){ const sub=document.getElementById('akpHeadSub'); if(sub) sub.textContent='Asisten '+firstName+' \u00B7 Online'; })();
 
     function sc(){ cbody.scrollTop = cbody.scrollHeight; }
     function addBot(text, cb){
@@ -1570,7 +1570,27 @@ window.addEventListener('DOMContentLoaded', () => {
       chips.forEach(function(c){ const b=document.createElement('button'); b.className='akp-chip'+(c.style?' '+c.style:''); b.textContent=c.text; b.onclick=function(){ wrap.remove(); c.action(); }; wrap.appendChild(b); });
       cbody.appendChild(wrap); sc();
     }
-    function greet(){ addBot('Halo! \uD83D\uDC4B Saya asisten digital '+firstName+'. Saya bantu Anda pahami kondisi keuangan keluarga sebelum ambil keputusan apa pun.', function(){ addBot('Yang mana paling Anda pikirkan sekarang?', showMenu); }); }
+    function greet(){
+      addBot('Halo! \uD83D\uDC4B Saya asisten AI dari '+firstName+', siap bantu Anda soal perencanaan keuangan keluarga.', function(){
+        addBot('Sebelum mulai, boleh saya tahu nama Anda? \uD83D\uDE0A', function(){
+          stage = 'ask_name';
+          const i = document.getElementById('akpInput'); if (i) i.placeholder = 'Tulis nama Anda...';
+          addChips([{ text: 'Langsung lihat pilihan', action: skipName }]);
+        });
+      });
+    }
+    function captureName(text){
+      visitorName = (text || '').trim().slice(0, 40);
+      stage = 'chat';
+      const i = document.getElementById('akpInput'); if (i) i.placeholder = 'Tulis pertanyaan Anda...';
+      addUser(text);
+      addBot('Senang kenalan, ' + (visitorName || 'kak') + '! \uD83D\uDE4C Yang mana paling Anda pikirkan sekarang?', showMenu);
+    }
+    function skipName(){
+      stage = 'chat';
+      const i = document.getElementById('akpInput'); if (i) i.placeholder = 'Tulis pertanyaan Anda...';
+      addBot('Tidak apa-apa. Yang mana paling Anda pikirkan sekarang?', showMenu);
+    }
     function showMenu(){ addChips(magnets.map(function(m){ return { text: m.emoji+' '+m.label, action: function(){ openTopic(m); } }; })); }
     function openTopic(m){
       addUser(m.label);
@@ -1592,6 +1612,7 @@ window.addEventListener('DOMContentLoaded', () => {
     let busy = false;   // cegah kirim ganda saat menunggu jawaban
     function handleFreeText(text){
       if (busy) return;
+      if (stage === 'ask_name') { captureName(text); return; }
       addUser(text);
       convo.push({ role:'user', content: text });
       if (convo.length > 8) convo = convo.slice(-8);
@@ -1605,7 +1626,7 @@ window.addEventListener('DOMContentLoaded', () => {
       fetch(chatApi, {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ username: username, message: text, history: convo.slice(0, -1) }),
+        body: JSON.stringify({ username: username, message: text, history: convo.slice(0, -1), visitorName: visitorName }),
         signal: ctrl.signal
       })
       .then(function(r){ return r.json().then(function(d){ return { ok: r.ok, d: d }; }); })
