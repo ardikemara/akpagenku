@@ -1323,23 +1323,52 @@
 // ===== CONFIG =====
 const SUPABASE_URL = 'https://bfydtsfekvueqzvuschp.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_3Xec3HYKViIiuX99hHxHqg_Ih8ABX_T';
-const ADMIN_PASSWORD = 'akpagenku2026'; // GANTI INI sebelum deploy!
+const ADMIN_FN_URL = `${SUPABASE_URL}/functions/v1/admin-action`;
 
 let supabase = null;
+let adminSecret = sessionStorage.getItem('admin_secret') || null;
 let allAgents = [];
 let currentFilter = 'pending';
 let selectedAgentId = null;
 
 // ===== LOGIN =====
-function checkLogin() {
+async function checkLogin() {
   const pwd = document.getElementById('adminPassword').value;
-  if (pwd === ADMIN_PASSWORD) {
-    sessionStorage.setItem('admin_authenticated', 'true');
+  const errEl = document.getElementById('loginError');
+  errEl.classList.remove('show');
+  try {
+    const res = await fetch(ADMIN_FN_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'login', secret: pwd }),
+    });
+    if (!res.ok) throw new Error('unauthorized');
+    adminSecret = pwd;
+    sessionStorage.setItem('admin_secret', pwd);
+    document.getElementById('adminPassword').value = '';
     initApp();
-  } else {
-    document.getElementById('loginError').classList.add('show');
+  } catch (e) {
+    errEl.classList.add('show');
     document.getElementById('adminPassword').value = '';
   }
+}
+
+// Pemanggil aksi admin lewat Edge Function (service role di server)
+async function adminAction(action, payload = {}) {
+  const res = await fetch(ADMIN_FN_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action, secret: adminSecret, ...payload }),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    if (res.status === 401) {
+      sessionStorage.removeItem('admin_secret');
+      adminSecret = null;
+    }
+    throw new Error(data.error || ('HTTP ' + res.status));
+  }
+  return data;
 }
 
 document.getElementById('adminPassword').addEventListener('keypress', (e) => {
@@ -1347,7 +1376,9 @@ document.getElementById('adminPassword').addEventListener('keypress', (e) => {
 });
 
 function logout() {
+  sessionStorage.removeItem('admin_secret');
   sessionStorage.removeItem('admin_authenticated');
+  adminSecret = null;
   location.reload();
 }
 
@@ -1364,7 +1395,7 @@ function initApp() {
 }
 
 // Check if previously logged in
-if (sessionStorage.getItem('admin_authenticated') === 'true') {
+if (adminSecret) {
   window.addEventListener('DOMContentLoaded', initApp);
 }
 
@@ -1375,13 +1406,8 @@ async function loadAgents() {
   if (approvalList) approvalList.innerHTML = '<div class="loading">Loading...</div>';
   if (dataAgenList) dataAgenList.innerHTML = '<div class="loading">Loading...</div>';
   try {
-    const { data, error } = await supabase
-      .from('users')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    if (error) throw error;
-    allAgents = data || [];
+    const data = await adminAction('list');
+    allAgents = data.users || [];
     updateStats();
     renderAgents();
     showToast('Data refreshed', 'success');
@@ -2000,40 +2026,12 @@ async function confirmApprove() {
   const agent = allAgents.find(a => a.id === selectedAgentId);
   if (!agent) return;
 
-  const untilDate = new Date();
-  untilDate.setDate(untilDate.getDate() + 30);
-  const now = new Date();
   const amount = agent.paket === 'team' ? 400000 : 600000;
 
   try {
-    // 1. Update user status
-    const { error: userError } = await supabase
-      .from('users')
-      .update({
-        subscription_status: 'active',
-        masa_aktif_sampai: untilDate.toISOString(),
-        approved_at: now.toISOString()
-      })
-      .eq('id', selectedAgentId);
-
-    if (userError) throw userError;
-
-    // 2. Insert payment log
-    const periodStart = now.toISOString().slice(0, 10);
-    const periodEnd = untilDate.toISOString().slice(0, 10);
-    const { error: paymentError } = await supabase
-      .from('payment_logs')
-      .insert({
-        user_id: selectedAgentId,
-        amount: amount,
-        method: 'transfer_bni',
-        periode_start: periodStart,
-        periode_end: periodEnd,
-        verified_at: now.toISOString(),
-        notes: 'Approved via admin dashboard'
-      });
-
-    if (paymentError) console.warn('Payment log error:', paymentError);
+    // 1+2. Update status + catat payment log via server (service role)
+    const res = await adminAction('approve', { agentId: selectedAgentId, amount });
+    const untilDate = new Date(res.masa_aktif_sampai);
 
     // 3. Send approved email (non-blocking)
     fetch(`${SUPABASE_URL}/functions/v1/send-approved-email`, {
@@ -2083,11 +2081,7 @@ function openRejectModal(agentId) {
 async function confirmReject() {
   if (!selectedAgentId) return;
   try {
-    const { error } = await supabase
-      .from('users')
-      .update({ subscription_status: 'rejected' })
-      .eq('id', selectedAgentId);
-    if (error) throw error;
+    await adminAction('reject', { agentId: selectedAgentId });
     closeModal('rejectModal');
     showToast('Agent rejected', 'success');
     await loadAgents();
@@ -2104,25 +2098,11 @@ async function extendActive(agentId) {
 
   const current = agent.masa_aktif_sampai ? new Date(agent.masa_aktif_sampai) : new Date();
   if (current < new Date()) current.setTime(Date.now());
-  const newUntil = new Date(current.getTime() + 30 * 24 * 60 * 60 * 1000);
   const amount = agent.paket === 'team' ? 400000 : 600000;
 
   try {
-    const { error } = await supabase
-      .from('users')
-      .update({ masa_aktif_sampai: newUntil.toISOString() })
-      .eq('id', agentId);
-    if (error) throw error;
-
-    await supabase.from('payment_logs').insert({
-      user_id: agentId,
-      amount: amount,
-      method: 'transfer_bni',
-      periode_start: new Date().toISOString().slice(0, 10),
-      periode_end: newUntil.toISOString().slice(0, 10),
-      verified_at: new Date().toISOString(),
-      notes: 'Extended via admin dashboard'
-    });
+    const res = await adminAction('extend', { agentId, amount });
+    const newUntil = new Date(res.masa_aktif_sampai);
 
     showToast(`Extended until ${formatDate(newUntil)}`, 'success');
     await loadAgents();
@@ -2137,11 +2117,7 @@ async function restoreAgent(agentId) {
   if (!agent) return;
   if (!confirm(`Restore ${agent.nama_lengkap} ke status pending_approval?`)) return;
   try {
-    const { error } = await supabase
-      .from('users')
-      .update({ subscription_status: 'pending_approval' })
-      .eq('id', agentId);
-    if (error) throw error;
+    await adminAction('set_pending', { agentId });
     showToast('Agent restored to pending', 'success');
     await loadAgents();
   } catch (err) {
