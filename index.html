@@ -511,6 +511,95 @@
     font-weight: 700;
   }
 
+  /* ===== COST COMPARISON ===== */
+  .cost-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    max-width: 900px;
+    margin: 0 auto;
+    align-items: stretch;
+  }
+  .cost-card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 32px 30px;
+    display: flex;
+    flex-direction: column;
+  }
+  .cost-card.cost-diy { border: 1px solid var(--gray-200); }
+  .cost-card.cost-akp {
+    border: 2px solid var(--gold);
+    box-shadow: 0 20px 50px -20px rgba(201, 169, 97, 0.5);
+  }
+  .cost-label {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+  .cost-card.cost-diy .cost-label { color: var(--gray-500); }
+  .cost-card.cost-akp .cost-label { color: var(--gold-dark); }
+  .cost-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--gray-100);
+    font-size: 14px;
+    color: var(--gray-700);
+  }
+  .cost-line .ci-name { line-height: 1.4; }
+  .cost-line .ci-price { font-weight: 600; color: var(--navy); white-space: nowrap; }
+  .cost-card.cost-akp .cost-line .ci-name { color: var(--navy); font-weight: 500; }
+  .cost-card.cost-akp .cost-line .ci-name::before {
+    content: "✓ ";
+    color: var(--gold-dark);
+    font-weight: 700;
+  }
+  .cost-total {
+    margin-top: auto;
+    padding-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+  }
+  .cost-total .ct-label { font-size: 14px; font-weight: 600; color: var(--gray-700); }
+  .cost-total .ct-amount {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    line-height: 1;
+  }
+  .cost-card.cost-diy .ct-amount { font-size: 30px; color: var(--gray-900); }
+  .cost-card.cost-akp .ct-amount { font-size: 38px; color: var(--navy); }
+  .ct-period { font-size: 13px; color: var(--gray-500); font-weight: 500; }
+  .cost-save {
+    display: inline-block;
+    align-self: flex-start;
+    margin-top: 16px;
+    background: var(--gold);
+    color: var(--navy);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    padding: 6px 14px;
+    border-radius: 999px;
+  }
+  .cost-note {
+    text-align: center;
+    margin: 26px auto 0;
+    max-width: 640px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.55);
+    line-height: 1.6;
+  }
+  @media (max-width: 760px) {
+    .cost-grid { grid-template-columns: 1fr; }
+  }
+
   /* ===== PRICING ===== */
   .pricing-grid {
     display: grid;
@@ -1450,6 +1539,48 @@
         <div class="col col-us">Leader dashboard</div>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- ===== COST COMPARISON ===== -->
+<section class="section section-navy">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Hitung-hitungan</span>
+      <h2 class="section-title">Rakit Sendiri vs Langganan AKPAgenku</h2>
+      <p class="section-sub">Untuk dapat hasil yang sama kalau dirakit sendiri, Anda harus bayar banyak hal terpisah tiap bulan. Di AKPAgenku, semuanya sudah jadi satu.</p>
+    </div>
+
+    <div class="cost-grid">
+      <div class="cost-card cost-diy">
+        <div class="cost-label">Kalau Rakit &amp; Kelola Sendiri</div>
+        <div class="cost-line"><span class="ci-name">Web developer (bikin &amp; rawat mini-site)</span><span class="ci-price">Rp 5.000.000</span></div>
+        <div class="cost-line"><span class="ci-name">Desainer grafis (materi visual)</span><span class="ci-price">Rp 1.000.000</span></div>
+        <div class="cost-line"><span class="ci-name">Langganan tools CRM</span><span class="ci-price">Rp 1.000.000</span></div>
+        <div class="cost-line"><span class="ci-name">Penulis konten edukasi</span><span class="ci-price">Rp 1.000.000</span></div>
+        <div class="cost-line"><span class="ci-name">Developer fitur (lead magnet, kuis, otomasi)</span><span class="ci-price">Rp 2.000.000</span></div>
+        <div class="cost-total">
+          <span class="ct-label">Total per bulan</span>
+          <span><span class="ct-amount">Rp 10jt</span> <span class="ct-period">/ bulan</span></span>
+        </div>
+      </div>
+
+      <div class="cost-card cost-akp">
+        <div class="cost-label">Langganan AKPAgenku</div>
+        <div class="cost-line"><span class="ci-name">Mini-site profesional, siap pakai</span></div>
+        <div class="cost-line"><span class="ci-name">Library konten edukasi tinggal pakai</span></div>
+        <div class="cost-line"><span class="ci-name">CRM &amp; dashboard lead built-in</span></div>
+        <div class="cost-line"><span class="ci-name">Semua lead magnet &amp; kuis</span></div>
+        <div class="cost-line"><span class="ci-name">Update konten tiap bulan</span></div>
+        <div class="cost-total">
+          <span class="ct-label">Semua jadi satu</span>
+          <span><span class="ct-amount">Rp 600rb</span> <span class="ct-period">/ bulan</span></span>
+        </div>
+        <span class="cost-save">Hemat lebih dari 90%</span>
+      </div>
+    </div>
+
+    <p class="cost-note">Estimasi kasar biaya bulanan kalau merakit &amp; menjalankan sendiri. Angka aktual bisa berbeda tergantung kebutuhan dan vendor. Tujuannya menggambarkan perbandingan, bukan angka pasti.</p>
   </div>
 </section>
 
