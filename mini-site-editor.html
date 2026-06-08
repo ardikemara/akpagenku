@@ -1071,11 +1071,13 @@
         <div class="tab-content active" id="tab-hero">
           <div class="field-group">
             <label class="field-label">Foto Profil</label>
-            <div class="photo-uploader">
-              <div class="icon-wrap"><i data-lucide="image-plus"></i></div>
-              <div class="photo-uploader-text">Klik untuk upload foto</div>
-              <div class="photo-uploader-sub">PNG, JPG max 2MB</div>
+            <div class="photo-uploader" id="photoUploader" onclick="document.getElementById('input-foto').click()">
+              <img id="photoPreview" alt="Foto profil" style="display:none;width:72px;height:72px;border-radius:50%;object-fit:cover;margin-bottom:8px;">
+              <div class="icon-wrap" id="photoIcon"><i data-lucide="image-plus"></i></div>
+              <div class="photo-uploader-text" id="photoText">Klik untuk upload foto</div>
+              <div class="photo-uploader-sub">PNG, JPG, WEBP, max 2MB</div>
             </div>
+            <input type="file" id="input-foto" accept="image/png,image/jpeg,image/webp" style="display:none">
           </div>
 
           <div class="field-group">
@@ -1642,6 +1644,16 @@
     // 6. Setup handlers (Save, Publish)
     setupHandlers();
 
+    // 6b. Foto profil: setup upload + tampilkan foto yang sudah ada
+    setupPhotoUpload();
+    try {
+      if (session.avatar_url === undefined) {
+        const { data: av } = await supabase.from('users').select('avatar_url').eq('id', session.id).maybeSingle();
+        if (av) { session.avatar_url = av.avatar_url; sessionStorage.setItem('akp_session', JSON.stringify(session)); }
+      }
+    } catch (e) {}
+    if (session.avatar_url) showAvatar(session.avatar_url);
+
     // 7. Lucide icons
     if (typeof lucide !== 'undefined') lucide.createIcons();
 
@@ -1867,6 +1879,52 @@
     if (btnPublish) {
       btnPublish.addEventListener('click', () => saveMiniSite(true));
     }
+  }
+
+  function showAvatar(url) {
+    if (!url) return;
+    const img = '<img src="' + url + '" alt="" style="width:100%;height:100%;object-fit:cover;display:block;">';
+    const prev = document.querySelector('.preview-avatar');
+    if (prev) { prev.style.overflow = 'hidden'; prev.innerHTML = img; }
+    const pv = document.getElementById('photoPreview');
+    if (pv) { pv.src = url; pv.style.display = 'block'; }
+    const icon = document.getElementById('photoIcon'); if (icon) icon.style.display = 'none';
+    const txt = document.getElementById('photoText'); if (txt) txt.textContent = 'Foto terpasang. Klik untuk ganti.';
+  }
+
+  function setupPhotoUpload() {
+    const input = document.getElementById('input-foto');
+    if (!input) return;
+    input.addEventListener('change', async (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      const okTypes = ['image/png', 'image/jpeg', 'image/webp'];
+      if (!okTypes.includes(file.type)) { alert('Format foto harus PNG, JPG, atau WEBP.'); input.value = ''; return; }
+      if (file.size > 2 * 1024 * 1024) { alert('Ukuran foto maksimal 2MB.'); input.value = ''; return; }
+      const txt = document.getElementById('photoText');
+      const prevTxt = txt ? txt.textContent : '';
+      if (txt) txt.textContent = 'Mengupload...';
+      try {
+        const { data: { user: au } } = await supabase.auth.getUser();
+        if (!au) { alert('Sesi habis, silakan login ulang.'); window.location.href = '/login.html'; return; }
+        const path = au.id + '/avatar';
+        const up = await supabase.storage.from('avatars').upload(path, file, { upsert: true, contentType: file.type });
+        if (up.error) throw up.error;
+        const { data: pub } = supabase.storage.from('avatars').getPublicUrl(path);
+        const url = pub.publicUrl + '?t=' + Date.now();
+        const upd = await supabase.from('users').update({ avatar_url: url, updated_at: new Date().toISOString() }).eq('id', session.id);
+        if (upd.error) throw upd.error;
+        session.avatar_url = url;
+        try { sessionStorage.setItem('akp_session', JSON.stringify(session)); } catch (e) {}
+        showAvatar(url);
+        alert('Foto profil tersimpan!');
+      } catch (err) {
+        alert('Gagal upload foto: ' + (err.message || err));
+        if (txt) txt.textContent = prevTxt || 'Klik untuk upload foto';
+      } finally {
+        input.value = '';
+      }
+    });
   }
 
   async function saveMiniSite(publish) {

@@ -1399,7 +1399,7 @@
   <div class="container">
     <div class="about-grid">
       <div class="about-visual">
-        <div class="big-avatar">C</div>
+        <div class="big-avatar" id="m-big-avatar">C</div>
       </div>
 
       <div class="about-content">
@@ -1690,7 +1690,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // Ambil user
     const { data: user, error: uErr } = await supabase
-      .from('users').select('id, nama_lengkap, nama_panggilan, username, whatsapp, perusahaan, email, subscription_status')
+      .from('users').select('id, nama_lengkap, nama_panggilan, username, whatsapp, perusahaan, email, subscription_status, avatar_url')
       .eq('username', username).maybeSingle();
     if (uErr || !user) { showError('Agen "' + username + '" tidak ditemukan.'); return; }
     // Mini-site hanya tampil untuk akun aktif (akun dihapus/nonaktif -> offline)
@@ -1729,6 +1729,13 @@ window.addEventListener('DOMContentLoaded', () => {
     // === IDENTITAS ===
     setText('m-nav-avatar', inisial);
     setText('m-hero-avatar', inisial);
+    setText('m-big-avatar', inisial);
+    if (user.avatar_url) {
+      ['m-nav-avatar','m-hero-avatar','m-big-avatar'].forEach(function(id){
+        var el = document.getElementById(id);
+        if (el) { el.style.overflow = 'hidden'; el.innerHTML = '<img src="' + user.avatar_url + '" alt="' + (nama || '') + '" style="width:100%;height:100%;object-fit:cover;display:block;">'; }
+      });
+    }
     setText('m-nav-name', nama);
     const perusahaan = (site && site.perusahaan_display) || user.perusahaan || '';
     if (perusahaan) setText('m-topbar-perusahaan', 'Agen Resmi ' + perusahaan);
