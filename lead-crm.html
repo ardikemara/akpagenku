@@ -304,6 +304,7 @@
   .col-dot.engaged { background: var(--orange); }
   .col-dot.closing { background: var(--purple); }
   .col-dot.closed { background: var(--green); }
+  .col-dot.followup { background: #0e9aa7; }
   .col-title {
     font-size: 13px;
     font-weight: 700;
@@ -548,6 +549,8 @@
   .modal-status-badge.engaged { background: var(--orange-light); color: var(--orange); }
   .modal-status-badge.closing { background: var(--purple-light); color: var(--purple); }
   .modal-status-badge.closed { background: var(--green-light); color: var(--green); }
+  .modal-status-badge.followup { background: #cffafe; color: #0e7490; }
+  .lead-stale { display:inline-block; margin-left:6px; font-size:10px; font-weight:700; color:#b91c1c; background:#fee2e2; padding:2px 7px; border-radius:999px; white-space:nowrap; }
 
   .modal-body {
     flex: 1;
@@ -1150,6 +1153,17 @@
           </div>
         </div>
 
+        <!-- COL: FOLLOW UP -->
+        <div class="kanban-col">
+          <div class="kanban-col-head">
+            <span class="col-dot followup"></span>
+            <span class="col-title">Follow Up</span>
+            <span class="col-count" id="kanban-count-followup">0</span>
+            <button class="col-add-btn" data-stage="followup" title="Tambah"><i data-lucide="plus"></i></button>
+          </div>
+          <div class="kanban-cards" id="kanban-cards-followup"></div>
+        </div>
+
         <!-- COL 3: CLOSING -->
         <div class="kanban-col">
           <div class="kanban-col-head">
@@ -1294,6 +1308,7 @@
       <div class="stage-selector" id="stageSelector">
         <button class="stage-option active" onclick="setStage('new', this)">Baru</button>
         <button class="stage-option" onclick="setStage('engaged', this)">Engaged</button>
+        <button class="stage-option" onclick="setStage('followup', this)">Follow Up</button>
         <button class="stage-option" onclick="setStage('closing', this)">Closing</button>
         <button class="stage-option" onclick="setStage('closed', this)">Closed</button>
       </div>
@@ -1663,6 +1678,11 @@
     const timeAgo = formatTimeAgo(new Date(lead.created_at));
     const srcTxt = sourceLabel(lead.source_magnet);
     const prioritySpan = priorityEmoji(lead.score);
+    const lastTouch = lead.last_contact_at ? new Date(lead.last_contact_at) : new Date(lead.created_at);
+    const daysSince = Math.floor((Date.now() - lastTouch.getTime()) / 86400000);
+    const activeStage = (lead.stage === 'engaged' || lead.stage === 'followup');
+    const stale = activeStage && daysSince >= 7;
+    const footerLabel = lead.last_contact_at ? ('Terakhir: ' + formatTimeAgo(lastTouch)) : timeAgo;
     
     // Build modal data for click
     const modalData = {
@@ -1691,20 +1711,21 @@
         </div>
         <span class="lead-source-tag">${escapeHtml(srcTxt)}</span>
         <div class="lead-card-footer">
-          <span class="lead-time">${escapeHtml(timeAgo)}</span>
+          <span class="lead-time">${escapeHtml(footerLabel)}</span>
+          ${stale ? '<span class="lead-stale">\u26a0 Perlu follow up</span>' : ''}
         </div>
       </div>
     `;
   }
 
   function renderLeads() {
-    const byStage = { new: [], engaged: [], closing: [], closed: [] };
+    const byStage = { new: [], engaged: [], followup: [], closing: [], closed: [] };
     allLeads.forEach(lead => {
       if (byStage[lead.stage]) byStage[lead.stage].push(lead);
     });
 
-    // Update sidebar badge - leads that need follow-up (new + engaged)
-    const badgeCount = byStage.new.length + byStage.engaged.length;
+    // Update sidebar badge - leads yang masih aktif (baru + engaged + follow up)
+    const badgeCount = byStage.new.length + byStage.engaged.length + byStage.followup.length;
     const badge = document.getElementById('navBadgeCRM');
     if (badge) {
       if (badgeCount > 0) {
@@ -1718,12 +1739,14 @@
     const stageContainers = {
       new: 'kanban-cards-new',
       engaged: 'kanban-cards-engaged',
+      followup: 'kanban-cards-followup',
       closing: 'kanban-cards-closing',
       closed: 'kanban-cards-closed'
     };
     const countIds = {
       new: 'kanban-count-new',
       engaged: 'kanban-count-engaged',
+      followup: 'kanban-count-followup',
       closing: 'kanban-count-closing',
       closed: 'kanban-count-closed'
     };
@@ -1824,7 +1847,7 @@ async function openModal(lead) {
 
   // Status badge
   const statusBadge = document.getElementById('modalStatus');
-  const statusLabels = { new: 'Prospek Baru', engaged: 'Engaged', closing: 'Closing', closed: 'Closed' };
+  const statusLabels = { new: 'Prospek Baru', engaged: 'Engaged', followup: 'Follow Up', closing: 'Closing', closed: 'Closed' };
   statusBadge.textContent = statusLabels[lead.stage] || 'Prospek Baru';
   statusBadge.className = 'modal-status-badge ' + (lead.stage === 'new' ? '' : lead.stage);
 
@@ -2879,7 +2902,7 @@ async function setStage(stage, btn) {
   btn.classList.add('active');
 
   const statusBadge = document.getElementById('modalStatus');
-  const statusLabels = { new: 'Prospek Baru', engaged: 'Engaged', closing: 'Closing', closed: 'Closed' };
+  const statusLabels = { new: 'Prospek Baru', engaged: 'Engaged', followup: 'Follow Up', closing: 'Closing', closed: 'Closed' };
   statusBadge.textContent = statusLabels[stage];
   statusBadge.className = 'modal-status-badge ' + (stage === 'new' ? '' : stage);
 
@@ -2905,6 +2928,7 @@ async function setStage(stage, btn) {
       .from('leads')
       .update({ 
         stage: stage,
+        last_contact_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
       })
       .eq('id', currentLead.id);
@@ -2936,7 +2960,7 @@ async function setStage(stage, btn) {
   }
 }
 
-function addNote() {
+async function addNote() {
   const note = document.getElementById('noteInput').value.trim();
   if (!note) return;
 
@@ -2953,11 +2977,28 @@ function addNote() {
 
   document.getElementById('noteInput').value = '';
   if (typeof lucide !== 'undefined') lucide.createIcons();
+
+  // Simpan catatan ke DB + tandai lead baru saja di-follow up (reset timer 7 hari)
+  if (currentLead && currentLead.id) {
+    try {
+      const sb = window.supabase.createClient('https://bfydtsfekvueqzvuschp.supabase.co','sb_publishable_3Xec3HYKViIiuX99hHxHqg_Ih8ABX_T');
+      await sb.from('lead_notes').insert({ lead_id: currentLead.id, content: note, kind: 'manual' });
+      await sb.from('leads').update({ last_contact_at: new Date().toISOString(), updated_at: new Date().toISOString() }).eq('id', currentLead.id);
+      if (typeof window.akpReloadLeads === 'function') await window.akpReloadLeads();
+    } catch (e) { console.warn('Simpan catatan gagal:', e); }
+  }
 }
 
 function waCurrentLead() {
   if (!currentLead) return;
   openWA(currentLead.wa, currentLead.name.split(' ')[0]);
+  // klik Chat WA = follow up, reset timer 7 hari
+  if (currentLead.id) {
+    try {
+      const sb = window.supabase.createClient('https://bfydtsfekvueqzvuschp.supabase.co','sb_publishable_3Xec3HYKViIiuX99hHxHqg_Ih8ABX_T');
+      sb.from('leads').update({ last_contact_at: new Date().toISOString(), updated_at: new Date().toISOString() }).eq('id', currentLead.id).then(function(){ if (typeof window.akpReloadLeads === 'function') window.akpReloadLeads(); });
+    } catch (e) {}
+  }
 }
 function emailLead() {
   if (!currentLead) return;

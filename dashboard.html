@@ -483,6 +483,13 @@
   .stage-bar-fill.engaged { background: linear-gradient(90deg, #fed7aa 0%, #fdba74 100%); }
   .stage-bar-fill.closing { background: linear-gradient(90deg, #e9d5ff 0%, #c4b5fd 100%); }
   .stage-bar-fill.closed { background: linear-gradient(90deg, #d1fae5 0%, #86efac 100%); }
+  .stage-bar-fill.followup { background: linear-gradient(90deg, #cffafe 0%, #67e8f9 100%); }
+  .followup-alert { display:flex; align-items:center; gap:14px; background:#fff7ed; border:1px solid #fed7aa; border-left:4px solid #f59e0b; border-radius:12px; padding:14px 18px; margin-bottom:22px; text-decoration:none; }
+  .followup-alert .fa-icon { width:38px; height:38px; border-radius:50%; background:#ffedd5; color:#c2410c; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .followup-alert .fa-text { flex:1; font-size:14px; color:var(--navy); line-height:1.5; }
+  .followup-alert .fa-text b { color:#c2410c; }
+  .followup-alert .fa-btn { flex-shrink:0; background:var(--navy); color:#fff; font-size:13px; font-weight:600; padding:9px 16px; border-radius:8px; white-space:nowrap; display:inline-flex; align-items:center; gap:6px; }
+  .followup-alert:hover .fa-btn { background:#081a33; }
   .stage-content {
     position: relative;
     z-index: 1;
@@ -738,6 +745,13 @@
       </a>
     </div>
 
+    <!-- FOLLOW UP ALERT -->
+    <a href="/lead-crm.html" id="followupAlert" class="followup-alert" style="display:none;">
+      <div class="fa-icon"><i data-lucide="bell-ring"></i></div>
+      <div class="fa-text" id="followupAlertText"></div>
+      <span class="fa-btn">Tindak lanjuti <i data-lucide="arrow-right"></i></span>
+    </a>
+
     <!-- STATS -->
     <div class="stats-grid">
       <div class="stat-card">
@@ -924,6 +938,15 @@
               <div class="stage-content">
                 <span class="stage-name">Engaged (Dihubungi)</span>
                 <span class="stage-count" id="funnelCountEngaged">0</span>
+              </div>
+            </div>
+          </div>
+          <div class="funnel-stage">
+            <div class="stage-bar">
+              <div class="stage-bar-fill followup" id="funnelBarFollowup" style="width: 0%;"></div>
+              <div class="stage-content">
+                <span class="stage-name">Follow Up</span>
+                <span class="stage-count" id="funnelCountFollowup">0</span>
               </div>
             </div>
           </div>
@@ -1136,8 +1159,8 @@
   }
 
   function renderStats(leads) {
-    // Update sidebar badge - leads that need follow-up (new + engaged)
-    const followUpCount = leads.filter(l => ['new', 'engaged'].includes(l.stage)).length;
+    // Update sidebar badge - leads aktif (new + engaged + followup)
+    const followUpCount = leads.filter(l => ['new', 'engaged', 'followup'].includes(l.stage)).length;
     const badge = document.getElementById('navBadgeCRM');
     if (badge) {
       if (followUpCount > 0) {
@@ -1159,7 +1182,7 @@
     document.getElementById('statLeadBaru').textContent = thisMonthLeads.length;
 
     // Stat 2: Prospek aktif (stage = new OR engaged)
-    const aktif = allLeads.filter(l => ['new', 'engaged'].includes(l.stage)).length;
+    const aktif = allLeads.filter(l => ['new', 'engaged', 'followup'].includes(l.stage)).length;
     document.getElementById('statProspekAktif').textContent = aktif;
 
     // Stat 3: Closing bulan ini (stage = closed in this month)
@@ -1170,25 +1193,48 @@
     const totalClosed = allLeads.filter(l => l.stage === 'closed').length;
     const convRate = allLeads.length > 0 ? Math.round((totalClosed / allLeads.length) * 100) : 0;
     document.getElementById('statConversion').textContent = convRate + '%';
+
+    // Notifikasi: prospek di Engaged/Follow Up yang sudah > 7 hari belum disentuh
+    const SEVEN = 7 * 86400000;
+    const staleLeads = allLeads.filter(l => {
+      if (!['engaged', 'followup'].includes(l.stage)) return false;
+      if (l.dropped) return false;
+      const last = l.last_contact_at ? new Date(l.last_contact_at) : new Date(l.created_at);
+      return (Date.now() - last.getTime()) >= SEVEN;
+    });
+    const alertEl = document.getElementById('followupAlert');
+    const alertTxt = document.getElementById('followupAlertText');
+    if (alertEl && alertTxt) {
+      if (staleLeads.length > 0) {
+        alertTxt.innerHTML = 'Ada <b>' + staleLeads.length + ' prospek</b> yang sudah lebih dari 7 hari belum kamu follow up. Jangan biarkan lead panas jadi dingin.';
+        alertEl.style.display = '';
+      } else {
+        alertEl.style.display = 'none';
+      }
+    }
+    if (typeof lucide !== 'undefined') lucide.createIcons();
   }
 
   function renderFunnel(leads) {
     const counts = {
       new: leads.filter(l => l.stage === 'new').length,
       engaged: leads.filter(l => l.stage === 'engaged').length,
+      followup: leads.filter(l => l.stage === 'followup').length,
       closing: leads.filter(l => l.stage === 'closing').length,
       closed: leads.filter(l => l.stage === 'closed').length
     };
 
-    const max = Math.max(counts.new, counts.engaged, counts.closing, counts.closed, 1);
+    const max = Math.max(counts.new, counts.engaged, counts.followup, counts.closing, counts.closed, 1);
 
     document.getElementById('funnelCountNew').textContent = counts.new;
     document.getElementById('funnelCountEngaged').textContent = counts.engaged;
+    document.getElementById('funnelCountFollowup').textContent = counts.followup;
     document.getElementById('funnelCountClosing').textContent = counts.closing;
     document.getElementById('funnelCountClosed').textContent = counts.closed;
 
     document.getElementById('funnelBarNew').style.width = (counts.new / max * 100) + '%';
     document.getElementById('funnelBarEngaged').style.width = (counts.engaged / max * 100) + '%';
+    document.getElementById('funnelBarFollowup').style.width = (counts.followup / max * 100) + '%';
     document.getElementById('funnelBarClosing').style.width = (counts.closing / max * 100) + '%';
     document.getElementById('funnelBarClosed').style.width = (counts.closed / max * 100) + '%';
   }
