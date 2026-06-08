@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kebijakan Privasi | AKPAgenku</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0f2647; --navy-dark:#081a33; --gold:#c9a961; --gold-dark:#a88a45;
+    --cream:#faf8f3; --gray-200:#e5e5e5; --gray-500:#737373; --gray-700:#404040;
+    --gray-900:#171717; --white:#ffffff;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Inter',-apple-system,sans-serif;color:var(--gray-900);line-height:1.7;background:var(--cream);}
+  a{color:var(--gold-dark);text-decoration:none;font-weight:600;}
+  a:hover{text-decoration:underline;}
+
+  .navbar{background:var(--white);border-bottom:1px solid var(--gray-200);padding:18px 24px;position:sticky;top:0;z-index:10;}
+  .nav-inner{max-width:1180px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;}
+  .logo{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:var(--navy);}
+  .logo .accent{color:var(--gold);}
+  .nav-back{font-size:14px;color:var(--gray-700);font-weight:500;}
+
+  .hero{background:var(--navy);color:var(--white);padding:56px 24px 48px;text-align:center;}
+  .hero h1{font-family:'Playfair Display',serif;font-size:34px;font-weight:700;margin-bottom:10px;}
+  .hero .sub{font-size:14px;color:rgba(255,255,255,.7);}
+
+  .container{max-width:760px;margin:0 auto;padding:48px 24px 64px;}
+  .card{background:var(--white);border-radius:16px;padding:48px 44px;box-shadow:0 4px 14px rgba(15,38,71,.06);border:1px solid var(--gray-200);}
+  .intro{font-size:15px;color:var(--gray-700);margin-bottom:8px;}
+  h2{font-family:'Playfair Display',serif;font-size:21px;color:var(--navy);font-weight:600;margin:34px 0 12px;}
+  h2:first-of-type{margin-top:28px;}
+  p{font-size:15px;color:var(--gray-700);margin-bottom:14px;}
+  ul{margin:0 0 14px;padding-left:22px;}
+  li{font-size:15px;color:var(--gray-700);margin-bottom:8px;}
+  strong{color:var(--navy);}
+  .note{background:var(--cream);border-left:3px solid var(--gold);border-radius:8px;padding:16px 20px;font-size:14px;color:var(--gray-700);margin:24px 0;}
+
+  .footer{text-align:center;padding:32px 24px;font-size:13px;color:var(--gray-500);}
+  .footer a{margin:0 8px;}
+
+  @media (max-width:640px){
+    .card{padding:32px 22px;}
+    .hero h1{font-size:27px;}
+  }
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="/" class="logo">AKP<span class="accent">Agenku</span></a>
+    <a href="/" class="nav-back">← Kembali ke Beranda</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <h1>Kebijakan Privasi</h1>
+  <div class="sub">Terakhir diperbarui: 8 Juni 2026</div>
+</div>
+
+<div class="container">
+  <div class="card">
+    <p class="intro">AKPAgenku menghormati privasi Anda. Kebijakan ini menjelaskan data apa yang kami kumpulkan, bagaimana kami menggunakannya, dan hak Anda atas data tersebut.</p>
+
+    <h2>1. Data yang Kami Kumpulkan</h2>
+    <p><strong>Dari Agen (pengguna berlangganan):</strong></p>
+    <ul>
+      <li>Nama, alamat email, nomor WhatsApp, kota, dan nama perusahaan.</li>
+      <li>Kata sandi (disimpan dalam bentuk terenkripsi, tidak pernah dalam teks biasa).</li>
+      <li>Foto profil dan konten mini-site yang Anda unggah.</li>
+      <li>Data langganan dan catatan pembayaran (bukti transfer, status aktivasi).</li>
+    </ul>
+    <p><strong>Dari Prospek (calon nasabah):</strong></p>
+    <ul>
+      <li>Nama dan kontak yang diisi melalui mini-site atau lead magnet milik Agen.</li>
+      <li>Jawaban kuis atau formulir (misalnya hasil skor kesehatan keuangan).</li>
+    </ul>
+
+    <h2>2. Cara Kami Mengumpulkan Data</h2>
+    <p>Data dikumpulkan saat Anda mendaftar, mengisi profil di editor mini-site, melakukan pembayaran, atau saat prospek berinteraksi dengan mini-site dan lead magnet Anda.</p>
+
+    <h2>3. Tujuan Penggunaan Data</h2>
+    <ul>
+      <li>Menyediakan dan mengoperasikan layanan AKPAgenku.</li>
+      <li>Memverifikasi pembayaran dan mengaktifkan akun.</li>
+      <li>Mengirim email transaksional (konfirmasi pendaftaran, aktivasi, reset kata sandi).</li>
+      <li>Memberikan dukungan dan menjawab pertanyaan Anda.</li>
+      <li>Meningkatkan kualitas dan keamanan layanan.</li>
+    </ul>
+
+    <h2>4. Penyedia Pihak Ketiga</h2>
+    <p>Untuk menjalankan layanan, kami menggunakan penyedia tepercaya yang dapat memproses sebagian data sesuai fungsinya:</p>
+    <ul>
+      <li><strong>Supabase</strong>: basis data, autentikasi, dan penyimpanan.</li>
+      <li><strong>Resend</strong>: pengiriman email.</li>
+      <li><strong>Vercel</strong>: hosting situs.</li>
+      <li><strong>Cloudflare</strong>: pengelolaan domain dan keamanan jaringan.</li>
+    </ul>
+    <p>Sebagian penyedia ini dapat memproses data di server yang berlokasi di luar Indonesia. Kami tidak menjual data pribadi Anda kepada pihak mana pun.</p>
+
+    <h2>5. Penyimpanan dan Keamanan</h2>
+    <p>Kami menerapkan langkah keamanan yang wajar, termasuk enkripsi kata sandi, kontrol akses berbasis aturan (row level security), dan pembatasan akses ke data sensitif. Meski demikian, tidak ada sistem yang sepenuhnya bebas risiko, dan kami tidak dapat menjamin keamanan mutlak.</p>
+
+    <h2>6. Data Prospek dan Peran Agen</h2>
+    <p>Untuk data prospek yang masuk melalui mini-site atau lead magnet, <strong>Agen bertindak sebagai pihak yang mengendalikan data</strong> tersebut, sedangkan AKPAgenku memproses data atas nama Agen. Agen bertanggung jawab memastikan data prospek diperoleh secara sah dan digunakan sesuai persetujuan serta peraturan yang berlaku.</p>
+
+    <h2>7. Hak Anda</h2>
+    <p>Sesuai peraturan perlindungan data pribadi yang berlaku di Indonesia (termasuk UU No. 27 Tahun 2022), Anda berhak untuk:</p>
+    <ul>
+      <li>Mengakses dan memperoleh salinan data pribadi Anda.</li>
+      <li>Memperbaiki data yang tidak akurat.</li>
+      <li>Meminta penghapusan data Anda.</li>
+      <li>Menarik persetujuan pemrosesan data.</li>
+    </ul>
+    <p>Permohonan terkait hak ini dapat dikirim ke <a href="mailto:hello@akpagenku.com">hello@akpagenku.com</a>.</p>
+
+    <h2>8. Penyimpanan Sesi (Cookie)</h2>
+    <p>Kami menggunakan penyimpanan sesi di peramban Anda untuk menjaga status login. Kami tidak menggunakan cookie untuk iklan pihak ketiga.</p>
+
+    <h2>9. Retensi Data</h2>
+    <p>Kami menyimpan data Agen selama akun aktif dan untuk jangka waktu yang wajar setelahnya guna memenuhi kewajiban hukum dan administrasi. Setelah itu, data akan dihapus atau dianonimkan.</p>
+
+    <h2>10. Perubahan Kebijakan</h2>
+    <p>Kami dapat memperbarui Kebijakan Privasi ini dari waktu ke waktu. Perubahan penting akan kami informasikan melalui email atau di dalam Platform.</p>
+
+    <h2>11. Kontak</h2>
+    <p>Pertanyaan terkait privasi dan data dapat dikirim ke <a href="mailto:hello@akpagenku.com">hello@akpagenku.com</a>.</p>
+
+    <div class="note">
+      Dokumen ini disediakan sebagai informasi umum penanganan data dan bukan merupakan nasihat hukum. Untuk kepatuhan penuh terhadap UU Perlindungan Data Pribadi, disarankan berkonsultasi dengan penasihat hukum.
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <a href="/">Beranda</a> ·
+  <a href="/syarat-ketentuan.html">Syarat &amp; Ketentuan</a> ·
+  <a href="/kebijakan-privasi.html">Kebijakan Privasi</a>
+  <div style="margin-top:10px;">© 2026 AKPAgenku</div>
+</div>
+
+</body>
+</html>
