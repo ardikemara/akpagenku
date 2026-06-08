@@ -1328,6 +1328,12 @@ const ADMIN_FN_URL = `${SUPABASE_URL}/functions/v1/admin-action`;
 let supabase = null;
 let adminSecret = sessionStorage.getItem('admin_secret') || null;
 let allAgents = [];
+
+// Normalisasi nomor WA Indonesia ke format internasional 62... (utk wa.me)
+function waNorm(wa){
+  const d = String(wa || '').replace(/\D/g, '').replace(/^0/, '').replace(/^62/, '');
+  return d ? '62' + d : '';
+}
 let currentFilter = 'pending';
 let selectedAgentId = null;
 
@@ -1906,7 +1912,7 @@ function renderAgents() {
     const h5Badge = isExpiring ? `<span class="badge badge-h5">H-${daysLeft}</span>` : '';
 
     const waMessage = encodeURIComponent(generateWAMessage(a));
-    const waNumber = (a.whatsapp || '').replace(/^0/, '62');
+    const waNumber = waNorm(a.whatsapp);
 
     let actions = '';
     if (a.subscription_status === 'pending_approval' || a.subscription_status === 'pending_payment') {
@@ -1971,7 +1977,7 @@ function renderAgents() {
             </div>
             <div class="detail-item">
               <i data-lucide="phone"></i>
-              <span>+62 ${escapeHtml(a.whatsapp || '-')}</span>
+              <span>${a.whatsapp ? '+' + escapeHtml(a.whatsapp) : '-'}</span>
             </div>
           </div>
           <div class="agent-status">
@@ -2059,7 +2065,7 @@ async function confirmApprove() {
 
     // 4. Auto-open WhatsApp with welcome message
     const waMessage = encodeURIComponent(generateWelcomeMessage(agent));
-    const waNumber = (agent.whatsapp || '').replace(/^0/, '62');
+    const waNumber = waNorm(agent.whatsapp);
     setTimeout(() => {
       window.open(`https://wa.me/${waNumber}?text=${waMessage}`, '_blank');
     }, 500);

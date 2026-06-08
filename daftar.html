@@ -607,7 +607,7 @@
       const nama = form.nama.value.trim();
       const email = form.email.value.trim().toLowerCase();
       const username = form.username.value.trim().toLowerCase();
-      const whatsapp = form.whatsapp.value.replace(/\D/g, '');
+      const whatsapp = '62' + form.whatsapp.value.replace(/\D/g, '').replace(/^0/, '').replace(/^62/, '');
       const kota = form.kota.value.trim();
       const perusahaan = form.perusahaan.value.trim();
       const password = form.password.value;
@@ -689,7 +689,7 @@
         sessionStorage.setItem('daftar_success', JSON.stringify({
           nama: nama,
           email: email,
-          whatsapp: '+62 ' + whatsapp,
+          whatsapp: '+' + whatsapp,
           username: username,
           paket: paket
         }));
