@@ -585,6 +585,15 @@
 </div>
 
 <script>
+// ===== ALUR PEMBAYARAN FINAL = MANUAL (transfer BNI + verifikasi WA) =====
+// Halaman checkout otomatis ini DINONAKTIFKAN. Siapa pun yang membuka /bayar.html
+// langsung diarahkan ke alur manual. (Hapus blok ini kalau nanti pindah ke pembayaran otomatis.)
+(function () {
+  var d = {};
+  try { d = JSON.parse(sessionStorage.getItem('daftar_data') || '{}'); } catch (e) {}
+  window.location.replace(d && d.nama ? '/menunggu-approval.html' : '/daftar.html');
+})();
+
 // Load data dari sessionStorage
 const data = JSON.parse(sessionStorage.getItem('daftar_data') || '{}');
 
@@ -601,13 +610,8 @@ if (data.paket === 'team') {
 }
 
 function handlePay() {
-  const method = document.querySelector('input[name="method"]:checked').value;
-  // Simpan metode pembayaran di sessionStorage
-  const data = JSON.parse(sessionStorage.getItem('daftar_data') || '{}');
-  data.metode = method;
-  sessionStorage.setItem('daftar_data', JSON.stringify(data));
-  // Redirect ke halaman sukses
-  window.location.href = '/sukses-bayar.html';
+  // Pembayaran manual: arahkan ke instruksi transfer + verifikasi WhatsApp.
+  window.location.href = '/menunggu-approval.html';
 }
 </script>
 
