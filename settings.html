@@ -1205,15 +1205,14 @@
 
 <!-- Supabase JS Library -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://cdn.jsdelivr.net/npm/bcryptjs@2.4.3/dist/bcrypt.min.js"></script>
 <script>
 (function() {
   'use strict';
 
   const SUPABASE_URL = 'https://bfydtsfekvueqzvuschp.supabase.co';
   const SUPABASE_ANON_KEY = 'sb_publishable_3Xec3HYKViIiuX99hHxHqg_Ih8ABX_T';
-  // GANTI dengan nomor WhatsApp admin AKPAgenku (format internasional tanpa +, contoh: 628123456789)
-  const ADMIN_WA = '628123456789';
+  // Nomor WhatsApp admin AKPAgenku (format internasional tanpa +)
+  const ADMIN_WA = '6281334884444';
   let supabase = null;
   let currentSession = null;
 
@@ -1388,20 +1387,19 @@
     if (btn) { btn.disabled = true; btn.textContent = 'Memproses...'; }
     try {
       const sb = getSupabase();
-      // Ambil hash terbaru dari DB
-      const { data: u, error: qErr } = await sb.from('users').select('password_hash').eq('id', currentSession.id).maybeSingle();
-      if (qErr || !u) throw new Error('Gagal memuat data akun');
+      const email = currentSession.email;
+      if (!email) throw new Error('Email akun tidak ditemukan, silakan login ulang.');
 
-      const stored = u.password_hash || '';
-      const isBcrypt = /^\$2[aby]\$/.test(stored);
-      let valid = false;
-      if (isBcrypt) valid = dcodeIO.bcrypt.compareSync(cur, stored);
-      else valid = (stored === cur);
+      // 1. Verifikasi password saat ini dengan login ulang
+      const { error: reauthErr } = await sb.auth.signInWithPassword({ email: email, password: cur });
+      if (reauthErr) {
+        window.showToast('Password saat ini salah');
+        if (btn){btn.disabled=false; btn.innerHTML='<i data-lucide="key"></i> Ubah Password'; if(typeof lucide!=='undefined')lucide.createIcons();}
+        return;
+      }
 
-      if (!valid) { window.showToast('Password saat ini salah'); if (btn){btn.disabled=false; btn.innerHTML='<i data-lucide="key"></i> Ubah Password'; if(typeof lucide!=='undefined')lucide.createIcons();} return; }
-
-      const newHash = dcodeIO.bcrypt.hashSync(nw, 10);
-      const { error: upErr } = await sb.from('users').update({ password_hash: newHash, updated_at: new Date().toISOString() }).eq('id', currentSession.id);
+      // 2. Ubah password via Supabase Auth
+      const { error: upErr } = await sb.auth.updateUser({ password: nw });
       if (upErr) throw upErr;
 
       // Reset field

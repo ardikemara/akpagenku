@@ -397,7 +397,7 @@
             <input type="checkbox" id="remember">
             <span>Ingat saya</span>
           </label>
-          <a href="#" class="forgot-link">Lupa password?</a>
+          <a href="#" class="forgot-link" id="forgotLink">Lupa password?</a>
         </div>
 
         <button type="submit" class="btn btn-primary">Masuk →</button>
@@ -444,6 +444,12 @@
         const input = document.getElementById('loginPassword');
         input.type = input.type === 'password' ? 'text' : 'password';
       });
+    }
+
+    // Lupa password
+    const forgotLink = document.getElementById('forgotLink');
+    if (forgotLink) {
+      forgotLink.addEventListener('click', handleForgot);
     }
 
     // Handle login
@@ -589,20 +595,50 @@
   function showError(msg) {
     let errEl = document.getElementById('loginError');
     if (!errEl) {
-      // Create error element
       errEl = document.createElement('div');
       errEl.id = 'loginError';
-      errEl.style.cssText = 'background:#fee2e2;border:1px solid #fca5a5;color:#991b1b;padding:12px 16px;border-radius:8px;font-size:13px;margin-bottom:16px;text-align:center;';
       const form = document.getElementById('loginForm');
       form.insertBefore(errEl, form.firstChild);
     }
+    errEl.style.cssText = 'background:#fee2e2;border:1px solid #fca5a5;color:#991b1b;padding:12px 16px;border-radius:8px;font-size:13px;margin-bottom:16px;text-align:center;';
     errEl.textContent = msg;
     errEl.style.display = 'block';
+  }
+
+  function showInfo(msg) {
+    let el = document.getElementById('loginError');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'loginError';
+      const form = document.getElementById('loginForm');
+      form.insertBefore(el, form.firstChild);
+    }
+    el.style.cssText = 'background:#ecfdf5;border:1px solid #6ee7b7;color:#065f46;padding:12px 16px;border-radius:8px;font-size:13px;margin-bottom:16px;text-align:center;line-height:1.5;';
+    el.textContent = msg;
+    el.style.display = 'block';
   }
 
   function hideError() {
     const errEl = document.getElementById('loginError');
     if (errEl) errEl.style.display = 'none';
+  }
+
+  async function handleForgot(e) {
+    if (e) e.preventDefault();
+    const email = (document.getElementById('loginEmail').value || '').trim().toLowerCase();
+    if (!email) {
+      showError('Isi email Anda di kolom atas dulu, lalu klik "Lupa password?" lagi.');
+      const ei = document.getElementById('loginEmail'); if (ei) ei.focus();
+      return;
+    }
+    hideError();
+    try {
+      await supabase.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin + '/reset-password.html' });
+    } catch (err) {
+      console.error('[AKP Login] reset error:', err);
+    }
+    // Pesan netral (tidak membocorkan apakah email terdaftar)
+    showInfo('Kalau ' + email + ' terdaftar, link reset password sudah dikirim ke email itu. Cek inbox & folder spam ya.');
   }
 
   // Init on load
