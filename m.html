@@ -1651,17 +1651,21 @@ window.addEventListener('DOMContentLoaded', () => {
         addChips(chips);
       });
     }
+    function markSeen(){ userToggled = true; try { sessionStorage.setItem('akpChatSeen','1'); } catch(e){} }
     function openPanel(){ panel.classList.add('open'); fab.style.display='none'; if(!started){ started=true; greet(); } }
-    window.openAkpChat = function(){ userToggled = true; openPanel(); }; // dipakai tombol "Asisten AI" di hero
+    window.openAkpChat = function(){ markSeen(); openPanel(); }; // dipakai tombol "Asisten AI" di hero
     function closePanel(){ panel.classList.remove('open'); fab.style.display='flex'; }
-    fab.onclick=function(){ userToggled=true; openPanel(); };
-    document.getElementById('akpClose').onclick=function(){ userToggled=true; closePanel(); };
+    fab.onclick=function(){ markSeen(); openPanel(); };
+    document.getElementById('akpClose').onclick=function(){ markSeen(); closePanel(); };
     const inp=document.getElementById('akpInput'), snd=document.getElementById('akpSend');
     function send(){ const v=inp.value.trim(); if(!v) return; inp.value=''; handleFreeText(v); }
     snd.onclick=send;
     inp.addEventListener('keydown', function(e){ if(e.key==='Enter') send(); });
-    const AUTO_OPEN_MS = 5000; // jeda widget muncul sendiri (0 = matikan)
-    if (AUTO_OPEN_MS > 0) setTimeout(function(){ if(!userToggled) openPanel(); }, AUTO_OPEN_MS);
+    const AUTO_OPEN_MS = 5000; // jeda widget muncul sendiri, SEKALI saja per kunjungan (0 = matikan)
+    let alreadySeen = false; try { alreadySeen = sessionStorage.getItem('akpChatSeen') === '1'; } catch(e){}
+    if (AUTO_OPEN_MS > 0 && !alreadySeen) setTimeout(function(){
+      if (!userToggled) { markSeen(); openPanel(); }   // buka sekali lalu tandai, biar nggak muncul lagi
+    }, AUTO_OPEN_MS);
   }
 
   function getUsername() {
