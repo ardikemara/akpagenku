@@ -735,7 +735,7 @@
 
       <div class="cta-block">
         <div class="cta-title">Mau insight lebih dalam?</div>
-        <div class="cta-sub">Agen <strong id="ctaAgentName">Anda</strong> akan menghubungi via WhatsApp dalam 24 jam untuk diskusi opsi yang sesuai. Tidak hardsell — hanya kasih opsi yang bisa Anda pilih sendiri.</div>
+        <div class="cta-sub">Agen <strong id="ctaAgentName">Anda</strong> akan menghubungi via WhatsApp dalam 24 jam untuk diskusi opsi yang sesuai. Tidak hardsell, hanya kasih opsi yang bisa Anda pilih sendiri.</div>
         <button class="btn btn-gold" onclick="contactAgent()">Hubungi Agen via WhatsApp</button>
       </div>
     </div>
@@ -1093,32 +1093,43 @@
     // Save lead + magnet response
     if (agentData) {
       try {
+        const newLeadId = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : null;
+        const leadPayload = {
+          owner_id: agentData.id,
+          nama: nama,
+          email: email,
+          whatsapp: wa,
+          stage: 'new',
+          source_magnet: 'skor',
+          score: scores.overall
+        };
+        if (newLeadId) leadPayload.id = newLeadId;
+
         const { data: leadData, error: leadError } = await supabase
           .from('leads')
-          .insert({
-            owner_id: agentData.id,
-            nama: nama,
-            email: email,
-            whatsapp: wa,
-            stage: 'new',
-            source_magnet: 'skor',
-            score: scores.overall
-          })
+          .insert(leadPayload)
           .select()
           .single();
 
-        if (leadError) {
-          console.error('Lead insert error:', leadError);
-        } else {
-          leadId = leadData.id;
-          // Save magnet response
-          await supabase.from('lead_magnet_responses').insert({
+        leadId = (leadData && leadData.id) || (leadError ? null : newLeadId);
+
+        if (leadError && !leadId) {
+          console.error('[AKP] Lead insert error:', leadError);
+        } else if (leadId) {
+          // Simpan hasil kuis: cek error + 1x retry biar nggak gagal diam-diam
+          const respPayload = {
             lead_id: leadId,
             magnet_slug: 'skor-kesehatan-keuangan',
             raw_answers: answers,
             scores: scores,
             priority_areas: priorityAreas.map(p => p.key)
-          });
+          };
+          let resp = await supabase.from('lead_magnet_responses').insert(respPayload);
+          if (resp && resp.error) {
+            console.error('[AKP] Simpan hasil kuis gagal, mencoba lagi:', resp.error);
+            resp = await supabase.from('lead_magnet_responses').insert(respPayload);
+            if (resp && resp.error) console.error('[AKP] Simpan hasil kuis tetap gagal:', resp.error);
+          }
 
           // Send result email to prospek (fire-and-forget)
           try {
@@ -1193,7 +1204,7 @@
         return `
           <div class="priority-card ${isUrgent ? '' : 'amber'}">
             <div class="priority-card-title">
-              ${idx + 1}. ${p.name} ${isUrgent ? '— URGENT' : ''}
+              ${idx + 1}. ${p.name} ${isUrgent ? '(URGENT)' : ''}
               <span class="priority-card-score">${p.score}/100</span>
             </div>
             <div class="priority-card-text">${insights[p.key]}</div>
@@ -1212,7 +1223,7 @@
       return;
     }
     const nama = document.getElementById('capNama').value.trim() || 'Saya';
-    const text = encodeURIComponent(`Halo ${agentData.nama_panggilan || agentData.nama_lengkap.split(' ')[0]}, saya ${nama}. Saya baru cek Skor Kesehatan Keuangan di mini-site Anda — skor saya ${scores.overall}/100. Mau diskusi lebih lanjut?`);
+    const text = encodeURIComponent(`Halo ${agentData.nama_panggilan || agentData.nama_lengkap.split(' ')[0]}, saya ${nama}. Saya baru cek Skor Kesehatan Keuangan di mini-site Anda, skor saya ${scores.overall}/100. Mau diskusi lebih lanjut?`);
     const phone = '62' + agentData.whatsapp.replace(/^0/, '').replace(/^62/, '');
     window.open(`https://wa.me/${phone}?text=${text}`, '_blank');
   };

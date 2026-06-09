@@ -1261,7 +1261,7 @@
         <div style="margin-bottom: 14px;">
           <label style="display:block; font-size:12px; font-weight:600; color:var(--gray-700); margin-bottom:6px;">Sumber Lead</label>
           <select id="addLead_source" style="width:100%; padding:10px 12px; border:1.5px solid var(--gray-200); border-radius:8px; font-size:14px; font-family:inherit; box-sizing:border-box; background:var(--white);">
-            <option value="">— Pilih sumber —</option>
+            <option value="">Pilih sumber...</option>
             <option value="manual">Manual / Referral</option>
             <option value="skor">Kuis Skor Kesehatan</option>
             <option value="darurat">Kalkulator Dana Darurat</option>
@@ -1853,7 +1853,7 @@ async function openModal(lead) {
 
   // Stage selector
   document.querySelectorAll('.stage-option').forEach((b, i) => {
-    const stages = ['new', 'engaged', 'closing', 'closed'];
+    const stages = ['new', 'engaged', 'followup', 'closing', 'closed'];
     b.classList.toggle('active', stages[i] === lead.stage);
   });
 
@@ -2515,7 +2515,7 @@ function renderPendidikanRecommendation(lead, magnetResponse) {
         → Tujuan: <strong>Dana Pendidikan</strong> (${tujuanText})
       </div>
       <div class="product-card-meta">${product.meta}</div>
-      <div class="product-card-meta" style="margin-top:6px;">Fund: ${fundType} — ${fundReason}</div>
+      <div class="product-card-meta" style="margin-top:6px;">Fund: ${fundType}, ${fundReason}</div>
     </div>
     <div class="product-card" style="border-left-color:var(--navy);">
       <div class="product-card-name">
@@ -2535,11 +2535,11 @@ function renderPendidikanRecommendation(lead, magnetResponse) {
 
   const script = `Halo ${leadFirstName} 🙏 Saya ${agenName}.
 
-Saya lihat Anda baru pakai kalkulator dana pendidikan di mini-site saya. Hasilnya menarik — untuk biaya kuliah anak ${tahunTersisa} tahun lagi, dibutuhkan sekitar ${fmtRupiah(biayaMasaDepan)}.
+Saya lihat Anda baru pakai kalkulator dana pendidikan di mini-site saya. Hasilnya menarik. Untuk biaya kuliah anak ${tahunTersisa} tahun lagi, dibutuhkan sekitar ${fmtRupiah(biayaMasaDepan)}.
 
 Kabar baiknya, dengan setoran sekitar ${fmtRupiah(setoran)}/bulan lewat instrumen yang tepat, target itu bisa tercapai. Boleh saya jelaskan opsinya via WA atau kita ngobrol singkat 15 menit?
 
-Saya gak akan hardsell — tujuan saya cuma kasih opsi yang Anda bisa pilih sendiri 🙂`;
+Saya gak akan hardsell, tujuan saya cuma kasih opsi yang Anda bisa pilih sendiri 🙂`;
 
   document.getElementById('scriptTextCM').textContent = script;
   window.currentScript = script;
@@ -2578,7 +2578,7 @@ async function renderRecommendations(lead) {
   }
 
   if (!magnetResponse || !magnetResponse.scores) {
-    // No magnet response — leave sections hidden
+    // No magnet response, leave sections hidden
     return;
   }
 
@@ -2702,11 +2702,11 @@ async function renderRecommendations(lead) {
 
   const script = `Halo ${leadFirstName} 🙏 Saya ${agenName}.
 
-Saya lihat Anda baru cek Skor Kesehatan Keuangan di mini-site saya — hasilnya ${overall}/100, ${labelText}.
+Saya lihat Anda baru cek Skor Kesehatan Keuangan di mini-site saya. Hasilnya ${overall}/100, ${labelText}.
 
 Saya notice ada ${top3.length} area yang bisa kita kuatkan: ${areaPhrase}.
 
-Boleh saya kirim ringkasan opsi via WA, atau kita ngobrol 15 menit lewat call? Saya gak akan hardsell — tujuan saya cuma kasih opsi yang Anda bisa pilih sendiri 🙂`;
+Boleh saya kirim ringkasan opsi via WA, atau kita ngobrol 15 menit lewat call? Saya gak akan hardsell, tujuan saya cuma kasih opsi yang Anda bisa pilih sendiri 🙂`;
 
   document.getElementById('scriptTextCM').textContent = script;
   window.currentScript = script;
