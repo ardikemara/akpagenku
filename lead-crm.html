@@ -292,47 +292,95 @@
     align-items: center;
     gap: 8px;
     margin-bottom: 14px;
-    padding: 0 4px;
+    padding: 9px 14px;
+    border-radius: 10px;
+    background: var(--navy);
   }
-  .col-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-  .col-dot.new { background: var(--blue); }
-  .col-dot.engaged { background: var(--orange); }
-  .col-dot.closing { background: var(--purple); }
-  .col-dot.closed { background: var(--green); }
-  .col-dot.followup { background: #0e9aa7; }
+  .kanban-col-head.h-new { background: var(--blue); }
+  .kanban-col-head.h-engaged { background: var(--orange); }
+  .kanban-col-head.h-followup { background: #0e9aa7; }
+  .kanban-col-head.h-closing { background: var(--purple); }
   .col-title {
     font-size: 13px;
     font-weight: 700;
-    color: var(--navy);
+    color: #fff;
     letter-spacing: 0.3px;
     text-transform: uppercase;
   }
   .col-count {
-    background: var(--white);
-    color: var(--gray-700);
+    background: rgba(255,255,255,0.25);
+    color: #fff;
     font-size: 11px;
     font-weight: 700;
     padding: 2px 8px;
     border-radius: 10px;
-    border: 1px solid var(--gray-200);
+    border: none;
   }
   .col-add-btn {
     margin-left: auto;
     background: transparent;
     border: none;
-    color: var(--gray-500);
+    color: rgba(255,255,255,0.85);
     cursor: pointer;
     padding: 4px;
     border-radius: 6px;
     transition: all 0.15s;
   }
-  .col-add-btn:hover { background: var(--white); color: var(--navy); }
+  .col-add-btn:hover { background: rgba(255,255,255,0.2); color: #fff; }
   .col-add-btn [data-lucide] { width: 14px; height: 14px; }
+
+  /* CRM tabs */
+  .crm-tabs { display:flex; gap:6px; margin-bottom:18px; border-bottom:1px solid var(--gray-200); }
+  .crm-tab {
+    background:transparent; border:none; cursor:pointer; font-family:inherit;
+    font-size:14px; font-weight:600; color:var(--gray-500);
+    padding:10px 16px; border-bottom:2px solid transparent; margin-bottom:-1px;
+    display:inline-flex; align-items:center; gap:8px; transition:all 0.15s;
+  }
+  .crm-tab:hover { color:var(--navy); }
+  .crm-tab.active { color:var(--navy); border-bottom-color:var(--gold); }
+  .crm-tab-badge {
+    background:#dc2626; color:#fff; font-size:11px; font-weight:700;
+    min-width:18px; height:18px; padding:0 5px; border-radius:9px;
+    display:inline-flex; align-items:center; justify-content:center;
+  }
+
+  /* Notifikasi view */
+  .notif-view { display:none; }
+  .notif-view.show { display:block; }
+  .notif-empty { text-align:center; color:var(--gray-500); font-size:14px; padding:48px 16px; }
+  .notif-head { font-size:13px; color:var(--gray-700); margin-bottom:14px; }
+  .notif-item {
+    display:flex; align-items:center; gap:14px; background:var(--white);
+    border:1px solid var(--gray-200); border-radius:12px; padding:14px 16px; margin-bottom:10px;
+  }
+  .notif-item.stale { border-color:#fca5a5; background:#fff7f7; }
+  .notif-avatar {
+    width:42px; height:42px; border-radius:50%; background:var(--navy); color:var(--gold);
+    display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; flex-shrink:0;
+  }
+  .notif-info { flex:1; min-width:0; }
+  .notif-name { font-weight:700; color:var(--navy); font-size:15px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .notif-meta { font-size:12px; color:var(--gray-500); margin-top:3px; }
+  .notif-stage-tag { font-size:11px; font-weight:700; padding:2px 8px; border-radius:999px; }
+  .notif-stage-tag.engaged { background:var(--orange-light); color:var(--orange); }
+  .notif-stage-tag.followup { background:#cffafe; color:#0e7490; }
+  .notif-overdue { font-size:11px; font-weight:700; color:#b91c1c; background:#fee2e2; padding:2px 8px; border-radius:999px; white-space:nowrap; }
+  .notif-actions { display:flex; gap:8px; flex-shrink:0; }
+  .notif-btn {
+    border:none; cursor:pointer; font-family:inherit; font-size:13px; font-weight:600;
+    padding:8px 14px; border-radius:8px; display:inline-flex; align-items:center; gap:6px; transition:all 0.15s;
+  }
+  .notif-btn.wa { background:#25d366; color:#fff; }
+  .notif-btn.wa:hover { background:#1da851; }
+  .notif-btn.open { background:var(--gray-100); color:var(--navy); }
+  .notif-btn.open:hover { background:var(--gray-200); }
+  .notif-btn [data-lucide] { width:14px; height:14px; }
+  @media (max-width: 640px) {
+    .notif-item { flex-wrap:wrap; }
+    .notif-actions { width:100%; }
+    .notif-btn { flex:1; justify-content:center; }
+  }
 
   .kanban-cards {
     flex: 1;
@@ -1088,17 +1136,14 @@
       </div>
     </div>
 
+    <!-- TABS -->
+    <div class="crm-tabs">
+      <button class="crm-tab active" id="tabPipeline" onclick="showCrmTab('pipeline')">Pipeline</button>
+      <button class="crm-tab" id="tabNotif" onclick="showCrmTab('notif')">Notifikasi <span class="crm-tab-badge" id="notifTabBadge" style="display:none;">0</span></button>
+    </div>
+
     <!-- FILTER BAR -->
     <div class="filter-bar">
-      <span class="filter-label">Sumber:</span>
-      <button class="filter-pill active" onclick="filterSource('all', this)">Semua</button>
-      <button class="filter-pill" onclick="filterSource('skor', this)">Kuis Skor</button>
-      <button class="filter-pill" onclick="filterSource('pendidikan', this)">Kalk Pendidikan</button>
-      <button class="filter-pill" onclick="filterSource('pensiun', this)">Kalk Pensiun</button>
-      <button class="filter-pill" onclick="filterSource('darurat', this)">Kalk Darurat</button>
-
-      <div class="filter-divider"></div>
-
       <span class="filter-label">Waktu:</span>
       <button class="filter-pill active" onclick="filterTime('all', this)">Semua</button>
       <button class="filter-pill" onclick="filterTime('today', this)">Hari Ini</button>
@@ -1117,13 +1162,18 @@
       <div id="droppedList"></div>
     </div>
 
+    <!-- NOTIFIKASI VIEW -->
+    <div class="notif-view" id="notifView">
+      <div class="notif-head" id="notifHead"></div>
+      <div id="notifList"></div>
+    </div>
+
     <div class="kanban-wrap">
       <div class="kanban">
 
         <!-- COL 1: PROSPEK BARU -->
         <div class="kanban-col">
-          <div class="kanban-col-head">
-            <span class="col-dot new"></span>
+          <div class="kanban-col-head h-new">
             <span class="col-title">Prospek Baru</span>
             <span class="col-count" id="kanban-count-new">0</span>
             <button class="col-add-btn" data-stage="new" title="Tambah"><i data-lucide="plus"></i></button>
@@ -1139,8 +1189,7 @@
 
         <!-- COL 2: ENGAGED -->
         <div class="kanban-col">
-          <div class="kanban-col-head">
-            <span class="col-dot engaged"></span>
+          <div class="kanban-col-head h-engaged">
             <span class="col-title">Engaged</span>
             <span class="col-count" id="kanban-count-engaged">0</span>
             <button class="col-add-btn" data-stage="engaged" title="Tambah"><i data-lucide="plus"></i></button>
@@ -1155,8 +1204,7 @@
 
         <!-- COL: FOLLOW UP -->
         <div class="kanban-col">
-          <div class="kanban-col-head">
-            <span class="col-dot followup"></span>
+          <div class="kanban-col-head h-followup">
             <span class="col-title">Follow Up</span>
             <span class="col-count" id="kanban-count-followup">0</span>
             <button class="col-add-btn" data-stage="followup" title="Tambah"><i data-lucide="plus"></i></button>
@@ -1166,29 +1214,12 @@
 
         <!-- COL 3: CLOSING -->
         <div class="kanban-col">
-          <div class="kanban-col-head">
-            <span class="col-dot closing"></span>
+          <div class="kanban-col-head h-closing">
             <span class="col-title">Closing</span>
             <span class="col-count" id="kanban-count-closing">0</span>
             <button class="col-add-btn" data-stage="closing" title="Tambah"><i data-lucide="plus"></i></button>
           </div>
           <div class="kanban-cards" id="kanban-cards-closing">
-
-
-
-          </div>
-        </div>
-
-        <!-- COL 4: CLOSED -->
-        <div class="kanban-col">
-          <div class="kanban-col-head">
-            <span class="col-dot closed"></span>
-            <span class="col-title">Closed</span>
-            <span class="col-count" id="kanban-count-closed">0</span>
-            <button class="col-add-btn" data-stage="closed" title="Tambah"><i data-lucide="plus"></i></button>
-          </div>
-          <div class="kanban-cards" id="kanban-cards-closed">
-
 
 
 
@@ -1253,8 +1284,8 @@
           <select id="addLead_stage" style="width:100%; padding:10px 12px; border:1.5px solid var(--gray-200); border-radius:8px; font-size:14px; font-family:inherit; box-sizing:border-box; background:var(--white);">
             <option value="new">Prospek Baru</option>
             <option value="engaged">Engaged (Sudah dihubungi)</option>
+            <option value="followup">Follow Up</option>
             <option value="closing">Closing (Negosiasi)</option>
-            <option value="closed">Closed (Deal)</option>
           </select>
         </div>
 
@@ -1310,7 +1341,6 @@
         <button class="stage-option" onclick="setStage('engaged', this)">Engaged</button>
         <button class="stage-option" onclick="setStage('followup', this)">Follow Up</button>
         <button class="stage-option" onclick="setStage('closing', this)">Closing</button>
-        <button class="stage-option" onclick="setStage('closed', this)">Closed</button>
       </div>
     </div>
 
@@ -1622,8 +1652,10 @@
       }
 
       allLeads = data || [];
+      window.akpAllLeads = allLeads;
       console.log('[AKP CRM] Loaded', allLeads.length, 'leads');
       renderLeads();
+      if (typeof window.akpRefreshNotif === 'function') window.akpRefreshNotif();
     } catch (err) {
       console.error('[AKP CRM] Unexpected error:', err);
       renderEmptyState();
@@ -1703,7 +1735,7 @@
     };
     
     return `
-      <div class="lead-card" data-source="${escapeHtml(lead.source_magnet || '')}" data-stage="${escapeHtml(lead.stage)}" onclick='openModal(${JSON.stringify(modalData).replace(/'/g, "&#39;")})'>
+      <div class="lead-card" data-source="${escapeHtml(lead.source_magnet || '')}" data-created="${escapeHtml(lead.created_at || '')}" data-stage="${escapeHtml(lead.stage)}" onclick='openModal(${JSON.stringify(modalData).replace(/'/g, "&#39;")})'>
         <div class="lead-card-top">
           <div class="lead-avatar">${escapeHtml(initials)}</div>
           <div class="lead-name">${escapeHtml(lead.nama)}</div>
@@ -1719,7 +1751,7 @@
   }
 
   function renderLeads() {
-    const byStage = { new: [], engaged: [], followup: [], closing: [], closed: [] };
+    const byStage = { new: [], engaged: [], followup: [], closing: [] };
     allLeads.forEach(lead => {
       if (byStage[lead.stage]) byStage[lead.stage].push(lead);
     });
@@ -1740,15 +1772,13 @@
       new: 'kanban-cards-new',
       engaged: 'kanban-cards-engaged',
       followup: 'kanban-cards-followup',
-      closing: 'kanban-cards-closing',
-      closed: 'kanban-cards-closed'
+      closing: 'kanban-cards-closing'
     };
     const countIds = {
       new: 'kanban-count-new',
       engaged: 'kanban-count-engaged',
       followup: 'kanban-count-followup',
-      closing: 'kanban-count-closing',
-      closed: 'kanban-count-closed'
+      closing: 'kanban-count-closing'
     };
 
     Object.keys(stageContainers).forEach(stage => {
@@ -1771,7 +1801,7 @@
   }
 
   function renderEmptyState() {
-    ['new', 'engaged', 'closing', 'closed'].forEach(stage => {
+    ['new', 'engaged', 'followup', 'closing'].forEach(stage => {
       const container = document.getElementById('kanban-cards-' + stage);
       if (container) {
         container.innerHTML = '<div style="padding:24px 12px; text-align:center; color:var(--gray-500); font-size:12px; font-style:italic;">Belum ada lead di tahap ini</div>';
@@ -1789,46 +1819,175 @@
 
 <script>
 // ===== FILTER =====
-let currentSource = 'all';
 let currentTime = 'all';
-
-function filterSource(src, btn) {
-  currentSource = src;
-  // Update active in source group (first 5 pills)
-  const allPills = document.querySelectorAll('.filter-pill');
-  // Source pills are first 5
-  for (let i = 0; i < 5; i++) allPills[i].classList.remove('active');
-  btn.classList.add('active');
-  applyFilters();
-}
 
 function filterTime(time, btn) {
   currentTime = time;
-  const allPills = document.querySelectorAll('.filter-pill');
-  // Time pills are 5-8
-  for (let i = 5; i < 9; i++) allPills[i].classList.remove('active');
+  document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
   btn.classList.add('active');
   applyFilters();
 }
 
 function applyFilters() {
   const searchQ = document.getElementById('searchInput').value.toLowerCase();
+  const now = Date.now();
   document.querySelectorAll('.lead-card').forEach(card => {
-    const src = card.dataset.source;
     const name = card.querySelector('.lead-name').textContent.toLowerCase();
-    const sourceMatch = currentSource === 'all' || src === currentSource;
     const searchMatch = !searchQ || name.includes(searchQ);
-    card.style.display = (sourceMatch && searchMatch) ? '' : 'none';
+    let timeMatch = true;
+    if (currentTime !== 'all') {
+      const created = card.dataset.created ? new Date(card.dataset.created).getTime() : 0;
+      const days = (now - created) / 86400000;
+      if (currentTime === 'today') timeMatch = days < 1;
+      else if (currentTime === 'week') timeMatch = days <= 7;
+      else if (currentTime === 'month') timeMatch = days <= 30;
+    }
+    card.style.display = (searchMatch && timeMatch) ? '' : 'none';
   });
 
-  // Update column counts
+  // Update jumlah per kolom (yang masih terlihat)
   document.querySelectorAll('.kanban-col').forEach(col => {
     const visible = col.querySelectorAll('.lead-card:not([style*="none"])').length;
-    col.querySelector('.col-count').textContent = visible;
+    const cc = col.querySelector('.col-count');
+    if (cc) cc.textContent = visible;
   });
 }
 
 document.getElementById('searchInput').addEventListener('input', applyFilters);
+
+// ===== TAB & NOTIFIKASI =====
+let crmTab = 'pipeline';
+
+function showCrmTab(tab) {
+  crmTab = tab;
+  const isNotif = tab === 'notif';
+  const tp = document.getElementById('tabPipeline');
+  const tn = document.getElementById('tabNotif');
+  if (tp) tp.classList.toggle('active', !isNotif);
+  if (tn) tn.classList.toggle('active', isNotif);
+  const filterBar = document.querySelector('.filter-bar');
+  const kanban = document.querySelector('.kanban-wrap');
+  const dropped = document.getElementById('droppedView');
+  const droppedBtn = document.getElementById('droppedToggleBtn');
+  const notif = document.getElementById('notifView');
+  const addBtn = document.getElementById('addLeadBtn');
+  if (isNotif) {
+    if (filterBar) filterBar.style.display = 'none';
+    if (kanban) kanban.style.display = 'none';
+    if (dropped) dropped.classList.remove('show');
+    if (droppedBtn) { droppedBtn.classList.remove('active'); droppedBtn.style.display = 'none'; }
+    if (addBtn) addBtn.style.display = 'none';
+    if (notif) notif.classList.add('show');
+    renderNotifications();
+  } else {
+    if (filterBar) filterBar.style.display = '';
+    if (kanban) kanban.style.display = '';
+    if (droppedBtn) droppedBtn.style.display = '';
+    if (addBtn) addBtn.style.display = '';
+    if (notif) notif.classList.remove('show');
+  }
+}
+window.showCrmTab = showCrmTab;
+
+function notifActiveLeads() {
+  const all = window.akpAllLeads || [];
+  return all.filter(l => (l.stage === 'engaged' || l.stage === 'followup') && !l.dropped);
+}
+function daysSinceTouch(l) {
+  const t = l.last_contact_at ? new Date(l.last_contact_at) : new Date(l.created_at);
+  return Math.floor((Date.now() - t.getTime()) / 86400000);
+}
+function updateNotifBadge() {
+  const stale = notifActiveLeads().filter(l => daysSinceTouch(l) >= 7).length;
+  const b = document.getElementById('notifTabBadge');
+  if (!b) return;
+  if (stale > 0) { b.textContent = stale; b.style.display = ''; }
+  else { b.style.display = 'none'; }
+}
+window.akpRefreshNotif = function() {
+  updateNotifBadge();
+  if (crmTab === 'notif') renderNotifications();
+};
+
+function notifInitials(name) {
+  if (!name) return '?';
+  const p = name.trim().split(/\s+/);
+  return (p.length === 1 ? p[0].slice(0,2) : (p[0][0] + p[p.length-1][0])).toUpperCase();
+}
+function escapeNotif(t) {
+  if (t == null) return '';
+  return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function sourceLabelN(magnet) {
+  const labels = { skor:'Kuis Skor', darurat:'Kalk Darurat', pendidikan:'Kalk Pendidikan', pensiun:'Kalk Pensiun', kesehatan:'Quiz Kesehatan' };
+  return labels[magnet] || magnet || 'Direct';
+}
+function formatNotifAgo(date) {
+  const diffMs = Date.now() - date.getTime();
+  const min = Math.floor(diffMs/60000), hr = Math.floor(diffMs/3600000), day = Math.floor(diffMs/86400000);
+  if (min < 1) return 'Baru saja';
+  if (min < 60) return min + ' menit lalu';
+  if (hr < 24) return hr + ' jam lalu';
+  if (day < 30) return day + ' hari lalu';
+  return date.toLocaleDateString('id-ID', { day:'numeric', month:'short', year:'numeric' });
+}
+
+function renderNotifications() {
+  const list = document.getElementById('notifList');
+  const head = document.getElementById('notifHead');
+  if (!list) return;
+  const leads = notifActiveLeads().slice().sort((a,b) => {
+    const ta = a.last_contact_at ? new Date(a.last_contact_at).getTime() : new Date(a.created_at).getTime();
+    const tb = b.last_contact_at ? new Date(b.last_contact_at).getTime() : new Date(b.created_at).getTime();
+    return ta - tb;
+  });
+  const staleCount = leads.filter(l => daysSinceTouch(l) >= 7).length;
+  if (head) head.textContent = leads.length === 0 ? '' : ('Lead di tahap Engaged dan Follow Up. ' + (staleCount > 0 ? (staleCount + ' perlu segera dihubungi (sudah 7 hari lebih).') : 'Semua masih terpantau.'));
+  if (leads.length === 0) {
+    list.innerHTML = '<div class="notif-empty">Belum ada lead di tahap Engaged atau Follow Up. Begitu ada, mereka muncul di sini lengkap dengan kapan terakhir kamu hubungi.</div>';
+    return;
+  }
+  const stageLabel = { engaged: 'Engaged', followup: 'Follow Up' };
+  list.innerHTML = leads.map(l => {
+    const d = daysSinceTouch(l);
+    const stale = d >= 7;
+    const lastLabel = l.last_contact_at ? ('Terakhir diajak ngobrol: ' + formatNotifAgo(new Date(l.last_contact_at))) : 'Belum pernah dihubungi';
+    const waNum = l.whatsapp || '';
+    const modalData = {
+      id: l.id, name: l.nama, initial: notifInitials(l.nama), stage: l.stage,
+      source: sourceLabelN(l.source_magnet), sourceTag: l.source_magnet || '',
+      wa: waNum, email: l.email || '', city: l.kota || '', age: l.usia || null,
+      income: l.rentang_pendapatan || '', time: '', score: l.score || null, interests: l.interests || []
+    };
+    const mdStr = JSON.stringify(modalData).replace(/'/g, "&#39;");
+    return '<div class="notif-item' + (stale ? ' stale' : '') + '">' +
+      '<div class="notif-avatar">' + notifInitials(l.nama) + '</div>' +
+      '<div class="notif-info">' +
+        '<div class="notif-name">' + escapeNotif(l.nama || '-') +
+          ' <span class="notif-stage-tag ' + l.stage + '">' + (stageLabel[l.stage] || l.stage) + '</span>' +
+          (stale ? ' <span class="notif-overdue">\u26a0 ' + d + ' hari belum di-follow up</span>' : '') +
+        '</div>' +
+        '<div class="notif-meta">' + lastLabel + '</div>' +
+      '</div>' +
+      '<div class="notif-actions">' +
+        (waNum ? '<button class="notif-btn wa" onclick=\'notifWA(' + mdStr + ')\'><i data-lucide="message-circle"></i> Chat WA</button>' : '') +
+        '<button class="notif-btn open" onclick=\'openModal(' + mdStr + ')\'>Buka</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+
+function notifWA(lead) {
+  if (typeof openWA === 'function') openWA(lead.wa, (lead.name || '').split(' ')[0]);
+  if (lead.id) {
+    try {
+      const sb = window.supabase.createClient('https://bfydtsfekvueqzvuschp.supabase.co','sb_publishable_3Xec3HYKViIiuX99hHxHqg_Ih8ABX_T');
+      sb.from('leads').update({ last_contact_at: new Date().toISOString(), updated_at: new Date().toISOString() }).eq('id', lead.id).then(function(){ if (typeof window.akpReloadLeads === 'function') window.akpReloadLeads(); });
+    } catch (e) {}
+  }
+}
+window.notifWA = notifWA;
 
 // ===== MODAL =====
 let currentLead = null;
@@ -1847,13 +2006,13 @@ async function openModal(lead) {
 
   // Status badge
   const statusBadge = document.getElementById('modalStatus');
-  const statusLabels = { new: 'Prospek Baru', engaged: 'Engaged', followup: 'Follow Up', closing: 'Closing', closed: 'Closed' };
+  const statusLabels = { new: 'Prospek Baru', engaged: 'Engaged', followup: 'Follow Up', closing: 'Closing' };
   statusBadge.textContent = statusLabels[lead.stage] || 'Prospek Baru';
   statusBadge.className = 'modal-status-badge ' + (lead.stage === 'new' ? '' : lead.stage);
 
   // Stage selector
   document.querySelectorAll('.stage-option').forEach((b, i) => {
-    const stages = ['new', 'engaged', 'followup', 'closing', 'closed'];
+    const stages = ['new', 'engaged', 'followup', 'closing'];
     b.classList.toggle('active', stages[i] === lead.stage);
   });
 
@@ -2902,7 +3061,7 @@ async function setStage(stage, btn) {
   btn.classList.add('active');
 
   const statusBadge = document.getElementById('modalStatus');
-  const statusLabels = { new: 'Prospek Baru', engaged: 'Engaged', followup: 'Follow Up', closing: 'Closing', closed: 'Closed' };
+  const statusLabels = { new: 'Prospek Baru', engaged: 'Engaged', followup: 'Follow Up', closing: 'Closing' };
   statusBadge.textContent = statusLabels[stage];
   statusBadge.className = 'modal-status-badge ' + (stage === 'new' ? '' : stage);
 
