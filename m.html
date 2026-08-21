@@ -825,6 +825,8 @@
     justify-content: center;
     flex-wrap: wrap;
   }
+  /* display:inline-flex menimpa [hidden] bawaan, jadi perlu dipaksa */
+  .cta-btn[hidden] { display: none !important; }
   .cta-btn {
     display: inline-flex;
     align-items: center;
@@ -1381,10 +1383,10 @@
       </p>
 
       <div class="cta-buttons">
-        <a href="https://wa.me/6281234567890" class="cta-btn wa" id="m-wa-cta">
+        <a href="#" class="cta-btn wa" id="m-wa-cta" hidden>
           <i data-lucide="message-circle"></i> WhatsApp Saya
         </a>
-        <a href="mailto:cristine@example.com" class="cta-btn email" id="m-email-cta">
+        <a href="#" class="cta-btn email" id="m-email-cta" hidden>
           <i data-lucide="mail"></i> Email Saya
         </a>
       </div>
@@ -1884,11 +1886,18 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // === WHATSAPP LINKS ===
     const wa = waLink(user.whatsapp);
-    if (wa) {
-      ['m-wa-cta'].forEach(id => { const el = document.getElementById(id); if (el) el.href = wa; });
-    }
+    ['m-wa-cta'].forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      // tombol baru muncul kalau agennya benar-benar punya nomor
+      if (wa) { el.href = wa; el.hidden = false; }
+      else { el.removeAttribute('href'); el.hidden = true; }
+    });
     const emailCta = document.getElementById('m-email-cta');
-    if (emailCta && user.email) emailCta.href = 'mailto:' + user.email;
+    if (emailCta) {
+      if (user.email) { emailCta.href = 'mailto:' + user.email; emailCta.hidden = false; }
+      else { emailCta.removeAttribute('href'); emailCta.hidden = true; }
+    }
 
     // ===== Inisialisasi chatbot edukasi (pakai magnet pilihan agen) =====
     try {
